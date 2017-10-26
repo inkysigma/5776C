@@ -1,4 +1,22 @@
 #include "ops/motor_ops.h"
+#ifndef OPS_MOTOR_OPS_H
+#define OPS_MOTOR_OPS_H
+#include "core/motors.h"
+#include "core/sensors.h"
+#include "util/concurrency.h"
+
+#define CONE_POT_HEIGHT 90
+#define CONE_POT_CONST 20
+#define CONE_RELEASE_CONST 50
+
+#define LOW_SWITCH_POT 3400
+#define HIGH_SWITCH_POT 1770
+#define MID_SWITCH_POT 2950
+#define POWER_SWITCH_POT 2800
+
+#define OPEN_CLAW_TIME 80
+#define CLOSE_CLAW_TIME 70
+
 
 const int OUT_ANGLE = 90;
 const int IN_ANGLE = 0;
