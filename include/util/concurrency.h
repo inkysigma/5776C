@@ -2,9 +2,11 @@
 #define CONCURRENCY_MACRO_CONTROL
 
 #define executeUntil(method, condition, timeout) {\
-	while (condition && time1[T1] < timeout) { \
+	long time_macro_keeper = 0;
+	while (condition && time_macro_keeper < timeout) { \
 		method \
-    delay(timeout)
+    		delay(20);
+		time_macro_keeper += 20;
 	} \
 }
 
