@@ -37,4 +37,10 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
+  gyroInit(PrimaryGyro, 0);
+  analogCalibrate(LeftLiftPot);
+  analogCalibrate(RightLiftPot);
+  analogCalibrate(SwitchLiftPot);
+  analogCalibrate(MogoLeftPot);
+  analogCalibrate(MogoRightPot);
 }
