@@ -1,3 +1,5 @@
+#include "ops/build_stack.h"
+
 void buildStack(int current_level) {
 	// start with claw at top and get cone and return to top to dispense
 	printf("	raising lift {\n");
