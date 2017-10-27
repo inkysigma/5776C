@@ -4,37 +4,41 @@
 #include "configuration/sensors.h"
 #include "API.h"
 
-int leftInit = 0;
-int rightInit = 0;
+extern int leftInit;
+extern int rightInit;
 
-void setInit(int left, int right) {
+inline void setInit(int left, int right) {
 	leftInit = left;
 	rightInit = right;
 }
 
-int getLeftPot() {
+inline int getLeftPot() {
 	return analogReadCalibrated(LeftLiftPot) - leftInit;
 }
 
-int getRightPot() {
+inline int getRightPot() {
 	return analogReadCalibrated(RightLiftPot) - rightInit;
 }
 
 
-int mobileGoalLeftInit = 0;
-int mobileGoalRightInit = 0;
+extern int mobileGoalLeftInit;
+extern int mobileGoalRightInit;
 
-void setMobileGoalInit(int left, int right) {
+inline void setMobileGoalInit(int left, int right) {
 	mobileGoalLeftInit = left;
 	mobileGoalRightInit = right;
 }
 
-int getLeftMobilePot() {
+inline int getLeftMobilePot() {
 	return analogReadCalibrated(MogoLeftPot)- mobileGoalLeftInit;
 }
 
-int getRightMobilePot() {
+inline int getRightMobilePot() {
 	return analogReadCalibrated(MogoRightPot) - mobileGoalRightInit;
+}
+
+inline int getSwitchLiftPot() {
+	return analogReadCalibrated(SwitchLiftPot);
 }
 
 #endif

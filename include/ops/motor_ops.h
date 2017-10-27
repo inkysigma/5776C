@@ -21,21 +21,21 @@
 #define OUT_ANGLE 90
 #define IN_ANGLE 0
 #define FAST_SPEED 100
-#define SLOW_ANGLE = 45
-#define SLOW_SPEED = 50
-#define SYNC_SPEED = 15
+#define SLOW_ANGLE 45
+#define SLOW_SPEED 50
+#define SYNC_SPEED 15
 
-void raiseLiftTo(int cone_level, bool stall);
-void lowerLiftTo(int cone_level, bool stall);
-void lowerClawPartial(bool stall);
-void raiseClawPartial(bool stall);
-void closeClawFully();
-void releaseCone(bool close);
-void lowerClawFully();
-void raiseClawFully(bool stall);
-void openClawFully();
-void moveMogoIn();
-void moveMogoIn();
-void syncMogo();
+extern void raiseLiftTo(int cone_level, bool stall);
+extern void lowerLiftTo(int cone_level, bool stall);
+extern void lowerClawPartial(bool stall);
+extern void raiseClawPartial(bool stall);
+extern void closeClawFully();
+extern void releaseCone(bool close);
+extern void lowerClawFully();
+extern void raiseClawFully(bool stall);
+extern void openClawFully();
+extern void moveMogoIn();
+extern void moveMogoIn();
+extern void syncMogo();
 
 #endif

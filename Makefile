@@ -49,8 +49,8 @@ $(BINDIR):
 
 # Compile program
 $(OUT): $(SUBDIRS) $(ASMOBJ) $(COBJ) $(CPPOBJ)
-	@echo LN $(BINDIR)/*.o $(LIBRARIES) to $@
-	@$(CC) $(LDFLAGS) $(BINDIR)/*.o $(LIBRARIES) -o $@
+	@echo LN $(wildcard $(BINDIR)/**/*.o) $(LIBRARIES) to $@
+	@$(CC) $(LDFLAGS) $(wildcard $(BINDIR)/**/*.o) $(LIBRARIES) -o $@
 	@$(MCUPREFIX)size $(SIZEFLAGS) $(OUT)
 	$(MCUPREPARE)
 

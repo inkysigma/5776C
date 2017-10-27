@@ -3,6 +3,6 @@
 
 #include "API.h"
 
-void buildStack(int level);
+extern void buildStack(int level);
 
 #endif

@@ -6,72 +6,69 @@
 
 #define LEVEL_CHANGE 30
 
-void moveSwitchLift(int power);
-
-void moveDrive(int left, int right) {
+inline void moveDrive(int left, int right) {
 	motorSet(LeftDrive, left);
 	motorSet(RightDrive, -right);
 }
 
-void rotateDrive(int speed) {
+inline void rotateDrive(int speed) {
 	motorSet(LeftDrive, speed);
 	motorSet(RightDrive, speed);
 }
 
-void moveLeftLift(int power) {
+inline void moveLeftLift(int power) {
 	motorSet(LeftLift, -power);
 }
 
-void moveRightLift(int power) {
+inline void moveRightLift(int power) {
 	motorSet(RightLift, power);
 }
 
-void moveLift(int power) {
+inline void moveLift(int power) {
 	moveLeftLift(power);
 	moveRightLift(power);
 }
 
-void applyStall() {
+inline void applyStall() {
 	moveLift(15);
 }
 
-void openClaw(int power) {
+inline void openClaw(int power) {
 	motorSet(Claw, -power);
 }
 
-void closeClaw(int power) {
+inline void closeClaw(int power) {
 	openClaw(-power);
 }
 
-void stopClaw() {
+inline void stopClaw() {
 	openClaw(0);
 }
 
-void moveSwitchLift(int power) {
+inline void moveSwitchLift(int power) {
 	motorSet(SwitchLift, -power);
 }
 
-void lowerClaw(int power) {
+inline void lowerClaw(int power) {
 	// move the switch lift until it rotates the other way
   moveSwitchLift(power);
 }
 
-void raiseClaw(int power) {
+inline void raiseClaw(int power) {
 	moveSwitchLift(-power);
 }
 
-void moveLeftMogo(int power) {
+inline void moveLeftMogo(int power) {
 	motorSet(LeftMobileGoal, power);
 }
 
-void moveRightMogo(int power) {
+inline void moveRightMogo(int power) {
 	motorSet(RightMobileGoal, -power);
 }
 
-void moveGoal(int power) {
+inline void moveGoal(int power) {
 	moveLeftMogo(power);
 	moveRightMogo(power);
 }
-
 
 #endif
