@@ -1,11 +1,7 @@
 #include "pid/pidlib.h"
 
-void loadSensor(sensor* ref, int port, bool digital) {
-  ref->digital = digital;
-  ref->port = port;
-}
 
-void initPid(pid* ref, float kp, float ki, float kd, int dt, sensor* sensor) {
+void initPid(pid* ref, float kp, float ki, float kd, int dt, int(*sensor)()) {
 	// initialize the pid to some constants. for tSensors sensor, pass in
 	// an actual sensor like initPid(kp, ki, kd, dt, in1) or
 	// also initPid(kp, ki, kd, dt, LeftLiftPot)
@@ -19,7 +15,7 @@ void initPid(pid* ref, float kp, float ki, float kd, int dt, sensor* sensor) {
 	ref->max_int = 30;
 	ref->min_total = -110;
 	ref->max_total = 110;
-	ref->read = sensor;
+	ref->func = sensor;
 }
 
 void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total) {
@@ -42,11 +38,7 @@ void setTarget(pid *config, float target) {
 
 float pidStep(pid *config) {
 	// calculate the value derived by a pid
-  float current_pos;
-  if (!config->read->digital)
-    current_pos = digitalRead(config->read->port);
-  else
-    current_pos = analogRead(config->read->port);
+  float current_pos = config->func();
 	float error = current_pos - config->target;
 	float integral = config->accumulation + error * config->dt / 1000;
 	float derivative = error - config->prev_error;

@@ -2,11 +2,6 @@
 #define PID_PIDLIB_H
 #include "API.h"
 
-typedef struct {
-  bool digital;
-  int port;
-} sensor;
-
 typedef struct
 {
 	// constants used for the pid control
@@ -30,12 +25,11 @@ typedef struct
 	float prev_error;
 
 	// the sensor the use and the target
-	sensor * read;
+	int (*func)();
 	float target;
 } pid;
 
-extern void loadSensor(sensor* ref, int port, bool digital);
-extern void initPid(pid* ref, float kp, float ki, float kd, int dt, sensor* sensor);
+extern void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)());
 extern void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total);
 extern void resetPid(pid *config);
 extern void setTarget(pid *config, float target);
