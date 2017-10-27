@@ -14,7 +14,7 @@
 /**
 * Digital sensor port configuration
 **/
-#define LeftEncoder 1
-#define RightEncoder 3
+#define LeftIME 0
+#define RightIME 1
 
 #endif
