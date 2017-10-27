@@ -24,20 +24,12 @@ void setSwitchLiftConfig(pid *config) {
   switchLift = config;
 }
 
-void updateLeftLift() {
-  moveLeftLift(pidStep(leftLift));
-}
-
-void updateRightLift() {
-  moveRightLift(pidStep(rightLift));
-}
-
 bool targetLiftHeight(int target, int timeout) {
   setTarget(leftLift, target);
   setTarget(rightLift, target);
   executeUntil({
-    updateLeftLift();
-    updateRightLift();
+    moveLeftLift(pidStep(leftLift));
+    moveRightLift(pidStep(rightLift));
   }, !within(getLeftPot(), target, 50) && !within(getRightPot(), target, 50), timeout)
   if (!within(getLeftPot(), target, 50) && !within(getRightPot(), target, 50)) {
     return false;
