@@ -1,32 +1,9 @@
+#ifndef OPS_USEROPS_H
+#define OPS_USEROPS_H
 #include "core/motors.h"
-#include "core/sensor.h"
+#include "core/sensors.h"
 
-void openGoal() {
-	if (getLeftMobilePot() > 1400) {
-		// we need to resist gravity
-		moveGoal(-100);
-	}
-	else if (getLeftMobilePot() > 1000) {
-		// switch over to graivty aid
-		moveGoal(-80);
-	}
-	else {
-		// we need to slow the acceleration.
-		moveGoal(10);
-	}
-}
+extern void openGoal();
+extern void retractGoal();
 
-void retractGoal() {
-	if (getLeftMobilePot() < 1000) {
-		// we need to resist gravity
-		moveGoal(100);
-	}
-	else if (getLeftMobilePot() < 1400) {
-		// switch over to graivty aid
-		moveGoal(70);
-	}
-	else {
-		// we need to slow the acceleration.
-		moveGoal(-10);
-	}
-}
+#endif
