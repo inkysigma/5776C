@@ -1,5 +1,6 @@
 #ifndef CORE_MOTOR_H
 #define CORE_MOTOR_H
+
 #include "configuration/motors.h"
 #include "API.h"
 

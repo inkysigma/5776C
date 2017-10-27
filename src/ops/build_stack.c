@@ -1,4 +1,5 @@
 #include "ops/build_stack.h"
+#include "ops/motor_ops.h"
 
 void buildStack(int current_level) {
 	// start with claw at top and get cone and return to top to dispense
@@ -28,7 +29,7 @@ void buildStack(int current_level) {
 	// extend the claw a bit further so that we don't get caugh
 	printf("	raising the claw partially {\n");
 	raiseClawPartial(true);
-	writeDebugStreamLine("	}");
+	printf("	}\n");
 
 	// swtich the claw back on top
 	printf("	raising the lift back up {");

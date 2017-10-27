@@ -1,5 +1,6 @@
 #ifndef OPS_MOTOR_OPS_H
 #define OPS_MOTOR_OPS_H
+
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "util/concurrency.h"

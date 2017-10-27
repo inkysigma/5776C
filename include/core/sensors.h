@@ -1,5 +1,6 @@
 #ifndef CORE_SENSORS_H
 #define CORE_SENSORS_H
+
 #include "configuration/sensors.h"
 #include "API.h"
 
