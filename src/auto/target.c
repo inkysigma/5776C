@@ -33,14 +33,13 @@ void updateRightLift() {
 }
 
 bool targetLiftHeight(int target, int timeout) {
-  int t = 0;
-  while (t < timeout && !within(getLeftPot(), target, 50) && !within(getRightPot(), target, 50)) {
+  setTarget(leftLift, target);
+  setTarget(rightLift, target);
+  executeUntil({
     updateLeftLift();
     updateRightLift();
-    delay(20);
-    t += 20;
-  }
-  if (t > timeout) {
+  }, !within(getLeftPot(), target, 50) && !within(getRightPot(), target, 50), timeout)
+  if (!within(getLeftPot(), target, 50) && !within(getRightPot(), target, 50)) {
     return false;
   }
   return true;
@@ -48,6 +47,8 @@ bool targetLiftHeight(int target, int timeout) {
 
 bool targetDrive(int target, int timeout) {
   resetIme();
+  setTarget(leftDrive, target);
+  setTarget(rightDrive, target);
   executeUntil({
     moveDrive(pidStep(leftDrive), pidStep(rightDrive));
   }, !within(getLeftIme(), target, 50) && !within(getRightIme(), target, 50), timeout);
@@ -57,6 +58,7 @@ bool targetDrive(int target, int timeout) {
 }
 
 bool targetSwitchLift(int target, int timeout) {
+  setTarget(switchLift, target);
   executeUntil({
     moveSwitchLift(pidStep(switchLift));
   }, !within(getSwitchLiftPot(), target, 50), timeout);
