@@ -22,10 +22,14 @@ void setLiftPidConfig(pid *left, pid *right) {
 // holdLift holds the lift at a specific position using a PID loop. This should target the right side
 void holdLeftLift(void* arguments) {
 	float total = 0;
+	char buffer[20];
 	while (lir) {
 		setTarget(leftConfig, getRightPot());
 		total = pidStep(leftConfig);
 		moveLeftLift(total);
+		moveRightLift(total);
+		sprintf(buffer, "%f", total);
+		writeJINXData("LEFT_PID", buffer);
 		waitPid(leftConfig);
 	}
 }
@@ -34,12 +38,12 @@ void holdLeftLift(void* arguments) {
 // this ought to start running
 void holdRightLift(void* arguments) {
 	float total = 0;
-	char buffer[50];
+	char buffer[20];
 	while (rir) {
 		total = pidStep(rightConfig);
 		moveRightLift(total);
 		sprintf(buffer, "%f", total);
-		writeJINXData("RightLift", buffer);
+		writeJINXData("RIGHT_PID", buffer);
 		waitPid(rightConfig);
 	}
 }
