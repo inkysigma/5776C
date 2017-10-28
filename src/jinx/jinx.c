@@ -21,9 +21,6 @@ void initJINX(FILE* port) {
     if (!setComPort(port)) {
         //Would print to stderr, but not set for PROS
         printf("Invalid Port specified for JINX communications\n");
-
-        //Optionally allow user to fail on error. Not recommended
-        //exit(EXIT_FAILURE);
     }
 }
 
@@ -154,9 +151,7 @@ void JINXRun(void* ignore) {
   writeJINXSerial("finished trashing garbage\n");
 
 	while (true) {
-//#if DEBUG_JINX
       writeJINXMessage("Should wait for new string");
-//#endif
 
       //Get message, save in inStr, then parse.
       readLine(&inStr);
