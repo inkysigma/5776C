@@ -3,50 +3,50 @@
 
 void buildStack(int current_level) {
 	// start with claw at top and get cone and return to top to dispense
-	printf("	raising lift {\n");
+	// printf("	raising lift {\n");
 	raiseLiftTo(current_level, true);
-	printf("	}\n");
+	// printf("	}\n");
 
-	printf("	lowering claw fully {\n");
+	// printf("	lowering claw fully {\n");
 	lowerClawPartial(true);
-	printf("	}\n");
+	// printf("	}\n");
 
 
-	printf("	lowering the lift to ground state {\n");
+	// printf("	lowering the lift to ground state {\n");
 	lowerLiftTo(0, false);
-	printf("	}\n");
+	// printf("	}\n");
 
-	printf("	lowering claw fully {\n");
+	// printf("	lowering claw fully {\n");
 	lowerClawFully();
-	printf("	}\n");
+	// printf("	}\n");
 
 	delay(750);
 
-	printf("	closing the claw fully {\n");
+	// printf("	closing the claw fully {\n");
 	closeClawFully();
-	printf("	}\n");
+	// printf("	}\n");
 
 	// extend the claw a bit further so that we don't get caugh
-	printf("	raising the claw partially {\n");
+	// printf("	raising the claw partially {\n");
 	raiseClawPartial(true);
-	printf("	}\n");
+	// printf("	}\n");
 
 	// swtich the claw back on top
-	printf("	raising the lift back up {");
+	// printf("	raising the lift back up {");
 	raiseLiftTo(current_level, true);
-	printf("	}\n");
+	// printf("	}\n");
 
-	printf("	raising claw fully {\n");
+	// printf("	raising claw fully {\n");
 	raiseClawFully(true);
-	printf("	}\n");
+	// printf("	}\n");
 
-	printf("	lowering lift {\n");
+	// printf("	lowering lift {\n");
 	lowerLiftTo(current_level, true);
-	printf("	}\n");
+	// printf("	}\n");
 
 	delay(400);
 
-	printf("	releasing cone {\n");
+	// printf("	releasing cone {\n");
 	releaseCone(false);
-	printf("	}\n");
+	// printf("	}\n");
 }

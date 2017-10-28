@@ -12,7 +12,7 @@ void setInit(int left, int right) {
 }
 
 int getLeftPot() {
- return analogReadCalibrated(LeftLiftPot) - leftInit;
+	return analogReadCalibrated(LeftLiftPot) - leftInit;
 }
 
 int getRightPot() {

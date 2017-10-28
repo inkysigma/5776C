@@ -13,7 +13,9 @@
 #include "main.h"
 #include "configuration/sensors.h"
 #include "core/sensors.h"
+#include "debug/pot.h"
 #include "JINX.h"
+#include "core/robot.h"
 
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
@@ -26,6 +28,9 @@
 void initializeIO() {
     watchdogInit();
 }
+
+TaskHandle jinx;
+TaskHandle debug;
 
 /*
  * Runs user initialization code. This function will be started in its own task with the default
@@ -43,12 +48,9 @@ void initializeIO() {
 void initialize() {
     printf("initialized");
     // initPrimaryGyro(PrimaryGyro);
-    taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
     imeInitializeAll();
     analogCalibrate(LeftLiftPot);
     analogCalibrate(RightLiftPot);
     setInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
     analogCalibrate(SwitchLiftPot);
-    analogCalibrate(MogoLeftPot);
-    analogCalibrate(MogoRightPot);
 }

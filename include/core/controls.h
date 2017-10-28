@@ -19,11 +19,11 @@ inline bool getLowerLift() {
 }
 
 inline bool getRaiseClaw() {
-  return joystickGetDigital(1, 6, JOY_UP);
+  return joystickGetDigital(1, 6, JOY_DOWN);
 }
 
 inline bool getLowerClaw() {
-  return joystickGetDigital(1, 6, JOY_DOWN);
+  return joystickGetDigital(1, 6, JOY_UP);
 }
 
 inline bool getOpenClaw() {

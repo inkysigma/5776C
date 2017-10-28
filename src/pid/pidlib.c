@@ -55,7 +55,7 @@ float pidStep(pid *config) {
 	}
 
 	float total = config->kp*error + config->ki *integral + config->kd * derivative;
-
+	//printf("Error: %f, Proportional: %f, Integral: %f", error, config->kp*error, config->ki * integral);
 	// check if the total has exceeded a certain total
 	if (total > config->max_total)
 	{

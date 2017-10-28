@@ -131,7 +131,6 @@ void auto1() {
 
 void auto2() {
   int ticks = 1000;
-
   setDrive(ticks);
   rotate(90);
   setDrive(ticks);
@@ -154,4 +153,13 @@ void auto2() {
   setDrive(ticks);
   putDownMobileGoal();
 }
-void autonomous() {}
+
+void straightline() {
+    moveDrive(127, 127);
+    delay(2000);
+    moveDrive(0, 0);
+}
+
+void autonomous() {
+    straightline();
+}

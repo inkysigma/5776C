@@ -13,13 +13,11 @@
 #include "configuration/pid/lift.h"
 #include "configuration/robot.h"
 #include "configuration/sensors.h"
-#include "main.h"
-#if DEBUG
-#include "debug/pot.h"
-#endif
 #include "core/controls.h"
 #include "core/motors.h"
+#include "core/robot.h"
 #include "core/sensors.h"
+#include "debug/pot.h"
 #include "main.h"
 #include "ops/build_stack.h"
 #include "ops/motor_ops.h"
@@ -54,6 +52,8 @@
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
  */
+TaskHandle jinx;
+TaskHandle debug;
 void operatorControl() {
   printf("This code is working\n");
   int cone_counter = 0;
@@ -61,12 +61,14 @@ void operatorControl() {
   setLiftPidConfig(&leftConfig, &rightConfig);
   initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
   initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
+
+  jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
+                    (TASK_PRIORITY_DEFAULT));
+  debug = taskCreate(writePots, TASK_MINIMAL_STACK_SIZE * 4, NULL,
+                     TASK_PRIORITY_DEFAULT);
   while (true) {
-#if DEBUG
-    writeAllPot();
-#endif
     // drive code
-    moveDrive(getJoystickLeft(), getJoystickRight());
+    moveDrive(getJoystickRight(), getJoystickLeft());
 
     // lift control with 5U/D
     if (getRaiseLift()) {
@@ -117,5 +119,7 @@ void operatorControl() {
     } else if (getResetStack()) {
       cone_counter = 0;
     }
+
+    delay(60);
   }
 }

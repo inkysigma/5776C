@@ -7,11 +7,12 @@ void writeDebugValue(const char* name, float val) {
   writeJINXData(name, buffer);
 }
 
-void writeAllPots() {
-  writeDebugValue("SWITCH_LIFT_POT", getSwitchLiftPot());
-  writeDebugValue("LEFT_LIFT_POT", getLeftPot());
-  writeDebugValue("RIGHT_LIFT_POT", getRightPot());
-}
-
-void writeAllIme() {
+void writePots(void* args) {
+    while (true) {
+        writeDebugValue("sp", getSwitchLiftPot());
+        delay(400);
+        writeDebugValue("ll", getLeftPot());
+        writeDebugValue("rl", getRightPot());
+        delay(400);
+    }
 }
