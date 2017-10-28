@@ -7,7 +7,7 @@
 #include <stdarg.h>
 
 //DEBUG
-#define DEBUG_JINX true
+#define DEBUG_JINX false
 
 //CONSTANTS
 #define JINX_HEADER "JINX"

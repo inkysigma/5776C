@@ -4,10 +4,10 @@
 #include "API.h"
 #include "pid/pidlib.h"
 
-extern void setConfig(pid *left, pid *right);
-extern void startRightPid(int t);
-extern void startLeftPid();
-extern void stopRightPid();
-extern void stopLeftPid();
+void setLiftPidConfig(pid *left, pid *right);
+void startRightPid(int t);
+void startLeftPid();
+void stopRightPid();
+void stopLeftPid();
 
 #endif

@@ -15,11 +15,12 @@
 #include "configuration/sensors.h"
 #include "core/controls.h"
 #include "core/motors.h"
-// #include "core/sensors.h"
+#include "core/sensors.h"
 #include "main.h"
 #include "ops/motor_ops.h"
 #include "ops/build_stack.h"
 #include "pid/pidlib.h"
+#include "pid/lift_pid.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -53,7 +54,7 @@ void operatorControl() {
     printf("This code is working\n");
     int cone_counter = 0;
     pid leftConfig, rightConfig;
-    setLiftConfig(leftConfig, rightConfig);
+    setLiftPidConfig(&leftConfig, &rightConfig);
     initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
     initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
     while (true) {

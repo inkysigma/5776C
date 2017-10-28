@@ -14,7 +14,7 @@ pid *rightConfig;
 
 // setConfig sets the left and right pid configuration. use initPid(kp, ki, kd, dt, sensor)
 // to create a configuration. pass the reference to config.
-void setLiftConfig(pid *left, pid *right) {
+void setLiftPidConfig(pid *left, pid *right) {
 	leftConfig = left;
 	rightConfig = right;
 }
@@ -34,10 +34,12 @@ void holdLeftLift(void* arguments) {
 // this ought to start running
 void holdRightLift(void* arguments) {
 	float total = 0;
+	char buffer[50];
 	while (rir) {
 		total = pidStep(rightConfig);
 		moveRightLift(total);
-		writeJINXData("RightLift", NOTE_PUT_STUFF_HERE)
+		sprintf(buffer, "%f", total);
+		writeJINXData("RightLift", buffer);
 		waitPid(rightConfig);
 	}
 }

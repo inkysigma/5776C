@@ -8,8 +8,8 @@
 #define LeftLiftPot 3
 #define RightLiftPot 4
 #define SwitchLiftPot 5
-#define MogoLeftPot 7
-#define MogoRightPot 8
+#define MogoLeftPot 6
+#define MogoRightPot 7
 
 /**
 * Digital sensor port configuration
