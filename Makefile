@@ -2,10 +2,13 @@
 
 # Path to project root (for top-level, so the project is in ./; first-level, ../; etc.)
 ROOT=.
+
 # Binary output directory
 BINDIR=$(ROOT)/bin
+EXTERNALDIR=$(ROOT)/libbin
+
 # Subdirectories to include in the build
-SUBDIRS=src src/pid src/ops src/auto src/core
+SUBDIRS=src src/pid src/ops src/auto src/core src/jinx
 
 # Nothing below here needs to be modified by typical users
 
