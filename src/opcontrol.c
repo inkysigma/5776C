@@ -10,17 +10,21 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
-#include "main.h"
 #include "configuration/pid/lift.h"
+#include "configuration/robot.h"
 #include "configuration/sensors.h"
+#include "main.h"
+#if DEBUG
+#include "debug/pot.h"
+#endif
 #include "core/controls.h"
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "main.h"
-#include "ops/motor_ops.h"
 #include "ops/build_stack.h"
-#include "pid/pidlib.h"
+#include "ops/motor_ops.h"
 #include "pid/lift_pid.h"
+#include "pid/pidlib.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -51,64 +55,67 @@
  * even if empty.
  */
 void operatorControl() {
-    printf("This code is working\n");
-    int cone_counter = 0;
-    pid leftConfig, rightConfig;
-    setLiftPidConfig(&leftConfig, &rightConfig);
-    initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
-    initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
-    while (true) {
-        // drive code
-        moveDrive(getJoystickLeft(), getJoystickRight());
+  printf("This code is working\n");
+  int cone_counter = 0;
+  pid leftConfig, rightConfig;
+  setLiftPidConfig(&leftConfig, &rightConfig);
+  initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
+  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
+  while (true) {
+#if DEBUG
+    writeAllPot();
+#endif
+    // drive code
+    moveDrive(getJoystickLeft(), getJoystickRight());
 
-        // lift control with 5U/D
-        if (getRaiseLift()) {
-            moveLift(100);
-        } else if (getLowerLift()) {
-            moveLift(-100);
-        } else {
-            applyStall();
-        }
-
-        // Btn6U/D should be assigned to switch lift and functionality
-        if (getRaiseClaw()) {
-          raiseClaw(127);
-        } else if (getLowerClaw()) {
-          lowerClaw(127);
-        } else {
-          raiseClaw(0);
-        }
-
-        if (getOpenClaw()) {
-          openClawFully();
-        }
-
-        else if (getCloseClaw()) {
-          closeClawFully();
-        }
-
-        if (getOpenGoal()) {
-          moveGoal(70);
-        }
-
-        else if (getRetractGoal()) {
-          moveGoal(-127);
-        }
-
-        else {
-          moveGoal(0);
-        }
-
-        // Btn8U/D should be used for buildStack control
-        if (getBuildStack()) {
-            buildStack(cone_counter);
-            cone_counter = cone_counter + 1;
-        } else if (getDecreaseStack()) {
-            if (cone_counter > 0) {
-            cone_counter = cone_counter - 1;
-            }
-        } else if (getResetStack()) {
-          cone_counter = 0;
-        }
+    // lift control with 5U/D
+    if (getRaiseLift()) {
+      moveLift(100);
+    } else if (getLowerLift()) {
+      moveLift(-100);
+    } else {
+      applyStall();
     }
+
+    // Btn6U/D should be assigned to switch lift and functionality
+    if (getRaiseClaw()) {
+      raiseClaw(127);
+    } else if (getLowerClaw()) {
+      lowerClaw(127);
+    } else {
+      raiseClaw(0);
+    }
+
+    if (getOpenClaw()) {
+      openClawFully();
+    }
+
+    else if (getCloseClaw()) {
+      closeClawFully();
+    }
+
+    if (getOpenGoal()) {
+      moveGoal(70);
+    }
+
+    else if (getRetractGoal()) {
+      moveGoal(-127);
+    }
+
+    else {
+      moveGoal(0);
+    }
+
+    // Btn8U/D should be used for buildStack control
+    if (getBuildStack()) {
+      buildStack(cone_counter);
+      cone_counter = cone_counter + 1;
+    } else if (getDecreaseStack()) {
+      if (cone_counter > 0) {
+        cone_counter = cone_counter - 1;
+      }
+    } else if (getResetStack()) {
+      cone_counter = 0;
+    }
+  }
 }
