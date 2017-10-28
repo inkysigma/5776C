@@ -50,11 +50,13 @@
  * even if empty.
  */
 void operatorControl() {
+    print("This code is working\n");
     int cone_counter = 0;
     pid leftConfig, rightConfig;
     initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
     initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
     while (1) {
+        print("This code is working\n");
         // drive code
         moveDrive(getJoystickLeft(), getJoystickRight());
 
