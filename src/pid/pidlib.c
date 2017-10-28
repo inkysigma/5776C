@@ -38,7 +38,7 @@ void setTarget(pid *config, float target) {
 
 float pidStep(pid *config) {
 	// calculate the value derived by a pid
-  float current_pos = config->func();
+ 	float current_pos = config->func();
 	float error = current_pos - config->target;
 	float integral = config->accumulation + error * config->dt / 1000;
 	float derivative = error - config->prev_error;

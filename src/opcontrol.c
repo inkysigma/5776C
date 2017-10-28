@@ -53,6 +53,7 @@ void operatorControl() {
     printf("This code is working\n");
     int cone_counter = 0;
     pid leftConfig, rightConfig;
+    setLiftConfig(leftConfig, rightConfig);
     initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
     initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
     while (true) {
