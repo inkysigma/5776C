@@ -2,6 +2,7 @@
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "configuration/tasks.h"
+#include "JINX.h"
 
 bool lir = false;
 bool rir = false;

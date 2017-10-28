@@ -13,78 +13,8 @@
 #include "main.h"
 #include "JINX.h"
 
-#define DEBUG_JINX true
-
 //Port over which all serial communication will occur. STDIN == STDOUT, so either can be used
 static FILE* comPort = stdout;
-
-//*************This space reserved for user-defined functions***************
-    //Example of user defined JINX helper function.
-    //Since it is at the top of this file, it can be called from anywhere else in this file.
-    //Good practice is to put its prototype in JINX.h, though.
-    void handleGet() {
-        char message[100];
-        readLine(message);
-        if (strcmp(message, "DEBUG_JINX") == 0) {
-            //Stringify DEBUG_JINX. I think.
-            //TODO: Make sure this works
-            writeJINXMessage("Asked for Debug");
-            sprintf(message, "%s, %d", message, DEBUG_JINX);
-        } else {
-            strcat(message, " was unable to be gotten.");
-        }
-
-        writeJINXMessage(message);
-    }
-
-    void handleDrive() {
-        char message[100];
-        readLine(message);
-        if (strcmp(message, "f") == 0) {
-            writeJINXMessage("Driving forward");
-            setDrive(120, 120, 120, 120);
-        } else if (strcmp(message, "b") == 0) {
-            writeJINXMessage("Driving backwards");
-            setDrive(-120, -120, -120, -120);
-        } else if (strcmp(message, "s") == 0) {
-            writeJINXMessage("Stopping");
-            setDrive(0,0,0,0);
-        } else {
-            writeJINXMessage("Invalid drive command. Should be 'f', 'b', or 's'.")
-        }
-    }
-
-    //Returns integer parsed from character buffer
-    int parseInt(char* intString) {
-        char digit;
-
-        //Limit to 32 digit integer. Please don't send 32 digit integers
-        char tempStr[33] = "";
-
-        int len = strlen(intString);
-
-        //Catch empty string
-        if (len == 0) {
-            char errorMessage[100];
-            sprintf(errorMessage, "Error, unable to parse integer: %s", intString);
-            sendData("Error", errorMessage);
-        }
-
-        for(int i = 0; i < len; i++) {
-            digit = intString[i];
-            if ((digit < '0') || (digit > '9')) {
-                char errorMessage[100];
-                sprintf(errorMessage, "Error, unable to parse integer: %s", intString);
-                sendData("Error", errorMessage);
-                return -1;
-            }
-
-            tempStr[i] = digit;
-        }
-
-        return atoi(tempStr);
-    }
-//**************************************************************************
 
 void initJINX(FILE* port) {
     //If the port is not a valid communications port, inform user of error
@@ -115,18 +45,17 @@ bool setComPort(FILE* port) {
     return false;
 }
 
-void writeSerial(char* message) {
+void writeJINXSerial(const char *message) {
     fprintf(comPort, "%s%s%s%s", JINX_HEADER, JINX_DELIMETER, message, JINX_TERMINATOR);
     fflush(comPort);
 }
 
-//Wrapper function for sendData to send non-numeric data more easily
-void writeJINXMessage(char* message) {
-    char msg[4] = "msg";
-    sendData(msg, message);
+//Wrapper function for writeJINXData to send non-numeric data more easily
+void writeJINXMessage(const char *message) {
+    writeJINXData("msg", message);
 }
 
-void sendData(char* name, char* value) {
+void writeJINXData(const char *name, const char *value) {
     // if (strlen(name) + strlen(value) >= MAX_MESSAGE_SIZE + PROTOCOL_SIZE) {
     //     fprintf(comPort, "Warning: Tried to send too large a message named %s", name);
     //     return;
@@ -134,11 +63,16 @@ void sendData(char* name, char* value) {
 
     char message[100];
     sprintf(message, "%s%s%s", name, JINX_DELIMETER, value);
-    writeSerial(message);
+    writeJINXSerial(message);
 }
 
-int readLine(char* stringBuffer) {
+int readLine(JINX *inStr) {
+    if (inStr->command != NULL) {
+      free(inStr->command);
+    }
 
+    inStr->command = (char*)malloc(MAX_IN_SIZE + 1);
+    writeJINXSerial("Trying to readline");
     //Terminating character to specify end of line/message
     char term = '\n';
 
@@ -149,54 +83,85 @@ int readLine(char* stringBuffer) {
     int bufferIndex = 0;
 
     //Get character from serial. If first character is terminator, quit immediately
-    get = fgetc(comPort);
-    while(get != term) {
-        stringBuffer[bufferIndex++] = get;
-        get = fgetc(comPort);
+    while(((get = fgetc(comPort)) != term) && (bufferIndex < MAX_IN_SIZE)) {
+        inStr->command[bufferIndex++] = get;
     }
 
-    //Terminate string with null character (Is that the term?)
-    //This means that if only a terminator is read, string is only an endstring (Sounds silly, but oh well)
-    stringBuffer[bufferIndex] = '\0';
+    //Terminate string with null character
+    //This means that if only a terminator is read, string is only a null terminator
+    inStr->command[bufferIndex] = '\0';
 
     //Return size of new string
     return bufferIndex;
 }
 
-void parseMessage(char* message) {
-    writeJINXMessage(message);
-
-    //Example parse. User can should replace with own body.
-    if (strcmp(message, "Option 1") == 0) {
-        //Do option 1
-        writeJINXMessage("Option 1 chosen.");
-    } else if(strcmp(message, "get") == 0) {
-        //Call another function to handle "get"
-        handleGet();
-    } else if (strcmp(message, "drive") == 0) {
-        handleDrive();
-    } else {
-        //Do default
-        writeJINXMessage("No comparison found");
+//Get tokenNumth token of incoming string, and put it in inStr.token
+//Do not pass a null pointer!
+int getToken(JINX *inStr, int tokenNum) {
+    //writeJINXMessage("Trying to get token\n");
+    if (inStr->token != NULL) {
+      free(inStr->token);
     }
+
+    //Check for invalid token request
+    if ((tokenNum < 0) || (tokenNum > MAX_IN_SIZE)) {
+        inStr->token = (char*)malloc(1);
+        (inStr->token)[0] = (int) NULL;
+
+        return -1;
+    }
+
+    //Hold start and end of token
+    char *beginStr, *endStr;
+
+    beginStr = inStr->command;
+    int tokenCount = 0;
+
+    //Until we pass the desired number of tokens, move to the next token start
+    while (tokenCount++ < tokenNum) {
+        beginStr = strchr(beginStr, ' ');
+        if (++beginStr == NULL) {
+          (inStr->token)[0] = (int) NULL;
+
+          return -1;
+        }
+    }
+
+    //Token should be terminated by a space or the null character
+    if ((endStr = strchr(beginStr, ' ')) == NULL) {
+        endStr = strchr(beginStr, (int) NULL);
+    }
+
+    //Set the token
+    inStr->token = (char*)malloc(endStr - beginStr + 2);  //+2 for good luck
+    strncpy(inStr->token, beginStr, endStr - beginStr);
+
+    return 0;
 }
 
 void JINXRun(void* ignore) {
 	int del = 500;
-	char inStr[100];
-
-    //Delay a second to allow time for communication to open up
-	delay(1000);
+  JINX inStr;
+  inStr.command = NULL;
+  inStr.token = NULL;
+    //setOpmode(1);
+    //Read the garbage. Assume run before serial communications open
+  delay(1000);
+	while(fcount(comPort) > 0) {
+      fgetc(comPort);
+      writeJINXSerial("Trashing garbage\n");
+  };
+  writeJINXSerial("finished trashing garbage\n");
 
 	while (true) {
-#if DEBUG_JINX
-        writeJINXMessage("Should wait for new string");
-#endif
+//#if DEBUG_JINX
+      writeJINXMessage("Should wait for new string");
+//#endif
 
-        //Get message, save in inStr, then parse.
-        readLine(inStr);
-        parseMessage(inStr);
-		delay(del);
+      //Get message, save in inStr, then parse.
+      readLine(&inStr);
+      parseMessage(&inStr);
+	    delay(del);
 	}
 
 }
