@@ -54,7 +54,7 @@ void operatorControl() {
   pid leftConfig, rightConfig;
   initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
   initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
-  while (1) {
+  while (true) {
     // drive code
     moveDrive(getJoystickLeft(), getJoystickRight());
 
