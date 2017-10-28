@@ -40,7 +40,8 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-  initPrimaryGyro(PrimaryGyro);
+  printf("initialized");
+  // initPrimaryGyro(PrimaryGyro);
   imeInitializeAll();
   analogCalibrate(LeftLiftPot);
   analogCalibrate(RightLiftPot);

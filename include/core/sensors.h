@@ -4,55 +4,23 @@
 #include "configuration/sensors.h"
 #include "API.h"
 
-extern int leftInit;
-extern int rightInit;
-
-inline void setInit(int left, int right) {
-	leftInit = left;
-	rightInit = right;
-}
-
-extern int getLeftPot() {
-	return analogReadCalibrated(LeftLiftPot) - leftInit;
-}
-
-inline int getRightPot() {
-	return analogReadCalibrated(RightLiftPot) - rightInit;
-}
+void setInit(int left, int right);
+int getLeftPot();
+int getRightPot();
 
 
-extern int mobileGoalLeftInit;
-extern int mobileGoalRightInit;
 
-inline void setMobileGoalInit(int left, int right) {
-	mobileGoalLeftInit = left;
-	mobileGoalRightInit = right;
-}
-
-inline int getLeftMobilePot() {
-	return analogReadCalibrated(MogoLeftPot)- mobileGoalLeftInit;
-}
-
-inline int getRightMobilePot() {
-	return analogReadCalibrated(MogoRightPot) - mobileGoalRightInit;
-}
+void setMobileGoalInit(int left, int right);
+int getLeftMobilePot();
+int getRightMobilePot();
 
 inline int getSwitchLiftPot() {
 	return analogReadCalibrated(SwitchLiftPot);
 }
-extern Gyro primaryGyro;
 
-inline void initPrimaryGyro(int port) {
-	primaryGyro = gyroInit(port, 0);
-}
-
-inline int getPrimaryGyro() {
-	return gyroGet(primaryGyro);
-}
-
-inline void resetPrimaryGyro() {
-	gyroReset(primaryGyro);
-}
+void initPrimaryGyro(int port);
+int getPrimaryGyro();
+void resetPrimaryGyro();
 
 inline int getLeftIme() {
 	int pointer = 0;
