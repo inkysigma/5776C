@@ -10,7 +10,7 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
-
+#include "main.h"
 #include "configuration/pid/lift.h"
 #include "configuration/sensors.h"
 #include "core/controls.h"
@@ -50,66 +50,64 @@
  * even if empty.
  */
 void operatorControl() {
-  int cone_counter = 0;
-  pid leftConfig, rightConfig;
-  initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
-  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
-  while (true) {
-    // drive code
-    moveDrive(getJoystickLeft(), getJoystickRight());
+    printf("This code is working\n");
+    int cone_counter = 0;
+    pid leftConfig, rightConfig;
+    initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
+    initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
+    while (true) {
+        print("This code is working\n");
+        // drive code
+        moveDrive(getJoystickLeft(), getJoystickRight());
 
-    // lift control with 5U/D
-    if (getRaiseLift()) {
-      moveLift(100);
-    }
+        // lift control with 5U/D
+        if (getRaiseLift()) {
+            moveLift(100);
+        } else if (getLowerLift()) {
+            moveLift(-100);
+        } else {
+            applyStall();
+        }
 
-    else if (getLowerLift()) {
-      moveLift(-100);
-    }
+        // Btn6U/D should be assigned to switch lift and functionality
+        if (getRaiseClaw()) {
+          raiseClaw(127);
+        } else if (getLowerClaw()) {
+          lowerClaw(127);
+        } else {
+          raiseClaw(0);
+        }
 
-    else {
-      applyStall();
-    }
+        if (getOpenClaw()) {
+          openClawFully();
+        }
 
-    // Btn6U/D should be assigned to switch lift and functionality
-    if (getRaiseClaw()) {
-      raiseClaw(127);
-    } else if (getLowerClaw()) {
-      lowerClaw(127);
-    } else {
-      raiseClaw(0);
-    }
+        else if (getCloseClaw()) {
+          closeClawFully();
+        }
 
-    if (getOpenClaw()) {
-      openClawFully();
-    }
+        if (getOpenGoal()) {
+          moveGoal(70);
+        }
 
-    else if (getCloseClaw()) {
-      closeClawFully();
-    }
+        else if (getRetractGoal()) {
+          moveGoal(-127);
+        }
 
-    if (getOpenGoal()) {
-      moveGoal(70);
-    }
+        else {
+          moveGoal(0);
+        }
 
-    else if (getRetractGoal()) {
-      moveGoal(-127);
+        // Btn8U/D should be used for buildStack control
+        if (getBuildStack()) {
+            buildStack(cone_counter);
+            cone_counter = cone_counter + 1;
+        } else if (getDecreaseStack()) {
+            if (cone_counter > 0) {
+            cone_counter = cone_counter - 1;
+            }
+        } else if (getResetStack()) {
+          cone_counter = 0;
+        }
     }
-
-    else {
-      moveGoal(0);
-    }
-
-    // Btn8U/D should be used for buildStack control
-    if (getBuildStack()) {
-      buildStack(cone_counter);
-      cone_counter = cone_counter + 1;
-    } else if (getDecreaseStack()) {
-      if (cone_counter > 0) {
-        cone_counter = cone_counter - 1;
-      }
-    } else if (getResetStack()) {
-      cone_counter = 0;
-    }
-  }
 }

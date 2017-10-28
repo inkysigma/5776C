@@ -11,7 +11,6 @@
  */
 
 #include "main.h"
-#include "API.h"
 #include "configuration/sensors.h"
 #include "core/sensors.h"
 
@@ -41,7 +40,6 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-  printf("Hello");
   initPrimaryGyro(PrimaryGyro);
   imeInitializeAll();
   analogCalibrate(LeftLiftPot);

@@ -3,7 +3,7 @@
 #include "core/motors.h"
 #include "core/sensors.h"
 
-extern void openGoal();
-extern void retractGoal();
+void openGoal();
+void retractGoal();
 
 #endif

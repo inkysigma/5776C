@@ -12,7 +12,7 @@ inline void setInit(int left, int right) {
 	rightInit = right;
 }
 
-inline int getLeftPot() {
+extern int getLeftPot() {
 	return analogReadCalibrated(LeftLiftPot) - leftInit;
 }
 
@@ -40,7 +40,6 @@ inline int getRightMobilePot() {
 inline int getSwitchLiftPot() {
 	return analogReadCalibrated(SwitchLiftPot);
 }
-
 extern Gyro primaryGyro;
 
 inline void initPrimaryGyro(int port) {

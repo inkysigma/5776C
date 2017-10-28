@@ -5,7 +5,7 @@ ROOT=.
 # Binary output directory
 BINDIR=$(ROOT)/bin
 # Subdirectories to include in the build
-SUBDIRS=src src/core src/pid src/ops src/auto
+SUBDIRS=src src/pid src/ops src/auto
 
 # Nothing below here needs to be modified by typical users
 
@@ -49,8 +49,8 @@ $(BINDIR):
 
 # Compile program
 $(OUT): $(SUBDIRS) $(ASMOBJ) $(COBJ) $(CPPOBJ)
-	@echo LN $(wildcard $(BINDIR)/**/*.o) $(LIBRARIES) to $@
-	@$(CC) $(LDFLAGS) $(wildcard $(BINDIR)/**/*.o) $(LIBRARIES) -o $@
+	@echo LN $(wildcard $(BINDIR)/*.o) $(wildcard $(BINDIR)/**/*.o) $(LIBRARIES) to $@
+	@$(CC) $(LDFLAGS) $(wildcard $(BINDIR)/*.o) $(wildcard $(BINDIR)/**/*.o) $(LIBRARIES) -o $@
 	@$(MCUPREFIX)size $(SIZEFLAGS) $(OUT)
 	$(MCUPREPARE)
 
