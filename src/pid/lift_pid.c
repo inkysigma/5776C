@@ -32,13 +32,16 @@ void setLiftTargets(int left, int right) {
 void holdLeftLift(void *arguments) {
   float total = 0;
   char buffer[20];
+  sprintf(buffer, "%f", leftConfig->kp);
+  writeJINXData("lpid_kp", buffer);
   while (lir) {
-    setTarget(leftConfig, getRightPot());
     total = pidStep(leftConfig);
     moveLeftLift(total);
     sprintf(buffer, "%f", total);
     writeJINXData("lpid", buffer);
     waitPid(leftConfig);
+    sprintf(buffer, "%f", leftConfig->target - leftConfig->func());
+    writeJINXData("lpid_error", buffer);
   }
 }
 
@@ -52,7 +55,7 @@ void holdRightLift(void *arguments) {
     total = pidStep(rightConfig);
     moveRightLift(total);
     sprintf(buffer, "%f", total);
-    writeJINXData("rp", buffer);
+    writeJINXData("rpid", buffer);
     waitPid(rightConfig);
   }
 }
@@ -62,7 +65,6 @@ void startRightPid() {
     return;
   }
   resetPid(rightConfig);
-  setTarget(rightConfig, getRightPot());
   rir = true;
   if (!rcreated) {
     rightLiftPid = taskCreate(holdRightLift, TASK_DEFAULT_STACK_SIZE,
@@ -77,7 +79,6 @@ void startLeftPid() {
     return;
   }
   resetPid(leftConfig);
-  setTarget(leftConfig, getRightPot());
   lir = true;
   if (!lcreated) {
     leftLiftPid = taskCreate(holdLeftLift, TASK_DEFAULT_STACK_SIZE, leftConfig,
@@ -88,7 +89,7 @@ void startLeftPid() {
 }
 
 void stopRightPid() {
-  if (rir) {
+  if (!rir) {
     return;
   }
   rir = false;
@@ -96,7 +97,7 @@ void stopRightPid() {
 }
 
 void stopLeftPid() {
-  if (lir) {
+  if (!lir) {
     return;
   }
   lir = false;

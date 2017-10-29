@@ -62,21 +62,46 @@ void operatorControl() {
   initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
   initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
 
-  jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
-                    (TASK_PRIORITY_DEFAULT));
-  debug = taskCreate(writePots, TASK_MINIMAL_STACK_SIZE * 4, NULL,
-                     TASK_PRIORITY_DEFAULT);
+  // jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
+  //                    (TASK_PRIORITY_DEFAULT));
+  // debug = taskCreate(writePots, TASK_MINIMAL_STACK_SIZE * 4, NULL,
+  //                 TASK_PRIORITY_DEFAULT);
+  // startLeftPid();
+  // startRightPid();
+  bool liftMoving = false;
+  int timeSinceMoving = 0;
   while (true) {
     // drive code
     moveDrive(getJoystickRight(), getJoystickLeft());
 
     // lift control with 5U/D
     if (getRaiseLift()) {
+      if (!liftMoving) {
+        stopLeftPid();
+        stopRightPid();
+      }
+      liftMoving = true;
+      timeSinceMoving = 0;
       moveLift(100);
     } else if (getLowerLift()) {
+      if (!liftMoving) {
+        stopLeftPid();
+        stopRightPid();
+      }
+      liftMoving = true;
+      timeSinceMoving = 0;
       moveLift(-100);
+    } else if (liftMoving && timeSinceMoving > 400) {
+      setLiftTargets(getLeftPot(), getRightPot());
+      startLeftPid();
+      startRightPid();
+      liftMoving = false;
     } else {
-      applyStall();
+        applyStall();
+    }
+
+    if (liftMoving) {
+      timeSinceMoving += 60;
     }
 
     // Btn6U/D should be assigned to switch lift and functionality
