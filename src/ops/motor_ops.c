@@ -1,5 +1,5 @@
 #include "ops/motor_ops.h"
-
+/**
 void raiseLiftTo(int cone_level, bool stall) {
 	executeUntil({
 		moveLift(80);
@@ -160,3 +160,4 @@ void syncMogo() {
 		}
 	}
 }
+**/

@@ -58,17 +58,9 @@ inline void raiseClaw(int power) {
 	moveSwitchLift(-power);
 }
 
-inline void moveLeftMogo(int power) {
-	motorSet(LeftMobileGoal, power);
-}
-
-inline void moveRightMogo(int power) {
-	motorSet(RightMobileGoal, -power);
-}
-
 inline void moveGoal(int power) {
-	moveLeftMogo(power);
-	moveRightMogo(power);
+	motorSet(LeftMobileGoal, -power);
+	motorSet(RightMobileGoal, power);
 }
 
 #endif

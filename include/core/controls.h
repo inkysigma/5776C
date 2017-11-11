@@ -3,11 +3,19 @@
 #include "API.h"
 
 inline int getJoystickLeft() {
-  return joystickGetAnalog(1, 2);
+  return joystickGetAnalog(1, 3);
 }
 
 inline int getJoystickRight() {
-  return joystickGetAnalog(1, 3);
+  return joystickGetAnalog(1, 2);
+}
+
+inline int getJoystickLeftTurn() {
+  return joystickGetAnalog(1, 4);
+}
+
+inline int getJoystickRightTurn() {
+  return joystickGetAnalog(1, 1);
 }
 
 inline bool getRaiseLift() {
@@ -35,11 +43,11 @@ inline bool getCloseClaw() {
 }
 
 inline bool getOpenGoal() {
-  return joystickGetDigital(1, 7, JOY_LEFT);
+  return joystickGetDigital(1, 8, JOY_UP);
 }
 
 inline bool getRetractGoal() {
-  return joystickGetDigital(1, 7, JOY_UP);
+  return joystickGetDigital(1, 8, JOY_DOWN);
 }
 
 inline bool getBuildStack() {

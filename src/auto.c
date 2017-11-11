@@ -37,6 +37,7 @@
  * exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+ /**
 bool isKill(int current, int target, int time, int max) {
   if (abs(current) < target && time > max) {
     return true;
@@ -163,3 +164,4 @@ void straightline() {
 void autonomous() {
     straightline();
 }
+**/

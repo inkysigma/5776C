@@ -11,10 +11,6 @@
  */
 
 #include "main.h"
-#include "configuration/sensors.h"
-#include "core/sensors.h"
-#include "debug/pot.h"
-#include "JINX.h"
 #include "core/robot.h"
 
 /*
@@ -28,9 +24,6 @@
 void initializeIO() {
     watchdogInit();
 }
-
-TaskHandle jinx;
-TaskHandle debug;
 
 /*
  * Runs user initialization code. This function will be started in its own task with the default
@@ -46,11 +39,5 @@ TaskHandle debug;
  * can be implemented in this task if desired.
  */
 void initialize() {
-    printf("initialized");
-    // initPrimaryGyro(PrimaryGyro);
-    imeInitializeAll();
-    analogCalibrate(LeftLiftPot);
-    analogCalibrate(RightLiftPot);
-    setInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
-    analogCalibrate(SwitchLiftPot);
+  setTeamName("5776C");
 }

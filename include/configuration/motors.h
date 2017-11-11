@@ -3,12 +3,11 @@
 
 #define LeftDrive 2
 #define RightDrive 3
-#define MiddleDrive 4
-#define MobileGoal 5
-/*
- * Will add the other motor configurations
-#define RightLift 6
-#define SwitchLift 7
-#define Claw 8
-*/
+#define LeftMobileGoal 4
+#define RightMobileGoal 5
+#define LeftLift 6
+#define RightLift 7
+#define SwitchLift 8
+#define Claw 9
+
 #endif
