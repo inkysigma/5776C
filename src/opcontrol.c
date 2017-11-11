@@ -21,8 +21,8 @@
 #include "main.h"
 #include "ops/build_stack.h"
 #include "ops/motor_ops.h"
-#include "pid/lift_pid.h"
-#include "pid/pidlib.h"
+// #include "pid/lift_pid.h"
+// #include "pid/pidlib.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -57,10 +57,10 @@ TaskHandle debug;
 void operatorControl() {
   printf("This code is working\n");
   int cone_counter = 0;
-  pid leftConfig, rightConfig;
-  setLiftPidConfig(&leftConfig, &rightConfig);
+  // pid leftConfig, rightConfig;
+  /**setLiftPidConfig(&leftConfig, &rightConfig);
   initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
-  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
+  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);**/
 
   // jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
   //                    (TASK_PRIORITY_DEFAULT));
@@ -76,29 +76,31 @@ void operatorControl() {
 
     // lift control with 5U/D
     if (getRaiseLift()) {
-      if (!liftMoving) {
+      /**if (!liftMoving) {
         stopLeftPid();
         stopRightPid();
       }
       liftMoving = true;
-      timeSinceMoving = 0;
+      timeSinceMoving = 0;*/
       moveLift(100);
     } else if (getLowerLift()) {
-      if (!liftMoving) {
+      /**if (!liftMoving) {
         stopLeftPid();
         stopRightPid();
       }
       liftMoving = true;
-      timeSinceMoving = 0;
+      timeSinceMoving = 0;**/
       moveLift(-100);
-    } else if (liftMoving && timeSinceMoving > 400) {
+  } else {
+      moveLift(0);
+  }/**else if (liftMoving && timeSinceMoving > 400) {
       setLiftTargets(getLeftPot(), getRightPot());
       startLeftPid();
       startRightPid();
       liftMoving = false;
-    } else {
+  }**/ /**else {
         applyStall();
-    }
+    }**/
 
     if (liftMoving) {
       timeSinceMoving += 60;
@@ -134,7 +136,7 @@ void operatorControl() {
     }
 
     // Btn8U/D should be used for buildStack control
-    if (getBuildStack()) {
+    /**if (getBuildStack()) {
       buildStack(cone_counter);
       cone_counter = cone_counter + 1;
     } else if (getDecreaseStack()) {
@@ -143,7 +145,7 @@ void operatorControl() {
       }
     } else if (getResetStack()) {
       cone_counter = 0;
-    }
+  }**/
 
     delay(60);
   }

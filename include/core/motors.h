@@ -30,7 +30,7 @@ inline void moveLift(int power) {
 }
 
 inline void applyStall() {
-	moveLift(20);
+	moveLift(15);
 }
 
 inline void openClaw(int power) {
