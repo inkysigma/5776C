@@ -59,8 +59,7 @@ inline void raiseClaw(int power) {
 }
 
 inline void moveGoal(int power) {
-	motorSet(LeftMobileGoal, -power);
-	motorSet(RightMobileGoal, power);
+	motorSet(MobileGoal, power);
 }
 
 #endif
