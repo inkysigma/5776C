@@ -9,10 +9,9 @@ void writeDebugValue(const char* name, float val) {
 
 void writePots(void* args) {
     while (true) {
-        writeDebugValue("sp", getSwitchLiftPot());
-        delay(400);
-        writeDebugValue("ll", getLeftPot());
-        writeDebugValue("rl", getRightPot());
-        delay(400);
+        writeDebugValue("switch", getSwitchLiftPot());
+        writeDebugValue("left", getLeftPot());
+        writeDebugValue("right", getRightPot());
+        delay(700);
     }
 }

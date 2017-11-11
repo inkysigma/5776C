@@ -12,6 +12,8 @@
 
 #include "main.h"
 #include "core/robot.h"
+#include "JINX.h"
+#include "debug/pot.h"
 
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
@@ -24,6 +26,9 @@
 void initializeIO() {
     watchdogInit();
 }
+
+TaskHandle jinx;
+TaskHandle debug;
 
 /*
  * Runs user initialization code. This function will be started in its own task with the default
@@ -40,4 +45,7 @@ void initializeIO() {
  */
 void initialize() {
   setTeamName("5776C");
+
+  jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
+  debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE / 2, NULL, (TASK_PRIORITY_DEFAULT));
 }
