@@ -62,6 +62,16 @@ void mainOpControl() {
         raiseClaw(100);
     } else if (getLowerClaw()) {
         lowerClaw(100);
+    } else {
+        moveSwitchLift(0);
+    }
+
+    if (getOpenClaw()) {
+        openClaw(100);
+    } else if (getCloseClaw()) {
+        closeClaw(100);
+    } else {
+        stopClaw();
     }
     if (getOpenGoal()) {
       moveGoal(100);
@@ -76,10 +86,8 @@ void mainOpControl() {
 }
 
 void debugOpControl() {
-    /*
-    startLeftPid();
-    startRightPid();
-    */
+    // startLeftPid();
+    // startRightPid();
 }
 
 void operatorControl() {
