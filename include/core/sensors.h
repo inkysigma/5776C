@@ -15,6 +15,7 @@ int getLeftMobilePot();
 int getRightMobilePot();
 
 inline int getSwitchLiftPot() {
+	// return 0;
 	return analogReadCalibrated(SwitchLiftPot);
 }
 

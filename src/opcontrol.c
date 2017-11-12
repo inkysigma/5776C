@@ -44,7 +44,7 @@
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
  */
-void operatorControl() {
+void mainOpControl() {
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn())/4;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -58,7 +58,11 @@ void operatorControl() {
     else {
       moveLift(0);
     }
-
+    if (getRaiseClaw()) {
+        raiseClaw(100);
+    } else if (getLowerClaw()) {
+        lowerClaw(100);
+    }
     if (getOpenGoal()) {
       moveGoal(100);
     }
@@ -69,4 +73,15 @@ void operatorControl() {
       moveGoal(0);
     }
   }
+}
+
+void debugOpControl() {
+    /*
+    startLeftPid();
+    startRightPid();
+    */
+}
+
+void operatorControl() {
+    mainOpControl();
 }
