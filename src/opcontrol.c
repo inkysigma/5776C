@@ -13,8 +13,8 @@
 #include "core/controls.h"
 #include "core/motors.h"
 
-// #include "pid/lift_pid.h"
-// #include "pid/pidlib.h"
+#include "pid/lift_pid.h"
+#include "pid/pidlib.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -82,12 +82,14 @@ void mainOpControl() {
     else {
       moveGoal(0);
     }
+    if (getPIDStart()) {
+        startLeftPid();
+        startRightPid();
+    } else if (getPIDStop()) {
+        stopLeftPid();
+        stopRightPid();
+    }
   }
-}
-
-void debugOpControl() {
-    // startLeftPid();
-    // startRightPid();
 }
 
 void operatorControl() {
