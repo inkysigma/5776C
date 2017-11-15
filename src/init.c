@@ -45,20 +45,14 @@ TaskHandle debug;
  * can be implemented in this task if desired.
  */
 void initialize() {
-<<<<<<< HEAD
-    // initPrimaryGyro(PrimaryGyro);
     imeInitializeAll();
     analogCalibrate(LeftLiftPot);
     analogCalibrate(RightLiftPot);
     setInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
     analogCalibrate(SwitchLiftPot);
-    analogCalibrate(MogoLeftPot);
-    analogCalibrate(MogoRightPot);
-=======
     setTeamName("5776C");
     initPid(*leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, LeftLiftPot);
     initPid(*rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, RightLiftPot);
     jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
     debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE / 2, NULL, (TASK_PRIORITY_DEFAULT));
->>>>>>> ca56013c13a8d9129d5c2eab8e4cd090ff942577
 }
