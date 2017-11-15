@@ -27,6 +27,16 @@ void handleGet(JINX *inStr) {
   message = NULL;
 }
 
+char buffer[100];
+void writeJINXFormat(const char *message, ...) {
+  va_list args;
+  va_start(args, message);
+  sprintf(buffer, message, args);
+  va_end(args);
+
+  writeJINXMessage(buffer);
+}
+
 // Returns positive integer parsed from character buffer
 int parseInt(const char *intString) {
   char digit;

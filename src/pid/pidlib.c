@@ -25,6 +25,10 @@ void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total)
   ref->min_total = min_total;
 }
 
+void incrementTarget(pid* ref, int inc) {
+	ref->target += inc;
+}
+
 void resetPid(pid *config) {
 	// reset the pid accumulator and prev_error
 	config->accumulation = 0;

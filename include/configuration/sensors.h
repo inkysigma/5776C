@@ -5,9 +5,9 @@
 * Analog sensor configuration
 **/
 #define PrimaryGyro 1
-#define LeftLiftPot 3
-#define RightLiftPot 4
-#define SwitchLiftPot 5
+#define LeftLiftPot 2
+#define RightLiftPot 3
+#define SwitchLiftPot 4
 #define MogoLeftPot 6
 #define MogoRightPot 7
 

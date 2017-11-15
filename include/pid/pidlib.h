@@ -36,4 +36,6 @@ extern void setTarget(pid *config, float target);
 extern float pidStep(pid *config);
 extern void waitPid(pid *config);
 
+void incrementTarget(pid* ref, int inc);
+
 #endif

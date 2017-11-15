@@ -5,7 +5,8 @@
 #include "pid/pidlib.h"
 
 void setLiftPidConfig(pid *left, pid *right);
-void startRightPid(int t);
+void setRightLiftTarget(int target);
+void startRightPid();
 void startLeftPid();
 void stopRightPid();
 void stopLeftPid();

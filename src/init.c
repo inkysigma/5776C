@@ -41,9 +41,7 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-    printf("initialized");
     // initPrimaryGyro(PrimaryGyro);
-    taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
     imeInitializeAll();
     analogCalibrate(LeftLiftPot);
     analogCalibrate(RightLiftPot);

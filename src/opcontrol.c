@@ -13,13 +13,11 @@
 #include "configuration/pid/lift.h"
 #include "configuration/robot.h"
 #include "configuration/sensors.h"
-#include "main.h"
-#if DEBUG
-#include "debug/pot.h"
-#endif
 #include "core/controls.h"
 #include "core/motors.h"
 #include "core/sensors.h"
+#include "debug/pot.h"
+#include "main.h"
 #include "main.h"
 #include "ops/build_stack.h"
 #include "ops/motor_ops.h"
@@ -55,16 +53,8 @@
  * even if empty.
  */
 void operatorControl() {
-  printf("This code is working\n");
-  int cone_counter = 0;
-  pid leftConfig, rightConfig;
-  setLiftPidConfig(&leftConfig, &rightConfig);
-  initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
-  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
+  /**int cone_counter = 0;
   while (true) {
-#if DEBUG
-    writeAllPot();
-#endif
     // drive code
     moveDrive(getJoystickLeft(), getJoystickRight());
 
@@ -74,7 +64,7 @@ void operatorControl() {
     } else if (getLowerLift()) {
       moveLift(-100);
     } else {
-      applyStall();
+      moveLift(0);
     }
 
     // Btn6U/D should be assigned to switch lift and functionality
@@ -116,6 +106,21 @@ void operatorControl() {
       }
     } else if (getResetStack()) {
       cone_counter = 0;
+    }
+
+    delay(40);
+  }**/
+  while (true) {
+    // drive code
+    moveDrive(getJoystickLeft(), getJoystickRight());
+
+    // lift control with 5U/D
+    if (joystickGetDigital(1, 5, JOY_UP)) {
+      motorSet(RightLift, 100);
+    } else if (getLowerLift()) {
+      motorSet(RightLift, -100);
+    } else {
+      moveLift(0);
     }
   }
 }

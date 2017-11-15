@@ -1,12 +1,15 @@
 #include "ops/motor_ops.h"
+#include "pid/lift_pid.h"
+#include "util/math.h"
+#include "JINX.h"
 
-void raiseLiftTo(int cone_level, bool stall) {
+void raiseLiftTo(int right_pot, bool stall) {
 	executeUntil({
-		moveLift(80);
-	}, getLeftPot() < CONE_POT_HEIGHT * cone_level + CONE_POT_CONST, 2500);
+		setRightLiftTarget(right_pot);
+	}, !within(getRightPot(), right_pot, 50), 2500);
 
-	printf("		Stopped raising lift at %d which must be greater than %d\n", getLeftPot(),
-		CONE_POT_HEIGHT * cone_level + CONE_POT_CONST);
+	// writeJINXFormat("		Stopped raising lift at %d which must be greater than %d\n", getLeftPot(),
+	// 	left_pot);
 
 	if (stall) {
 		delay(170);
@@ -17,16 +20,15 @@ void raiseLiftTo(int cone_level, bool stall) {
 	}
 }
 
-void lowerLiftTo(int cone_level, bool stall) {
+void lowerLiftTo(int right_pot, bool stall) {
 
 	executeUntil({
-		moveLift(-80);
+		setRightLiftTarget(right_pot);
 	},
-	getLeftPot() > CONE_POT_HEIGHT * cone_level + CONE_POT_CONST,
+	!within(getLeftPot(), right_pot, 50),
 	4000);
 
-	printf("		Stopped lowering lift at %d which must be less than %d\n", getLeftPot(),
-		CONE_POT_HEIGHT * cone_level + CONE_POT_CONST);
+	// writeJINXFormat("		Stopped lowering lift at %d which must be less than %d\n", getLeftPot(), left_pot);
 
 	if (stall) {
 		delay(170);
@@ -44,8 +46,8 @@ void lowerClawPartial(bool stall) {
 	getSwitchLiftPot() < MID_SWITCH_POT,
 	2000);
 
-	printf("		Stopped partially lowering at %d which must be greater than %d\n", getSwitchLiftPot(),
-		MID_SWITCH_POT);
+	// writeJINXFormat("		Stopped partially lowering at %d which must be greater than %d\n", getSwitchLiftPot(),
+	// 	MID_SWITCH_POT);
 
 	if (stall) {
 		raiseClaw(15);
@@ -62,8 +64,8 @@ void raiseClawPartial(bool stall) {
 	getSwitchLiftPot() > MID_SWITCH_POT,
 	2000);
 
-	printf("		Stopped partially raising at %d which must be less than %d\n", getSwitchLiftPot(),
-		MID_SWITCH_POT);
+	// writeJINXFormat("		Stopped partially raising at %d which must be less than %d\n", getSwitchLiftPot(),
+	// 	MID_SWITCH_POT);
 
 	if (stall) {
 		raiseClaw(15);
@@ -97,26 +99,27 @@ void lowerClawFully() {
   executeUntil({
   	lowerClaw(127);
   }, getSwitchLiftPot() < LOW_SWITCH_POT, 4000);
-  printf("		Stopped lowering claw at %d which must be greater than than %d\n", getSwitchLiftPot(),
-		LOW_SWITCH_POT);
+  // writeJINXFormat("		Stopped lowering claw at %d which must be greater than than %d\n", getSwitchLiftPot(),
+	// 	LOW_SWITCH_POT);
 	lowerClaw(0);
 }
 
 void raiseClawFully(bool stall) {
   raiseClaw(127);
   executeUntil({}, getSwitchLiftPot() > POWER_SWITCH_POT, 4000);
-  printf("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
-		POWER_SWITCH_POT);
+  // writeJINXFormat("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
+	// 	POWER_SWITCH_POT);
 	raiseClaw(90);
   executeUntil({}, getSwitchLiftPot() > HIGH_SWITCH_POT, 4000);
   if (stall) {
+
   	lowerClaw(15);
 	}
 	else {
 		raiseClaw(0);
 	}
-  printf("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
-		HIGH_SWITCH_POT);
+  // writeJINXFormat("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
+	// 	HIGH_SWITCH_POT);
 }
 
 void openClawFully() {

@@ -1,52 +1,57 @@
 #include "ops/build_stack.h"
 #include "ops/motor_ops.h"
+#include "JINX.h"
 
 void buildStack(int current_level) {
+
+}
+
+void buildStackHelper(int right_pot) {
 	// start with claw at top and get cone and return to top to dispense
-	printf("	raising lift {\n");
-	raiseLiftTo(current_level, true);
-	printf("	}\n");
+	// // writeJINXSerial("	raising lift {\n");
+	raiseLiftTo(right_pot, true);
+	// // writeJINXSerial("	}\n");
 
-	printf("	lowering claw fully {\n");
+	// // writeJINXSerial("	lowering claw fully {\n");
 	lowerClawPartial(true);
-	printf("	}\n");
+	// writeJINXSerial("	}\n");
 
 
-	printf("	lowering the lift to ground state {\n");
+	// writeJINXSerial("	lowering the lift to ground state {\n");
 	lowerLiftTo(0, false);
-	printf("	}\n");
+	// // writeJINXSerial("	}\n");
 
-	printf("	lowering claw fully {\n");
+	// writeJINXSerial("	lowering claw fully {\n");
 	lowerClawFully();
-	printf("	}\n");
+	// // writeJINXSerial("	}\n");
 
 	delay(750);
 
-	printf("	closing the claw fully {\n");
+	// writeJINXSerial("	closing the claw fully {\n");
 	closeClawFully();
-	printf("	}\n");
+	// writeJINXSerial("	}\n");
 
 	// extend the claw a bit further so that we don't get caugh
-	printf("	raising the claw partially {\n");
+	// writeJINXSerial("	raising the claw partially {\n");
 	raiseClawPartial(true);
-	printf("	}\n");
+	// writeJINXSerial("	}\n");
 
 	// swtich the claw back on top
-	printf("	raising the lift back up {");
-	raiseLiftTo(current_level, true);
-	printf("	}\n");
+	// writeJINXSerial("	raising the lift back up {");
+	raiseLiftTo(right_pot, true);
+	// writeJINXSerial("	}\n");
 
-	printf("	raising claw fully {\n");
+	// writeJINXSerial("	raising claw fully {\n");
 	raiseClawFully(true);
-	printf("	}\n");
+	// writeJINXSerial("	}\n");
 
-	printf("	lowering lift {\n");
-	lowerLiftTo(current_level, true);
-	printf("	}\n");
+	// writeJINXSerial("	lowering lift {\n");
+	lowerLiftTo(right_pot, true);
+	// writeJINXSerial("	}\n");
 
 	delay(400);
 
-	printf("	releasing cone {\n");
+	// writeJINXSerial("	releasing cone {\n");
 	releaseCone(false);
-	printf("	}\n");
+	// writeJINXSerial("	}\n");
 }
