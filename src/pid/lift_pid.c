@@ -15,8 +15,7 @@ pid *leftConfig;
 pid *rightConfig;
 
 // setConfig sets the left and right pid configuration. use initPid(kp, ki, kd,
-// dt, sensor)
-// to create a configuration. pass the reference to config.
+// dt, sensor) to create a configuration. pass the reference to config.
 void setLiftPidConfig(pid *left, pid *right) {
   leftConfig = left;
   rightConfig = right;
@@ -24,7 +23,7 @@ void setLiftPidConfig(pid *left, pid *right) {
 
 void setLiftTargets(int left, int right) {
 	setTarget(leftConfig, left);
-	setTarget(rightConfig, right);
+  setTarget(rightConfig, right);
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should
