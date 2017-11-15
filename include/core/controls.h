@@ -62,4 +62,11 @@ inline bool getResetStack() {
   return joystickGetDigital(1, 8, JOY_RIGHT);
 }
 
+inline bool getPIDStart() {
+    return joystickGetDigital(1, 5, JOY_LEFT);
+}
+
+inline bool getPIDStop() {
+    return joystickGetDigital(1, 5, JOY_RIGHT);
+}
 #endif

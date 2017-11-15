@@ -46,16 +46,16 @@ inline void stopClaw() {
 }
 
 inline void moveSwitchLift(int power) {
-	motorSet(SwitchLift, -power);
+	motorSet(SwitchLift, power);
 }
 
 inline void lowerClaw(int power) {
 	// move the switch lift until it rotates the other way
-	moveSwitchLift(power);
+	moveSwitchLift(-power);
 }
 
 inline void raiseClaw(int power) {
-	moveSwitchLift(-power);
+	moveSwitchLift(power);
 }
 
 inline void moveGoal(int power) {

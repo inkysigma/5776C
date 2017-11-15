@@ -50,9 +50,10 @@ void holdRightLift(void *arguments) {
 }
 
 void startRightPid() {
-  if (rir) {
-    return;
-  }
+    writeJINXMessage("PID is running");
+    if (rir) {
+        return;
+    }
   resetPid(rightConfig);
   rir = true;
   if (!rcreated) {

@@ -13,8 +13,8 @@
 #include "core/controls.h"
 #include "core/motors.h"
 
-// #include "pid/lift_pid.h"
-// #include "pid/pidlib.h"
+#include "pid/lift_pid.h"
+#include "pid/pidlib.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -44,7 +44,7 @@
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
  */
-void operatorControl() {
+void mainOpControl() {
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn())/4;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -58,7 +58,21 @@ void operatorControl() {
     else {
       moveLift(0);
     }
+    if (getRaiseClaw()) {
+        raiseClaw(100);
+    } else if (getLowerClaw()) {
+        lowerClaw(100);
+    } else {
+        moveSwitchLift(0);
+    }
 
+    if (getOpenClaw()) {
+        openClaw(100);
+    } else if (getCloseClaw()) {
+        closeClaw(100);
+    } else {
+        stopClaw();
+    }
     if (getOpenGoal()) {
       moveGoal(100);
     }
@@ -68,5 +82,16 @@ void operatorControl() {
     else {
       moveGoal(0);
     }
+    if (getPIDStart()) {
+        startLeftPid();
+        startRightPid();
+    } else if (getPIDStop()) {
+        stopLeftPid();
+        stopRightPid();
+    }
   }
+}
+
+void operatorControl() {
+    mainOpControl();
 }
