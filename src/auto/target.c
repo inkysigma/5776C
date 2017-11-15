@@ -3,7 +3,7 @@
 #include "core/motors.h"
 #include "util/math.h"
 #include "util/concurrency.h"
-
+/**
 pid *leftLift;
 pid *rightLift;
 pid *leftDrive;
@@ -58,3 +58,4 @@ bool targetSwitchLift(int target, int timeout) {
     return false;
   return true;
 }
+**/

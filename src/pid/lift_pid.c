@@ -6,8 +6,8 @@
 
 bool lir = false;
 bool rir = false;
-bool rcreated = false;
 bool lcreated = false;
+bool rcreated = false;
 TaskHandle leftLiftPid;
 TaskHandle rightLiftPid;
 
@@ -22,7 +22,10 @@ void setLiftPidConfig(pid *left, pid *right) {
   rightConfig = right;
 }
 
-void setRightLiftTarget(int target) { setTarget(rightConfig, target); }
+void setLiftTargets(int left, int right) {
+	setTarget(leftConfig, left);
+	setTarget(rightConfig, right);
+}
 
 // holdLift holds the lift at a specific position using a PID loop. This should
 // target the right side
@@ -60,16 +63,14 @@ void startRightPid() {
 }
 
 void startLeftPid() {
+  if (lir) {
+    return;
+  }
   resetPid(leftConfig);
-  setTarget(leftConfig, getLeftPot());
-	if (lir) {
-		return;
-	}
   lir = true;
   if (!lcreated) {
-    leftLiftPid = taskCreate(holdLeftLift, TASK_DEFAULT_STACK_SIZE, NULL,
+    leftLiftPid = taskCreate(holdLeftLift, TASK_DEFAULT_STACK_SIZE, leftConfig,
                              TASK_PRIORITY_HIGH);
-    lcreated = true;
   } else {
     taskResume(leftLiftPid);
   }
@@ -84,6 +85,9 @@ void stopRightPid() {
 }
 
 void stopLeftPid() {
+  if (!lir) {
+    return;
+  }
   lir = false;
   taskSuspend(leftLiftPid);
 }

@@ -37,6 +37,7 @@
  * exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+ /**
 bool isKill(int current, int target, int time, int max) {
   if (abs(current) < target && time > max) {
     return true;
@@ -131,7 +132,6 @@ void auto1() {
 
 void auto2() {
   int ticks = 1000;
-
   setDrive(ticks);
   rotate(90);
   setDrive(ticks);
@@ -154,4 +154,12 @@ void auto2() {
   setDrive(ticks);
   putDownMobileGoal();
 }
-void autonomous() {}
+
+void straightline() {
+    moveDrive(127, 127);
+    delay(2000);
+    moveDrive(0, 0);
+}*/
+
+void autonomous() {
+}

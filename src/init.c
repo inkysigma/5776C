@@ -11,10 +11,11 @@
  */
 
 #include "main.h"
-#include "configuration/sensors.h"
-#include "core/sensors.h"
+#include "core/robot.h"
 #include "JINX.h"
-
+#include "debug/pot.h"
+#include "pid/lift_pid.h"
+#include "configuration/pid/lift.h"
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
  * VEX Cortex is starting up. As the scheduler is still paused, most API functions will fail.
@@ -26,6 +27,9 @@
 void initializeIO() {
     watchdogInit();
 }
+
+TaskHandle jinx;
+TaskHandle debug;
 
 /*
  * Runs user initialization code. This function will be started in its own task with the default
@@ -41,6 +45,7 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
+<<<<<<< HEAD
     // initPrimaryGyro(PrimaryGyro);
     imeInitializeAll();
     analogCalibrate(LeftLiftPot);
@@ -49,4 +54,11 @@ void initialize() {
     analogCalibrate(SwitchLiftPot);
     analogCalibrate(MogoLeftPot);
     analogCalibrate(MogoRightPot);
+=======
+    setTeamName("5776C");
+    initPid(*leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, LeftLiftPot);
+    initPid(*rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, RightLiftPot);
+    jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
+    debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE / 2, NULL, (TASK_PRIORITY_DEFAULT));
+>>>>>>> ca56013c13a8d9129d5c2eab8e4cd090ff942577
 }

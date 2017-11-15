@@ -7,8 +7,11 @@
   writeJINXData(name, buffer);
 }*/
 
-void writeAllPots() {
-  // writeDebugValue("sw_pot", analogReadCalibrated(SwitchLiftPot));
-  // writeDebugValue("ll_pot", analogReadCalibrated(LeftLiftPot));
-  // writeDebugValue("rl_pot", analogReadCalibrated(RightLiftPot));
+void writePots(void* args) {
+    while (true) {
+        writeDebugValue("switch", getSwitchLiftPot());
+        writeDebugValue("left", getLeftPot());
+        writeDebugValue("right", getRightPot());
+        delay(700);
+    }
 }

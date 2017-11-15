@@ -4,6 +4,6 @@
 #include "core/sensors.h"
 #include "JINX.h"
 
-void writeAllPots();
+void writePots(void* args);
 
 #endif

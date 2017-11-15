@@ -1,9 +1,6 @@
 #include "ops/motor_ops.h"
-#include "pid/lift_pid.h"
-#include "util/math.h"
-#include "JINX.h"
-
-void raiseLiftTo(int right_pot, bool stall) {
+/**
+void raiseLiftTo(int cone_level, bool stall) {
 	executeUntil({
 		setRightLiftTarget(right_pot);
 	}, !within(getRightPot(), right_pot, 50), 2500);
@@ -163,3 +160,4 @@ void syncMogo() {
 		}
 	}
 }
+**/
