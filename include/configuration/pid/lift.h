@@ -8,5 +8,6 @@
 #define RIGHT_KP 1
 #define RIGHT_KI 0.15
 #define RIGHT_KD 0
-#define RIGHT_DT 20//20
+#define RIGHT_DT 20
+
 #endif

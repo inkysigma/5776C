@@ -52,6 +52,7 @@ void releaseCone(bool close) {
 
 
 void lowerClawFully() {
+<<<<<<< HEAD
 	executeUntil({
 		lowerClaw(127);
 	}, getSwitchLiftPot() < LOW_SWITCH_POT, 4000);
@@ -65,6 +66,32 @@ void raiseClawFully() {
 	}, getSwitchLiftPot() > POWER_SWITCH_POT, 4000);
 	raiseClaw(90);
 	executeUntil({}, getSwitchLiftPot() > HIGH_SWITCH_POT, 4000);
+=======
+  executeUntil({
+  	lowerClaw(127);
+  }, getSwitchLiftPot() < LOW_SWITCH_POT, 4000);
+  // writeJINXFormat("		Stopped lowering claw at %d which must be greater than than %d\n", getSwitchLiftPot(),
+	// 	LOW_SWITCH_POT);
+	lowerClaw(0);
+}
+
+void raiseClawFully(bool stall) {
+  raiseClaw(127);
+  executeUntil({}, getSwitchLiftPot() > POWER_SWITCH_POT, 4000);
+  // writeJINXFormat("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
+	// 	POWER_SWITCH_POT);
+	raiseClaw(90);
+  executeUntil({}, getSwitchLiftPot() > HIGH_SWITCH_POT, 4000);
+  if (stall) {
+
+  	lowerClaw(15);
+	}
+	else {
+		raiseClaw(0);
+	}
+  // writeJINXFormat("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
+	// 	HIGH_SWITCH_POT);
+>>>>>>> cdba150aacaea904fd7bbcce47d374ffc279fd95
 }
 
 void openClawFully() {

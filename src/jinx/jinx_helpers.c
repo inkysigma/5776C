@@ -36,36 +36,36 @@ void writeJINXFormat(const char *message, ...) {
   writeJINXMessage(buffer);
 }
 
-// Returns positive integer parsed from character buffer
+//Returns positive integer parsed from character buffer
 int parseInt(const char *intString) {
-  char digit;
+    char digit;
 
-        //Limit to 32 digit integer. Please don't send 32 digit integers
-        char tempStr[33] = "";
+    //Limit to 32 digit integer. Please don't send 32 digit integers
+    char tempStr[33] = "";
 
-        int len = strlen(intString);
+    int len = strlen(intString);
 
-        //Catch empty string
-        if (len == 0) {
+    //Catch empty string
+    if (len == 0) {
+        char errorMessage[100];
+        sprintf(errorMessage, "Error, unable to parse integer: %s", intString);
+        writeJINXData("Error ", errorMessage);
+    }
+
+    for (int i = 0; i < len; i++) {
+        digit = intString[i];
+        if ((digit < '0') || (digit > '9')) {
             char errorMessage[100];
             sprintf(errorMessage, "Error, unable to parse integer: %s", intString);
-            writeJINXData("Error ", errorMessage);
+            writeJINXData("Error", errorMessage);
+            return -1;
         }
 
-        for (int i = 0; i < len; i++) {
-            digit = intString[i];
-            if ((digit < '0') || (digit > '9')) {
-                char errorMessage[100];
-                sprintf(errorMessage, "Error, unable to parse integer: %s", intString);
-                writeJINXData("Error", errorMessage);
-                return -1;
-            }
-
-            tempStr[i] = digit;
-        }
-
-        return atoi(tempStr);
+        tempStr[i] = digit;
     }
+
+    return atoi(tempStr);
+}
 //**************************************************************************
 
 //Example parse. User can and should replace with own body.
