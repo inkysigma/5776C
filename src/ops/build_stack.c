@@ -1,52 +1,83 @@
-#include "ops/build_stack.h"
 #include "ops/motor_ops.h"
+#include "ops/build_stack.h"
 
-void buildStack(int current_level) {
+void buildStackHelper(int right_pot) {
 	// start with claw at top and get cone and return to top to dispense
-	// printf("	raising lift {\n");
-	raiseLiftTo(current_level, true);
-	// printf("	}\n");
+	// // writeJINXSerial("	raising lift {\n");
+	raiseLiftTo(right_pot);
+	// // writeJINXSerial("	}\n");
 
-	// printf("	lowering claw fully {\n");
-	lowerClawPartial(true);
-	// printf("	}\n");
+	// // writeJINXSerial("	lowering claw fully {\n");
+	lowerClawPartial();
+	// writeJINXSerial("	}\n");
 
 
-	// printf("	lowering the lift to ground state {\n");
-	lowerLiftTo(0, false);
-	// printf("	}\n");
+	// writeJINXSerial("	lowering the lift to ground state {\n");
+	lowerLiftTo(0);
+	// // writeJINXSerial("	}\n");
 
-	// printf("	lowering claw fully {\n");
+	// writeJINXSerial("	lowering claw fully {\n");
 	lowerClawFully();
-	// printf("	}\n");
+	// // writeJINXSerial("	}\n");
 
 	delay(750);
 
-	// printf("	closing the claw fully {\n");
+	// writeJINXSerial("	closing the claw fully {\n");
 	closeClawFully();
-	// printf("	}\n");
+	// writeJINXSerial("	}\n");
 
 	// extend the claw a bit further so that we don't get caugh
-	// printf("	raising the claw partially {\n");
-	raiseClawPartial(true);
-	// printf("	}\n");
+	// writeJINXSerial("	raising the claw partially {\n");
+	raiseClawPartial();
+	// writeJINXSerial("	}\n");
 
 	// swtich the claw back on top
-	// printf("	raising the lift back up {");
-	raiseLiftTo(current_level, true);
-	// printf("	}\n");
+	// writeJINXSerial("	raising the lift back up {");
+	raiseLiftTo(right_pot);
+	// writeJINXSerial("	}\n");
 
-	// printf("	raising claw fully {\n");
-	raiseClawFully(true);
-	// printf("	}\n");
+	// writeJINXSerial("	raising claw fully {\n");
+	raiseClawFully();
+	// writeJINXSerial("	}\n");
 
-	// printf("	lowering lift {\n");
-	lowerLiftTo(current_level, true);
-	// printf("	}\n");
+	// writeJINXSerial("	lowering lift {\n");
+	lowerLiftTo(right_pot);
+	// writeJINXSerial("	}\n");
 
 	delay(400);
 
-	// printf("	releasing cone {\n");
+	// writeJINXSerial("	releasing cone {\n");
 	releaseCone(false);
-	// printf("	}\n");
+	// writeJINXSerial("	}\n");
+}
+
+void buildStack(int current_level) {
+	// Lowers claw partially 
+	lowerClawPartial();
+	
+	// Lowers lift 
+	moveLiftTo(0);
+
+	lowerClawFully();
+
+	delay(750);
+
+	closeClawFully();
+
+	// Raises claw partially
+	raiseClawPartial();
+	
+	// Raises lift to current cone level
+	moveLiftTo(current_level);
+
+	// Raise claw fully
+	raiseClawFully();
+
+	// Lowers lift
+	moveLiftTo(current_level);
+
+	delay(400);
+
+	// Releases cone
+	releaseCone(false);
 }

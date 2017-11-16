@@ -37,16 +37,7 @@
  * exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
- /**
-bool isKill(int current, int target, int time, int max) {
-  if (abs(current) < target && time > max) {
-    return true;
-  }
-  return false;
-}
-
-void pickUpCone(int level) {}
-
+/**
 void rotate(int degrees) {
   // Remember to scale the degree value by 1000
   degrees *= 1000;
@@ -97,10 +88,6 @@ void setDrive(int ticks) {
   }
   moveDrive(0, 0);
 }
-
-void pickUpMobileGoal() {}
-
-void putDownMobileGoal() {}
 
 void auto1() {
   // TODO: Implement the actual methods and find the associated values
@@ -159,9 +146,7 @@ void straightline() {
     moveDrive(127, 127);
     delay(2000);
     moveDrive(0, 0);
-}
+}*/
 
 void autonomous() {
-    straightline();
 }
-**/

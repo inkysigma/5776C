@@ -10,10 +10,10 @@
 #define CONE_POT_CONST 20
 #define CONE_RELEASE_CONST 50
 
-#define LOW_SWITCH_POT 3400
-#define HIGH_SWITCH_POT 1770
-#define MID_SWITCH_POT 2950
-#define POWER_SWITCH_POT 2800
+#define LOW_SWITCH_POT 1300
+#define HIGH_SWITCH_POT 200
+#define MID_SWITCH_POT 1000
+#define POWER_SWITCH_POT 800
 
 #define OPEN_CLAW_TIME 80
 #define CLOSE_CLAW_TIME 70
@@ -25,17 +25,18 @@
 #define SLOW_SPEED 50
 #define SYNC_SPEED 15
 
-void raiseLiftTo(int cone_level, bool stall);
-void lowerLiftTo(int cone_level, bool stall);
-void lowerClawPartial(bool stall);
-void raiseClawPartial(bool stall);
-void closeClawFully();
+void moveLiftTo(int cone_level);
+void lowerClawPartial();
+void raiseClawPartial();
 void releaseCone(bool close);
 void lowerClawFully();
-void raiseClawFully(bool stall);
+void raiseClawFully();
+void closeClawFully();
 void openClawFully();
 void moveMogoIn();
 void moveMogoIn();
 void syncMogo();
+
+extern bool claw_open;
 
 #endif

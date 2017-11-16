@@ -7,7 +7,7 @@
 #define PrimaryGyro 1
 #define LeftLiftPot 2
 #define RightLiftPot 3
-#define SwitchLiftPot 5
+#define SwitchLiftPot 4
 
 /**
 * Digital sensor port configuration

@@ -45,6 +45,11 @@ TaskHandle debug;
  * can be implemented in this task if desired.
  */
 void initialize() {
+    imeInitializeAll();
+    analogCalibrate(LeftLiftPot);
+    analogCalibrate(RightLiftPot);
+    setInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
+    analogCalibrate(SwitchLiftPot);
     setTeamName("5776C");
     initPid(*leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, LeftLiftPot);
     initPid(*rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, RightLiftPot);

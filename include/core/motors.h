@@ -7,8 +7,8 @@
 #define LEVEL_CHANGE 30
 
 inline void moveDrive(int left, int right) {
-	motorSet(LeftDrive, left);
-	motorSet(RightDrive, -right);
+	motorSet(LeftDrive, -left);
+	motorSet(RightDrive, right);
 }
 
 inline void rotateDrive(int speed) {
@@ -30,7 +30,7 @@ inline void moveLift(int power) {
 }
 
 inline void applyStall() {
-	moveLift(15);
+	moveLift(5);
 }
 
 inline void openClaw(int power) {

@@ -15,8 +15,7 @@ pid *leftConfig;
 pid *rightConfig;
 
 // setConfig sets the left and right pid configuration. use initPid(kp, ki, kd,
-// dt, sensor)
-// to create a configuration. pass the reference to config.
+// dt, sensor) to create a configuration. pass the reference to config.
 void setLiftPidConfig(pid *left, pid *right) {
   leftConfig = left;
   rightConfig = right;
@@ -24,52 +23,39 @@ void setLiftPidConfig(pid *left, pid *right) {
 
 void setLiftTargets(int left, int right) {
 	setTarget(leftConfig, left);
-	setTarget(rightConfig, right);
+  setTarget(rightConfig, right);
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should
 // target the right side
 void holdLeftLift(void *arguments) {
   float total = 0;
-  char buffer[20];
-  sprintf(buffer, "%f", leftConfig->kp);
-  writeJINXData("lpid_kp", buffer);
   while (lir) {
+    setTarget(leftConfig, getRightPot());
     total = pidStep(leftConfig);
     moveLeftLift(total);
-    sprintf(buffer, "%f", total);
-    writeJINXData("lpid", buffer);
     waitPid(leftConfig);
-    sprintf(buffer, "%f", leftConfig->target - leftConfig->func());
-    writeJINXData("lpid_error", buffer);
   }
 }
 
-// holdRightLift should target some given target. Once the user moves up or
-// down, this task should stop. Once movement stops,
-// this ought to start running
+// holdRightLift should target some given target.
 void holdRightLift(void *arguments) {
   float total = 0;
-  char buffer[20];
   while (rir) {
     total = pidStep(rightConfig);
     moveRightLift(total);
-    sprintf(buffer, "%f", total);
-    writeJINXData("rpid", buffer);
     waitPid(rightConfig);
   }
 }
 
 void startRightPid() {
-    writeJINXMessage("PID is running");
-    if (rir) {
-        return;
-    }
   resetPid(rightConfig);
+  setTarget(rightConfig, getRightPot());
   rir = true;
   if (!rcreated) {
-    rightLiftPid = taskCreate(holdRightLift, TASK_DEFAULT_STACK_SIZE,
-                              rightConfig, TASK_PRIORITY_HIGH);
+    rightLiftPid = taskCreate(holdRightLift, TASK_DEFAULT_STACK_SIZE, NULL,
+                              TASK_PRIORITY_MED);
+    rcreated = true;
   } else {
     taskResume(rightLiftPid);
   }

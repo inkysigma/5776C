@@ -1,76 +1,23 @@
 #include "ops/motor_ops.h"
-/**
-void raiseLiftTo(int cone_level, bool stall) {
-	executeUntil({
-		moveLift(80);
-	}, getLeftPot() < CONE_POT_HEIGHT * cone_level + CONE_POT_CONST, 2500);
-
-	printf("		Stopped raising lift at %d which must be greater than %d\n", getLeftPot(),
-		CONE_POT_HEIGHT * cone_level + CONE_POT_CONST);
-
-	if (stall) {
-		delay(170);
-		applyStall();
-	}
-	else {
-		moveLift(0);
-	}
+void moveLiftTo() {
+	// move lift using pid
 }
 
-void lowerLiftTo(int cone_level, bool stall) {
-
-	executeUntil({
-		moveLift(-80);
-	},
-	getLeftPot() > CONE_POT_HEIGHT * cone_level + CONE_POT_CONST,
-	4000);
-
-	printf("		Stopped lowering lift at %d which must be less than %d\n", getLeftPot(),
-		CONE_POT_HEIGHT * cone_level + CONE_POT_CONST);
-
-	if (stall) {
-		delay(170);
-		applyStall();
-	}
-	else {
-		moveLift(0);
-	}
-}
-
-void lowerClawPartial(bool stall) {
+void lowerClawPartial() {
 	executeUntil({
 		lowerClaw(100);
 	},
 	getSwitchLiftPot() < MID_SWITCH_POT,
 	2000);
-
-	printf("		Stopped partially lowering at %d which must be greater than %d\n", getSwitchLiftPot(),
-		MID_SWITCH_POT);
-
-	if (stall) {
-		raiseClaw(15);
-	}
-	else {
-		moveLift(0);
-	}
 }
 
-void raiseClawPartial(bool stall) {
+void raiseClawPartial() {
 	executeUntil({
 		raiseClaw(127);
 	},
 	getSwitchLiftPot() > MID_SWITCH_POT,
 	2000);
 
-	printf("		Stopped partially raising at %d which must be less than %d\n", getSwitchLiftPot(),
-		MID_SWITCH_POT);
-
-	if (stall) {
-		raiseClaw(15);
-	}
-	else {
-		moveLift(0);
-	}
 }
 
 
@@ -79,6 +26,17 @@ void closeClawFully() {
 	delay(CLOSE_CLAW_TIME);
 	closeClaw(20);
 	delay(30);
+	claw_open = false;
+}
+
+void toggleClaw() {
+	if (claw_open == false) {
+		claw_open = true;
+		openClawFully();
+	} else {
+		claw_open = false;
+		closeClawFully();
+	}
 }
 
 void releaseCone(bool close) {
@@ -94,29 +52,19 @@ void releaseCone(bool close) {
 
 
 void lowerClawFully() {
-  executeUntil({
-  	lowerClaw(127);
-  }, getSwitchLiftPot() < LOW_SWITCH_POT, 4000);
-  printf("		Stopped lowering claw at %d which must be greater than than %d\n", getSwitchLiftPot(),
-		LOW_SWITCH_POT);
+	executeUntil({
+		lowerClaw(127);
+	}, getSwitchLiftPot() < LOW_SWITCH_POT, 4000);
 	lowerClaw(0);
 }
 
-void raiseClawFully(bool stall) {
-  raiseClaw(127);
-  executeUntil({}, getSwitchLiftPot() > POWER_SWITCH_POT, 4000);
-  printf("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
-		POWER_SWITCH_POT);
+void raiseClawFully() {
+	raiseClaw(127);
+	executeUntil({
+		raiseClaw(90);
+	}, getSwitchLiftPot() > POWER_SWITCH_POT, 4000);
 	raiseClaw(90);
-  executeUntil({}, getSwitchLiftPot() > HIGH_SWITCH_POT, 4000);
-  if (stall) {
-  	lowerClaw(15);
-	}
-	else {
-		raiseClaw(0);
-	}
-  printf("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
-		HIGH_SWITCH_POT);
+	executeUntil({}, getSwitchLiftPot() > HIGH_SWITCH_POT, 4000);
 }
 
 void openClawFully() {
@@ -124,6 +72,7 @@ void openClawFully() {
 	delay(OPEN_CLAW_TIME);
 	openClaw(0);
 	delay(40);
+	claw_open = true;
 }
 
 
@@ -160,4 +109,3 @@ void syncMogo() {
 		}
 	}
 }
-**/

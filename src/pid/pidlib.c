@@ -16,12 +16,15 @@ void initPid(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   ref->func = sensor;
 }
 
-void setBounds(pid *ref, int max_int, int min_int, int max_total,
-               int min_total) {
+void setBounds(pid *ref, int max_int, int min_int, int max_total, int min_total) {
   ref->max_int = max_int;
   ref->min_int = min_int;
   ref->max_total = max_total;
   ref->min_total = min_total;
+}
+
+void incrementTarget(pid* ref, int inc) {
+	ref->target += inc;
 }
 
 void resetPid(pid *config) {
@@ -45,13 +48,12 @@ float pidStep(pid *config) {
   float total =
       config->kp * error + config->ki * integral + config->kd * derivative;
 
-  // check if integral has exceeded maximum
   if (integral > config->max_int) {
     integral = config->max_int;
   } else if (integral < config->min_int) {
     integral = config->min_int;
   }
-  // check if the total has exceeded a certain total
+
   if (total > config->max_total) {
     total = config->max_total;
   } else if (total < config->min_total) {

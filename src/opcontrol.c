@@ -44,7 +44,7 @@
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
  */
-void mainOpControl() {
+void opcontrol() {
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn())/4;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -89,9 +89,7 @@ void mainOpControl() {
         stopLeftPid();
         stopRightPid();
     }
-  }
-}
 
-void operatorControl() {
-    mainOpControl();
+    delay(40);
+  }
 }
