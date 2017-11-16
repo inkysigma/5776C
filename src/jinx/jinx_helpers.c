@@ -26,25 +26,9 @@
         message = NULL;
     }
 
-<<<<<<< HEAD
-char buffer[100];
-void writeJINXFormat(const char *message, ...) {
-  va_list args;
-  va_start(args, message);
-  sprintf(buffer, message, args);
-  va_end(args);
-
-  writeJINXMessage(buffer);
-}
-
-// Returns positive integer parsed from character buffer
-int parseInt(const char *intString) {
-  char digit;
-=======
     //Returns positive integer parsed from character buffer
     int parseInt(const char *intString) {
         char digit;
->>>>>>> ca56013c13a8d9129d5c2eab8e4cd090ff942577
 
         //Limit to 32 digit integer. Please don't send 32 digit integers
         char tempStr[33] = "";

@@ -10,11 +10,23 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
+#include "main.h"
+#include "configuration/pid/lift.h"
+#include "auto/build.h"
+
 #include "core/controls.h"
 #include "core/motors.h"
+#include "core/sensors.h"
 
-#include "pid/lift_pid.h"
+#include "pid/lift.h"
 #include "pid/pidlib.h"
+
+#include "util/math.h"
+
+#include "JINX.h"
+
+pid leftConfig;
+pid rightConfig;
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -44,24 +56,33 @@
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
  */
-void opcontrol() {
+void operatorControl() {
+  initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
+  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
+  setLiftPidConfig(&leftConfig, &rightConfig);
+  // startLiftPid();
+  int cones = 0;
   while (true) {
-    int turn = (getJoystickLeftTurn() + getJoystickRightTurn())/4;
+    int turn = (getJoystickLeftTurn() + getJoystickRightTurn())/2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
-
     if (getRaiseLift()) {
-      moveLift(100);
+      moveLift(127);
     }
     else if (getLowerLift()) {
-      moveLift(-100);
+      moveLift(-127);
     }
     else {
-      moveLift(0);
+      if (getRightPot() < 100) {
+        moveLift(0);
+      } else {
+        moveLift(30);
+      }
     }
+
     if (getRaiseClaw()) {
-        raiseClaw(100);
+      raiseSwitchLift(100);
     } else if (getLowerClaw()) {
-        lowerClaw(100);
+      lowerSwitchLift(100);
     } else {
         moveSwitchLift(0);
     }
@@ -73,23 +94,17 @@ void opcontrol() {
     } else {
         stopClaw();
     }
+
     if (getOpenGoal()) {
-      moveGoal(100);
+      buildStack(cones);
+      cones++;
     }
     else if (getRetractGoal()) {
-      moveGoal(-100);
+      cones = 0;
     }
     else {
       moveGoal(0);
     }
-    if (getPIDStart()) {
-        startLeftPid();
-        startRightPid();
-    } else if (getPIDStop()) {
-        stopLeftPid();
-        stopRightPid();
-    }
-
     delay(40);
   }
 }

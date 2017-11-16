@@ -9,10 +9,4 @@
 #define RightLiftPot 3
 #define SwitchLiftPot 4
 
-/**
-* Digital sensor port configuration
-**/
-#define LeftIME 0
-#define RightIME 1
-
 #endif

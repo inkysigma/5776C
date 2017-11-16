@@ -1,17 +1,18 @@
 #include "debug/pot.h"
+#include "configuration/motors.h"
 
-// char buffer[100];
 
-/*void writeDebugValue(const char* name, float val) {
+char buffer[10];
+void writeDebugValue(const char *name, float val) {
   sprintf(buffer, "%f", val);
   writeJINXData(name, buffer);
-}*/
+}
 
-void writePots(void* args) {
-    while (true) {
-        writeDebugValue("switch", getSwitchLiftPot());
-        writeDebugValue("left", getLeftPot());
-        writeDebugValue("right", getRightPot());
-        delay(700);
-    }
+void writePots(void *args) {
+  while (true) {
+    writeDebugValue("switch", getSwitchLiftPot());
+    writeDebugValue("left", getLeftPot());
+    writeDebugValue("right", getRightPot());
+    delay(700);
+  }
 }

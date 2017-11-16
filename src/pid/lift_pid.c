@@ -1,15 +1,13 @@
 #include "JINX.h"
 #include "configuration/tasks.h"
+#include "configuration/motors.h"
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "pid/pidlib.h"
 
-bool lir = false;
-bool rir = false;
-bool lcreated = false;
-bool rcreated = false;
-TaskHandle leftLiftPid;
-TaskHandle rightLiftPid;
+bool liftCreated = false;
+bool liftRunning = true;
+TaskHandle liftPid;
 
 pid *leftConfig;
 pid *rightConfig;
@@ -21,72 +19,42 @@ void setLiftPidConfig(pid *left, pid *right) {
   rightConfig = right;
 }
 
-void setLiftTargets(int left, int right) {
-	setTarget(leftConfig, left);
-  setTarget(rightConfig, right);
+void setLiftTargets(int target) {
+  setTarget(leftConfig, target);
+	setTarget(rightConfig, target);
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should
 // target the right side
 void holdLeftLift(void *arguments) {
   float total = 0;
-  while (lir) {
-    setTarget(leftConfig, getRightPot());
+  char buffer [20];
+  while (liftRunning) {
     total = pidStep(leftConfig);
     moveLeftLift(total);
+    sprintf(buffer, "%f", total);
+    writeJINXData("left_lift", buffer);
+    total = pidStep(rightConfig);
+    sprintf(buffer, "%f", total);
+    writeJINXData("right_lift", buffer);
+    moveRightLift(total);
     waitPid(leftConfig);
   }
 }
 
-// holdRightLift should target some given target.
-void holdRightLift(void *arguments) {
-  float total = 0;
-  while (rir) {
-    total = pidStep(rightConfig);
-    moveRightLift(total);
-    waitPid(rightConfig);
+void startLiftPid() {
+  if (liftCreated) {
+      if (liftRunning) {
+        liftRunning = true;
+        taskResume(liftPid);
+      }
+      return;
   }
+  liftPid = taskCreate(holdLeftLift, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_HIGH);
+  liftCreated = true;
 }
 
-void startRightPid() {
-  resetPid(rightConfig);
-  setTarget(rightConfig, getRightPot());
-  rir = true;
-  if (!rcreated) {
-    rightLiftPid = taskCreate(holdRightLift, TASK_DEFAULT_STACK_SIZE, NULL,
-                              TASK_PRIORITY_MED);
-    rcreated = true;
-  } else {
-    taskResume(rightLiftPid);
-  }
-}
-
-void startLeftPid() {
-  if (lir) {
-    return;
-  }
-  resetPid(leftConfig);
-  lir = true;
-  if (!lcreated) {
-    leftLiftPid = taskCreate(holdLeftLift, TASK_DEFAULT_STACK_SIZE, leftConfig,
-                             TASK_PRIORITY_HIGH);
-  } else {
-    taskResume(leftLiftPid);
-  }
-}
-
-void stopRightPid() {
-  if (!rir) {
-    return;
-  }
-  rir = false;
-  taskSuspend(rightLiftPid);
-}
-
-void stopLeftPid() {
-  if (!lir) {
-    return;
-  }
-  lir = false;
-  taskSuspend(leftLiftPid);
+void stopLiftPid() {
+  taskSuspend(liftPid);
+  liftRunning = false;
 }

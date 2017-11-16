@@ -12,10 +12,9 @@
 
 #include "main.h"
 #include "core/robot.h"
-#include "JINX.h"
 #include "debug/pot.h"
-#include "pid/lift_pid.h"
-#include "configuration/pid/lift.h"
+#include "core/sensors.h"
+#include "JINX.h"
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
  * VEX Cortex is starting up. As the scheduler is still paused, most API functions will fail.
@@ -45,14 +44,11 @@ TaskHandle debug;
  * can be implemented in this task if desired.
  */
 void initialize() {
-    imeInitializeAll();
+    setTeamName("5776C");
     analogCalibrate(LeftLiftPot);
     analogCalibrate(RightLiftPot);
-    setInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
     analogCalibrate(SwitchLiftPot);
-    setTeamName("5776C");
-    initPid(*leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, LeftLiftPot);
-    initPid(*rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, RightLiftPot);
+    setLiftInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
     jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
-    debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE / 2, NULL, (TASK_PRIORITY_DEFAULT));
+    debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
 }

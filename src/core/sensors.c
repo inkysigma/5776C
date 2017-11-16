@@ -2,9 +2,8 @@
 
 int leftInit = 0;
 int rightInit = 0;
-Gyro primaryGyro;
 
-void setInit(int left, int right) {
+void setLiftInit(int left, int right) {
 	leftInit = left;
 	rightInit = right;
 }
@@ -17,6 +16,11 @@ int getRightPot() {
 	return analogReadCalibrated(RightLiftPot) - rightInit;
 }
 
+int getSwitchLiftPot() {
+	return analogReadCalibrated(SwitchLiftPot);
+}
+
+Gyro primaryGyro;
 void initPrimaryGyro(int port) {
 	primaryGyro = gyroInit(port, 0);
 }

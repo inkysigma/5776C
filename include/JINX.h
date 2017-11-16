@@ -57,9 +57,6 @@ void writeJINXSerial(const char *message);
  */
 void writeJINXData(const char *name, const char *value);
 
-
-void writeJINXFormat(const char *message, ...);
-
 /**
  *message: raw string to send. Don't pass newlines.
  *

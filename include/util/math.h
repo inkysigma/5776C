@@ -10,8 +10,24 @@ inline int sgn(float value) {
   return 1;
 }
 
+inline float absf(float a) {
+  return sgn(a) * a;
+}
+
 inline bool within(int a, int b, int tolerance) {
   return abs(a - b) < tolerance;
+}
+
+inline bool withinf(float a, float b, float tolerance) {
+  return absf(a - b) < tolerance;
+}
+
+inline int max(int a, int b) {
+  return a > b ? a : b;
+}
+
+inline int min(int a, int b) {
+  return a > b ? b : a;
 }
 
 #endif
