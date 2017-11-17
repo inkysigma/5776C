@@ -89,7 +89,7 @@ void operatorControl() {
       }
 
       if (getToggleClaw()) {
-        toggleClawOpen();
+        toggleClawOpen(true);
       }
 
       if (getOpenGoal()) {
