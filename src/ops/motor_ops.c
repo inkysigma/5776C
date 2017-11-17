@@ -2,6 +2,8 @@
 #include "ops/motor_ops.h"
 #include "util/math.h"
 
+bool claw_open = false;
+
 void raiseLift(int left, int right, bool stall) {
   executeUntil({ moveLift(100); }, !withinf(0.9 * left, getLeftPot(), 10) &&
                                        !withinf(0.9 * right, getRightPot(), 5),
