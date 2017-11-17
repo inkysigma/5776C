@@ -1,6 +1,7 @@
 #ifndef AUTO_BUILD
 #define AUTO_BUILD
 
-extern void buildStack(int cone_level);
+void buildStack(int cone_level);
+int getAutoBuildRunning();
 
 #endif

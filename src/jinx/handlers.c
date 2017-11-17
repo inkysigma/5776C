@@ -2,7 +2,14 @@
 #include "auto/build.h"
 #include "ops/motor_ops.h"
 
+bool taskRunning = false;
+
+bool getDebugTaskRunning() {
+  return taskRunning;
+}
+
 void parseMessage(JINX *inStr) {
+  taskRunning = true;
   getToken(inStr, 0);
   if (strcmp(inStr->token, "raise") == 0) {
     raiseClaw();
@@ -30,4 +37,10 @@ void parseMessage(JINX *inStr) {
     getToken(inStr, 1);
     buildStack(atoi(inStr->token));
   }
+  else if (strcmp(inStr->token, "reset") == 0) {
+    analogCalibrate(LeftLift);
+    analogCalibrate(RightLift);
+    setLiftInit(analogReadCalibrated(LeftLift), analogReadCalibrated(RightLift));
+  }
+  taskRunning = false;
 }

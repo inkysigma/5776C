@@ -10,9 +10,9 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
-#include "main.h"
-#include "configuration/pid/lift.h"
 #include "auto/build.h"
+#include "configuration/pid/lift.h"
+#include "main.h"
 
 #include "core/controls.h"
 #include "core/motors.h"
@@ -21,8 +21,8 @@
 #include "pid/lift.h"
 #include "pid/pidlib.h"
 
-#include "util/math.h"
 #include "ops/motor_ops.h"
+#include "util/math.h"
 
 #include "JINX.h"
 
@@ -64,45 +64,44 @@ void operatorControl() {
   // startLiftPid();
   int cones = 0;
   while (true) {
-    int turn = (getJoystickLeftTurn() + getJoystickRightTurn())/2.5;
+    int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
-    if (getRaiseLift()) {
-      moveLift(127);
-    }
-    else if (getLowerLift()) {
-      moveLift(-127);
-    }
-    else {
-      if (getRightPot() < 100) {
-        moveLift(0);
+
+    if (!getAutoBuildRunning() && !getDebugTaskRunning()) {
+      if (getRaiseLift()) {
+        moveLift(127);
+      } else if (getLowerLift()) {
+        moveLift(-127);
       } else {
-        moveLift(30);
+        if (getRightPot() < 300) {
+          moveLift(0);
+        } else {
+          moveLift(30);
+        }
       }
-    }
 
-    if (getRaiseClaw()) {
-      raiseSwitchLift(100);
-    } else if (getLowerClaw()) {
-      lowerSwitchLift(100);
-    } else {
-        moveSwitchLift(0);
-    }
+      if (getRaiseClaw()) {
+        raiseSwitchLift(100);
+      } else if (getLowerClaw()) {
+        lowerSwitchLift(100);
+      } else {
+        raiseSwitchLift(0);
+      }
 
-    if (getOpenClaw()) {
+      if (getOpenClaw()) {
         openClawFully();
-    } else if (getCloseClaw()) {
+      } else if (getCloseClaw()) {
         closeClawFully(true);
-    }
+      }
 
-    if (getOpenGoal()) {
-      buildStack(cones);
-      cones++;
-    }
-    else if (getRetractGoal()) {
-      cones = 0;
-    }
-    else {
-      moveGoal(0);
+      if (getOpenGoal()) {
+        buildStack(cones);
+        cones++;
+      } else if (getRetractGoal()) {
+        cones = 0;
+      } else {
+        moveGoal(0);
+      }
     }
     delay(40);
   }
