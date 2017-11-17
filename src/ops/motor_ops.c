@@ -172,6 +172,7 @@ than than %d\n", getSwitchLiftPot(),
   executeUntil({}, getSwitchLiftPot() > HIGH_SWITCH_POT, 4000);
   if (stall) {
 
+<<<<<<< HEAD
         lowerClaw(15);
         }
         else {
@@ -187,41 +188,19 @@ void openClawFully() {
         delay(OPEN_CLAW_TIME);
         openClaw(0);
         delay(40);
+  	lowerClaw(15);
+	}
+	else {
+		raiseClaw(0);
+	}
+  // writeJINXFormat("		Stopped raising claw at %d which must be less than than %d\n", getSwitchLiftPot(),
+	// 	HIGH_SWITCH_POT);
 }
 
-
-void moveMogoOut() {
-        while (getRightMobilePot() < SLOW_ANGLE) {
-                moveGoal(SLOW_SPEED);
-        }
-        while (getRightMobilePot() > OUT_ANGLE) {
-                // motor[RightMobileGoal] = FAST_SPEED;
-                moveGoal(FAST_SPEED);
-        }
-}
-
-void moveMogoIn() {
-        while (getRightMobilePot() > IN_ANGLE) {
-                moveRightMogo(-FAST_SPEED);
-                moveLeftMogo(FAST_SPEED);
-        }
-        moveRightMogo(0);
-        moveLeftMogo(0);
-}
-
-void syncMogo() {
-        while (getRightMobilePot() > IN_ANGLE && getRightMobilePot() > IN_ANGLE)
-{
-                if (getRightMobilePot() > IN_ANGLE) {
-                        moveRightMogo(-SYNC_SPEED);
-                } else {
-                        moveRightMogo(0);
-                }
-                if (getLeftMobilePot() > IN_ANGLE) {
-                        moveLeftMogo(-SYNC_SPEED);
-                } else {
-                        moveLeftMogo(0);
-                }
-        }
-}
-**/
+void openClawFully() {
+	openClaw(90);
+	delay(OPEN_CLAW_TIME);
+	openClaw(0);
+	delay(40);
+	claw_open = true;
+}**/

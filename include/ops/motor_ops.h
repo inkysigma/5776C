@@ -25,15 +25,22 @@
 #define SLOW_SPEED 50
 #define SYNC_SPEED 15
 
+<<<<<<< HEAD
 /**
 void raiseLiftTo(int cone_level, bool stall);
 void lowerLiftTo(int cone_level, bool stall);
 void lowerClawPartial(bool stall);
 void raiseClawPartial(bool stall);
 void closeClawFully();
+=======
+void moveLiftTo(int cone_level);
+void lowerClawPartial();
+void raiseClawPartial();
+>>>>>>> 731ed01cfc8b63877281b40e52c43743a11e8379
 void releaseCone(bool close);
 void lowerClawFully();
-void raiseClawFully(bool stall);
+void raiseClawFully();
+void closeClawFully();
 void openClawFully();
 void moveMogoIn();
 void moveMogoIn();
@@ -46,5 +53,7 @@ void lowerLift();
 void raiseClawPartial(bool stall);
 void openClawFully();
 void closeClawFully(bool stall);
+
+extern bool claw_open;
 
 #endif

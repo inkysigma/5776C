@@ -27,7 +27,7 @@ void handleGet(JINX *inStr) {
   message = NULL;
 }
 
-// Returns positive integer parsed from character buffer
+//Returns positive integer parsed from character buffer
 int parseInt(const char *intString) {
   char digit;
 
