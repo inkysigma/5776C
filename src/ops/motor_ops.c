@@ -46,6 +46,7 @@ void openClawFully() {
   openClaw(127);
   delay(600);
   openClaw(10);
+  claw_open = true;
 }
 
 void closeClawFully(bool stall) {
@@ -53,6 +54,15 @@ void closeClawFully(bool stall) {
   delay(300);
   closeClaw(15);
   delay(40);
+  claw_open = false;
+}
+
+void toggleClawOpen(bool stall) {
+        if (claw_open) {
+                closeClawFully(stall);
+        } else {
+                openClawFully();
+        }
 }
 
 /**

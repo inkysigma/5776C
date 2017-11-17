@@ -14,6 +14,7 @@
 #include "core/robot.h"
 #include "debug/pot.h"
 #include "core/sensors.h"
+#include "ops/motor_ops.h"
 #include "JINX.h"
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
@@ -51,4 +52,5 @@ void initialize() {
     setLiftInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
     jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
     debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
+    openClawFully();
 }
