@@ -17,7 +17,7 @@ int getRightPot() {
 }
 
 int getSwitchLiftPot() {
-	return analogReadCalibrated(SwitchLiftPot);
+	return analogRead(SwitchLiftPot);
 }
 
 Gyro primaryGyro;

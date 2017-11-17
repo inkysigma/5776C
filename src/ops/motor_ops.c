@@ -2,34 +2,40 @@
 #include "ops/motor_ops.h"
 #include "util/math.h"
 
-void raiseLift(int left, int right) {
-  executeUntil({ moveLift(100); }, withinf(0.9 * left, getLeftPot(), 10) &&
-                                       withinf(0.9 * right, getRightPot(), 10),
+void raiseLift(int left, int right, bool stall) {
+  executeUntil({ moveLift(100); }, !withinf(0.9 * left, getLeftPot(), 10) &&
+                                       !withinf(0.9 * right, getRightPot(), 10),
                4000);
   executeUntil({ moveLift(80); }, withinf(left, getLeftPot(), 10) &&
                                        withinf(right, getRightPot(), 10),
                4000);
+  if (stall) {
+    moveLift(40);
+  }
 }
 
 void lowerLift() {
-  executeUntil({ moveLift(-100); },
-               withinf(0, getLeftPot(), 10) && withinf(0, getRightPot(), 10),
+  executeUntil({ moveLift(-40); },
+               !withinf(0, getLeftPot(), 10) && !withinf(0, getRightPot(), 10),
                4000);
 }
 
 void raiseClaw() {
-  executeUntil({ raiseSwitchLift(100); }, getSwitchLiftPot() < 1100, 3000);
-  executeUntil({ raiseSwitchLift(80); }, getSwitchLiftPot() < 1300, 2000);
+  executeUntil({ raiseSwitchLift(100); }, getSwitchLiftPot() < 2800, 3000);
+  executeUntil({ raiseSwitchLift((2985 - getSwitchLiftPot()) * 0.7); }, getSwitchLiftPot() < 2985, 2000);
+  raiseSwitchLift(0);
   writeJINXMessage("finished raising claw");
 }
 
 void lowerClaw() {
-  executeUntil({ lowerSwitchLift(100); }, getSwitchLiftPot() > 0, 4000);
+  executeUntil({ lowerSwitchLift(80); }, getSwitchLiftPot() > 1800, 4000);
+  executeUntil({ lowerSwitchLift((getSwitchLiftPot() - 1700) * 0.6); }, getSwitchLiftPot() > 1760, 4000);
+  raiseSwitchLift(20);
   writeJINXMessage("finished lowering claw");
 }
 
 void raiseClawPartial(bool stall) {
-  executeUntil({ raiseSwitchLift(80); }, getSwitchLiftPot() < 450, 2000);
+  executeUntil({ raiseSwitchLift(80); }, getSwitchLiftPot() < 1900, 2000);
   if (stall) {
     raiseSwitchLift(20);
   }
@@ -37,19 +43,16 @@ void raiseClawPartial(bool stall) {
 }
 
 void openClawFully() {
-  openClaw(80);
-  delay(100);
-  openClaw(25);
+  openClaw(127);
+  delay(600);
+  openClaw(10);
 }
 
 void closeClawFully(bool stall) {
   closeClaw(80);
-  delay(100);
-  if (stall) {
-    closeClaw(20);
-  } else {
-    stopClaw();
-  }
+  delay(300);
+  closeClaw(15);
+  delay(40);
 }
 
 /**

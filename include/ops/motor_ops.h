@@ -41,7 +41,7 @@ void syncMogo();**/
 
 void raiseClaw();
 void lowerClaw();
-void raiseLift(int left, int right);
+void raiseLift(int left, int right, bool stall);
 void lowerLift();
 void raiseClawPartial(bool stall);
 void openClawFully();

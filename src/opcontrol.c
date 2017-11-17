@@ -22,6 +22,7 @@
 #include "pid/pidlib.h"
 
 #include "util/math.h"
+#include "ops/motor_ops.h"
 
 #include "JINX.h"
 
@@ -88,11 +89,9 @@ void operatorControl() {
     }
 
     if (getOpenClaw()) {
-        openClaw(100);
+        openClawFully();
     } else if (getCloseClaw()) {
-        closeClaw(100);
-    } else {
-        stopClaw();
+        closeClawFully(true);
     }
 
     if (getOpenGoal()) {

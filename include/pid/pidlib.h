@@ -29,12 +29,12 @@ typedef struct
 	float target;
 } pid;
 
-extern void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)());
-extern void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total);
-extern void resetPid(pid *config);
-extern void setTarget(pid *config, float target);
-extern float pidStep(pid *config);
-extern void waitPid(pid *config);
+void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)());
+void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total);
+void resetPid(pid *config);
+void setTarget(pid *config, float target);
+float pidStep(pid *config);
+void waitPid(pid *config);
 
 void incrementTarget(pid* ref, int inc);
 

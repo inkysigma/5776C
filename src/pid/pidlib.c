@@ -55,11 +55,6 @@ float pidStep(pid *config) {
 
   config->accumulation = integral;
 
-  sprintf(debug, "%f", config->kp);
-  writeJINXData("kp", debug);
-  sprintf(debug, "%f", error);
-  writeJINXData("error", debug);
-
   float total =
       config->kp * error + config->ki * integral + config->kd * derivative;
 
@@ -72,6 +67,5 @@ float pidStep(pid *config) {
 }
 
 void waitPid(pid *config) {
-  // wait the time of a pid
   delay(config->dt);
 }

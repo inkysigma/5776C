@@ -34,7 +34,7 @@ inline void openClaw(int power) {
 }
 
 inline void closeClaw(int power) {
-	openClaw(-power);
+	motorSet(Claw, power);
 }
 
 inline void stopClaw() {
