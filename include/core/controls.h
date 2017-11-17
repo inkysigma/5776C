@@ -34,39 +34,31 @@ inline bool getLowerClaw() {
   return joystickGetDigital(1, 6, JOY_DOWN);
 }
 
-inline bool getOpenClaw() {
-  return joystickGetDigital(1, 7, JOY_RIGHT);
-}
-
-inline bool getCloseClaw() {
+inline bool getToggleClaw() {
   return joystickGetDigital(1, 7, JOY_DOWN);
 }
 
 inline bool getOpenGoal() {
-  return joystickGetDigital(1, 8, JOY_UP);
+  return joystickGetDigital(1, 7, JOY_UP);
 }
 
 inline bool getRetractGoal() {
-  return joystickGetDigital(1, 8, JOY_DOWN);
+  return joystickGetDigital(1, 7, JOY_LEFT);
 }
 
 inline bool getBuildStack() {
-  return joystickGetDigital(1, 8, JOY_LEFT);
-}
-
-inline bool getDecreaseStack() {
   return joystickGetDigital(1, 8, JOY_DOWN);
 }
 
+inline bool getDecreaseStack() {
+  return joystickGetDigital(1, 8, JOY_LEFT);
+}
+
 inline bool getResetStack() {
+  return joystickGetDigital(1, 8, JOY_UP);
+}
+
+inline bool getIncreaseStack() {
   return joystickGetDigital(1, 8, JOY_RIGHT);
-}
-
-inline bool getPIDStart() {
-    return joystickGetDigital(1, 5, JOY_LEFT);
-}
-
-inline bool getPIDStop() {
-    return joystickGetDigital(1, 5, JOY_RIGHT);
 }
 #endif

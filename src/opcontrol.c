@@ -88,19 +88,27 @@ void operatorControl() {
         raiseSwitchLift(0);
       }
 
-      if (getOpenClaw()) {
-        openClawFully();
-      } else if (getCloseClaw()) {
-        closeClawFully(true);
+      if (getToggleClaw()) {
+        toggleClawOpen();
       }
 
       if (getOpenGoal()) {
-        buildStack(cones);
-        cones++;
+        moveGoal(100);
       } else if (getRetractGoal()) {
-        cones = 0;
+        moveGoal(-100);
       } else {
         moveGoal(0);
+      }
+
+      if (getBuildStack()) {
+        buildStack(cones);
+        cones++;
+      } else if (getIncreaseStack()) {
+        cones++;
+      } else if (getDecreaseStack()) {
+        cones--;
+      } else if (getResetStack()) {
+        cones = 0;
       }
     }
     delay(40);
