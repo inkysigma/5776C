@@ -1,6 +1,6 @@
 #include "ops/motor_ops.h"
-#include "ops/build_stack.h"
-
+#include "auto/build.h"
+/**
 void buildStackHelper(int right_pot) {
 	// start with claw at top and get cone and return to top to dispense
 	// // writeJINXSerial("	raising lift {\n");
@@ -94,11 +94,11 @@ void buildStackHelper(int right_pot) {
 	// writeJINXSerial("	}\n");
 }
 
-void buildStack(int current_level) {
-	// Lowers claw partially 
+void build_stack(int current_level) {
+	// Lowers claw partially
 	lowerClawPartial();
-	
-	// Lowers lift 
+
+	// Lowers lift
 	moveLiftTo(0);
 
 	lowerClawFully();
@@ -109,7 +109,7 @@ void buildStack(int current_level) {
 
 	// Raises claw partially
 	raiseClawPartial();
-	
+
 	// Raises lift to current cone level
 	moveLiftTo(current_level);
 
@@ -123,4 +123,4 @@ void buildStack(int current_level) {
 
 	// Releases cone
 	releaseCone(false);
-}
+}**/

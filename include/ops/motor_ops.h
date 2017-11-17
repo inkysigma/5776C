@@ -25,7 +25,6 @@
 #define SLOW_SPEED 50
 #define SYNC_SPEED 15
 
-<<<<<<< HEAD
 /**
 void raiseLiftTo(int cone_level, bool stall);
 void lowerLiftTo(int cone_level, bool stall);
