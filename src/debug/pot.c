@@ -16,6 +16,7 @@ void writePots(void *args) {
     writeValue("left", getLeftPot());
     writeValue("right", getRightPot());
     writeValue("total", getVertibarPid());
+    writeValue("mogo", analogRead(1));
     delay(700);
   }
 }

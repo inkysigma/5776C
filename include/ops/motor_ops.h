@@ -6,8 +6,8 @@
 #include "util/concurrency.h"
 #include "API.h"
 
-void raiseClaw();
-void lowerClaw();
+void raiseClaw(int pos);
+void lowerClaw(int pos);
 void raiseLift(int left, int right, bool stall);
 void lowerLift();
 void lowerClawPartial();

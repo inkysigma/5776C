@@ -42,11 +42,11 @@ inline bool getToggleClaw() {
   return joystickGetDigital(1, 7, JOY_DOWN);
 }
 
-inline bool getOpenGoal() {
+inline bool getToggleGoal() {
   return joystickGetDigital(1, 7, JOY_UP);
 }
 
-inline bool getRetractGoal() {
+inline bool getBuildStackPartial() {
   return joystickGetDigital(1, 7, JOY_LEFT);
 }
 
