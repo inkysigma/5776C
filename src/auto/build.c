@@ -11,12 +11,14 @@ int leftLower [12] = {0, 0, 0, 20, 70, 300, 350, 650};
 
 int rightLower [12] = {0, 0, 0, 20, 70, 260, 450, 800};
 
-struct {
+struct StackConfig {
   int left;
   int right;
   int left_lower;
   int right_lower;
-} stackConfig;
+};
+
+struct StackConfig stackConfig;
 
 TaskHandle buildStackH;
 

@@ -10,14 +10,17 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
-#include "auto/build.h"
-#include "configuration/pid/lift.h"
-#include "configuration/pid/vertibar.h"
-#include "main.h"
 
+#include "main.h"
 #include "core/controls.h"
 #include "core/motors.h"
 #include "core/sensors.h"
+
+#include "JINX.h"
+
+#include "auto/build.h"
+#include "configuration/pid/lift.h"
+#include "configuration/pid/vertibar.h"
 
 #include "pid/lift.h"
 #include "pid/vertibar.h"
@@ -25,8 +28,6 @@
 
 #include "ops/motor_ops.h"
 #include "util/math.h"
-
-#include "JINX.h"
 
 pid leftConfig;
 pid rightConfig;
@@ -65,8 +66,8 @@ bool isClawPartial = false;
 void operatorControl() {
   initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
   initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
-  initPid(&vertibarConfig, VERT_KP, VERT_KI, VERT_KD, VERT_DT, &getSwitchLiftPot);
-  setLiftPidConfig(&leftConfig, &rightConfig);
+  //initPid(&vertibarConfig, VERT_KP, VERT_KI, VERT_KD, VERT_DT, &getSwitchLiftPot);
+  // setLiftPidConfig(&leftConfig, &rightConfig);
   // startVertibarPid();
   // startLiftPid();
   int cones = 0;
