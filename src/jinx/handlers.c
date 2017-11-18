@@ -11,9 +11,13 @@ void parseMessage(JINX *inStr) {
   taskRunning = true;
   getToken(inStr, 0);
   if (strcmp(inStr->token, "raise") == 0) {
-    raiseClaw();
+    getToken(inStr, 1);
+    int pos = atoi(inStr->token);
+    raiseClaw(pos);
   } else if (strcmp(inStr->token, "lower") == 0) {
-    lowerClaw();
+    getToken(inStr, 2);
+    int pos = atoi(inStr->token);
+    lowerClaw(pos);
   } else if (strcmp(inStr->token, "lower_lift") == 0) {
     lowerLift();
   } else if (strcmp(inStr->token, "raise_lift") == 0) {

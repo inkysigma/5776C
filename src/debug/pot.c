@@ -1,7 +1,6 @@
 #include "debug/pot.h"
 #include "configuration/motors.h"
 #include "pid/pidlib.h"
-#include "pid/vertibar.h"
 #include "main.h"
 
 char buffer [10];
@@ -15,8 +14,7 @@ void writePots(void *args) {
     writeValue("switch", getSwitchLiftPot());
     writeValue("left", getLeftPot());
     writeValue("right", getRightPot());
-    writeValue("total", getVertibarPid());
-    writeValue("mogo", analogRead(1));
+    writeValue("mogo", getSwitchLiftPot());
     delay(700);
   }
 }
