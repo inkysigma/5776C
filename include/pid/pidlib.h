@@ -29,11 +29,24 @@ typedef struct
 	float target;
 } pid;
 
+// initialize a pid struct to the given values. the integral and total output
+// are set by default to 10 and 110 respectively.
 void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)());
+
+// set the max and min values of the integral and total output. this is optional.
 void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total);
+
+// reset the accumulator and previous error of the pid struct. use this to reuse
+// a pid after it has been shut off and the target reset
 void resetPid(pid *config);
+
+// set the target of a pid. may be used continuously to set the target
 void setTarget(pid *config, float target);
+
+// get the pid output after one step. use continuously to power motors
 float pidStep(pid *config);
+
+// wait the time required by the pid configuration
 void waitPid(pid *config);
 
 void incrementTarget(pid* ref, int inc);
