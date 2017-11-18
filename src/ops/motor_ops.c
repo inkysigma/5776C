@@ -44,7 +44,7 @@ void lowerClaw() {
                getSwitchLiftPot() > 1750, 2000);
   executeUntil({ raiseSwitchLift((1750 - getSwitchLiftPot()) * 0.6); },
                getSwitchLiftPot() < 1750, 2000);
-  raiseSwitchLift(20);
+  raiseSwitchLift(10);
 }
 
 void lowerLiftTo(int left, int right) {
@@ -64,7 +64,7 @@ void lowerClawPartial() {
   executeUntil({ raiseSwitchLift((PartialHeight - getSwitchLiftPot()) * 0.3); },
                PartialHeight > getSwitchLiftPot(), 400);
 
-  raiseSwitchLift(20);
+  raiseSwitchLift(10);
 }
 
 void raiseClawPartial(bool stall) {
@@ -73,7 +73,7 @@ void raiseClawPartial(bool stall) {
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); },
                getSwitchLiftPot() > PartialHeight, 700);
   if (stall) {
-    raiseSwitchLift(30);
+    raiseSwitchLift(10);
   }
 }
 
