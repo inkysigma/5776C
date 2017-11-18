@@ -65,6 +65,7 @@ void operatorControl() {
   initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
   initPid(&vertibarConfig, VERT_KP, VERT_KI, VERT_KD, VERT_DT, &getSwitchLiftPot);
   setLiftPidConfig(&leftConfig, &rightConfig);
+  // startVertibarPid();
   // startLiftPid();
   int cones = 0;
   while (true) {
