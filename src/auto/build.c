@@ -11,9 +11,23 @@ int leftLower [12] = {0, 0, 0, 20, 70, 300, 350, 650};
 
 int rightLower [12] = {0, 0, 0, 20, 70, 260, 450, 800};
 
+struct {
+  int left;
+  int right;
+  int left_lower;
+  int right_lower;
+} stackConfig;
+
+TaskHandle buildStackH;
+
 bool autoBuildRunning = false;
 
-void buildStackHelper(int left, int right, int left_lower, int right_lower) {
+void buildStackHelper(void* config) {
+  autoBuildRunning = true;
+  int left = stackConfig.left;
+  int right = stackConfig.right;
+  int left_lower = stackConfig.left_lower;
+  int right_lower = stackConfig.right_lower;
   updateValue("left_height", left);
   updateValue("right_height", right);
   closeClawFully(true);
@@ -32,13 +46,18 @@ void buildStackHelper(int left, int right, int left_lower, int right_lower) {
   moveLift(-127);
   delay(350);
   moveLift(0);
+  autoBuildRunning = false;
 }
 
 void buildStack(int cone_level) {
-  autoBuildRunning = true;
-  buildStackHelper(left[cone_level], right[cone_level],
-    leftLower[cone_level], rightLower[cone_level]);
+  buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
+}
+
+void stopStack() {
   autoBuildRunning = false;
+
+  taskSuspend(buildStackH);
+  taskDelete(buildStackH);
 }
 
 int getAutoBuildRunning() {

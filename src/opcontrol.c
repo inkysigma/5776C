@@ -29,6 +29,8 @@
 pid leftConfig;
 pid rightConfig;
 
+bool isClawPartial = false;
+
 /*
  * Runs the user operator control code. This function will be started in its own
  * task with the
@@ -61,6 +63,7 @@ void operatorControl() {
   initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
   initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
   setLiftPidConfig(&leftConfig, &rightConfig);
+
   // startLiftPid();
   int cones = 0;
   while (true) {
@@ -81,9 +84,14 @@ void operatorControl() {
       }
 
       if (getRaiseClaw()) {
+        isClawPartial = false;
         raiseSwitchLift(100);
       } else if (getLowerClaw()) {
+        isClawPartial = false;
         lowerSwitchLift(100);
+      } else if (getRaiseClawPartial()) {
+        isClawPartial = true;
+        raiseClawPartial(true);
       } else {
         raiseSwitchLift(0);
       }
@@ -109,6 +117,10 @@ void operatorControl() {
         cones--;
       } else if (getResetStack()) {
         cones = 0;
+      }
+    } else {
+      if (getBuildStack()) {
+        stopStack();
       }
     }
     delay(40);

@@ -30,6 +30,10 @@ inline bool getRaiseClaw() {
   return joystickGetDigital(1, 6, JOY_UP);
 }
 
+inline bool getRaiseClawPartial() {
+  return joystickGetDigital(1, 7, JOY_RIGHT);
+}
+
 inline bool getLowerClaw() {
   return joystickGetDigital(1, 6, JOY_DOWN);
 }
