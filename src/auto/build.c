@@ -1,6 +1,7 @@
 #include "JINX.h"
 #include "auto/build.h"
 #include "ops/motor_ops.h"
+#include "util/jinx.h"
 
 int left[12] = {0, 0, 60, 120, 170, 436, 570, 717, 0, 0};
 
@@ -13,6 +14,8 @@ int rightLower [12] = {0, 0, 0, 20, 70, 260, 450, 800};
 bool autoBuildRunning = false;
 
 void buildStackHelper(int left, int right, int left_lower, int right_lower) {
+  updateValue("left_height", left);
+  updateValue("right_height", right);
   closeClawFully(true);
   raiseClawPartial(true);
   raiseLift(left, right, true);

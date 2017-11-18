@@ -6,11 +6,11 @@ bool claw_open = false;
 
 void raiseLift(int left, int right, bool stall) {
   executeUntil({ moveLift(100); }, !withinf(0.9 * left, getLeftPot(), 10) &&
-                                       !withinf(0.9 * right, getRightPot(), 5),
-               4000);
+                                       !withinf(0.9 * right, getRightPot(), 10 ),
+               2000);
   executeUntil({ moveLift(80); }, !withinf(left, getLeftPot(), 10) &&
-                                      !withinf(right, getRightPot(), 5),
-               4000);
+                                      !withinf(right, getRightPot(), 10),
+               2000);
   if (stall) {
     moveLift(40);
   }
@@ -44,23 +44,27 @@ void lowerClaw() {
   raiseSwitchLift(20);
 }
 
-void lowerClawPartial() {
-  executeUntil({
-    lowerSwitchLift(80);
-  }, getSwitchLiftPot() > 2000, 1000);
-  executeUntil({
-    lowerSwitchLift((getSwitchLiftPot() - 1870) * 0.6);
-  }, getSwitchLiftPot() > 1870, 1000);
-  raiseSwitchLift(20);
-}
-
 void lowerLiftTo(int left, int right) {
   executeUntil({ moveLift(-100); }, !withinf(getLeftPot(), left, 5) &&
     !withinf(getRightPot(), right, 5), 2000);
   moveLift(40);
 }
 
+
 const int PartialHeight = 2000;
+void lowerClawPartial() {
+  executeUntil({
+    lowerSwitchLift(80);
+  }, getSwitchLiftPot() > 1.1 * PartialHeight, 1000);
+  executeUntil({
+    lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6);
+  }, getSwitchLiftPot() > PartialHeight, 1000);
+  executeUntil({
+    raiseSwitchLift((PartialHeight - getSwitchLiftPot()) * 0.3);
+  }, PartialHeight > getSwitchLiftPot(), 400);
+  raiseSwitchLift(20);
+}
+
 void raiseClawPartial(bool stall) {
   executeUntil({ raiseSwitchLift(90); }, getSwitchLiftPot() < PartialHeight, 2000);
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); }, getSwitchLiftPot() > PartialHeight, 700);
@@ -72,7 +76,7 @@ void raiseClawPartial(bool stall) {
 void openClawFully() {
   openClaw(127);
   delay(300);
-  openClaw(0);
+  openClaw(20);
   claw_open = true;
 }
 

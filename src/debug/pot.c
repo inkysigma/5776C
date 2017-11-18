@@ -1,5 +1,6 @@
 #include "debug/pot.h"
 #include "configuration/motors.h"
+#include "pid/pidlib.h"
 
 
 char buffer[10];

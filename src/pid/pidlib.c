@@ -7,7 +7,6 @@ void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   // initialize the pid to some constants. for tSensors sensor, pass in
   // an actual sensor like initPid(kp, ki, kd, dt, in1) or
   // also initPid(kp, ki, kd, dt, LeftLiftPot)
-
   ref->kp = kp;
   ref->ki = ki;
   ref->kd = kd;
