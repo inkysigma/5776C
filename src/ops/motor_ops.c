@@ -2,6 +2,7 @@
 #include "JINX.h"
 #include "auto/build.h"
 #include "util/math.h"
+#include "pid/vertibar.h"
 
 bool claw_open = false;
 
@@ -27,6 +28,7 @@ void lowerLift() {
 
 const int RAISED_POSITION = 3300;
 void raiseClaw() {
+  setVertTarget(RAISED_POSITION);
   executeUntil({ raiseSwitchLift(100); },
                getSwitchLiftPot() < 0.9 * RAISED_POSITION, 2000);
   executeUntil(
@@ -39,6 +41,7 @@ void raiseClaw() {
 
 const int LOWERED_POSITION = 1630;
 void lowerClaw() {
+  setVertTarget(LOWERED_POSITION);
   executeUntil({ lowerSwitchLift(80); }, getSwitchLiftPot() > 1770, 4000);
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - 1750) * 0.6); },
                getSwitchLiftPot() > 1750, 2000);
@@ -57,6 +60,7 @@ void lowerLiftTo(int left, int right) {
 
 const int PartialHeight = 2000;
 void lowerClawPartial() {
+  setVertTarget(PartialHeight);
   executeUntil({ lowerSwitchLift(80); },
                getSwitchLiftPot() > 1.1 * PartialHeight, 1000);
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); },
@@ -68,6 +72,7 @@ void lowerClawPartial() {
 }
 
 void raiseClawPartial(bool stall) {
+  setVertTarget(PartialHeight);
   executeUntil({ raiseSwitchLift(90); }, getSwitchLiftPot() < PartialHeight,
                2000);
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); },

@@ -5,6 +5,7 @@
 #include "pid/pidlib.h"
 
 void holdVertibar(void *arguments);
+void setVertTarget(int target);
 void startVertibarPid();
 void stopVertibarPid();
 void setVertibarPidConfig(pid *vertibarPid);

@@ -11,6 +11,10 @@ TaskHandle vertibarPid;
 bool vertibarRunning = false;
 bool vertibarCreated = false;
 
+void setVertTarget(int target) {
+  setTarget(vertibarConfig, target);
+}
+
 void holdVertibar(void *arguments) {
   float total = 0;
   char buffer [20];
