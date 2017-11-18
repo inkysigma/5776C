@@ -15,6 +15,11 @@ void setVertTarget(int target) {
   setTarget(vertibarConfig, target);
 }
 
+void setVertibarPidConfig(pid* vertibar) {
+  vertibarConfig = vertibar;
+}
+
 float getVertibarPid() {
-  return pidStep(vertibarConfig);
+  //return pidStep(vertibarConfig);
+  return 0;
 }
