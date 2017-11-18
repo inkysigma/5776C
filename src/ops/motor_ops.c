@@ -60,10 +60,12 @@ void lowerLiftTo(int left, int right) {
   moveLift(40);
 }
 
+const int PartialHeight = 2000;
 void raiseClawPartial(bool stall) {
-  executeUntil({ raiseSwitchLift(80); }, getSwitchLiftPot() < 1900, 2000);
+  executeUntil({ raiseSwitchLift(90); }, getSwitchLiftPot() < PartialHeight, 2000);
+  executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); }, getSwitchLiftPot() > PartialHeight, 700);
   if (stall) {
-    raiseSwitchLift(20);
+    raiseSwitchLift(25);
   }
 }
 
