@@ -1,5 +1,6 @@
 #ifndef CONCURRENCY_MACRO_CONTROL
 #define CONCURRENCY_MACRO_CONTROL
+#define TASK_PRIORITY_HIGH 4
 
 #define executeUntil(method, condition, timeout) {\
 	long time_macro_keeper = 0; \

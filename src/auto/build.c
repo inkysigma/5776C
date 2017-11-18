@@ -1,15 +1,16 @@
 #include "JINX.h"
+#include "util/concurrency.h"
 #include "auto/build.h"
 #include "ops/motor_ops.h"
 #include "util/jinx.h"
 
-int left[12] = {0, 0, 60, 120, 170, 436, 570, 717, 0, 0};
+int left[12] = {0, 0, 90, 120, 170, 386, 570, 717, 0, 0};
 
-int right[12] = {0, 0, 60, 120, 202, 565, 700, 911, 0, 0};
+int right[12] = {0, 0, 90, 120, 202, 515, 700, 911, 0, 0};
 
-int leftLower [12] = {0, 0, 0, 20, 70, 300, 350, 650};
+int leftLower[12] = {0, 0, 0, 20, 100, 300, 350, 650};
 
-int rightLower [12] = {0, 0, 0, 20, 70, 260, 450, 800};
+int rightLower [12] = {0, 0, 0, 20, 100, 260, 450, 800};
 
 struct StackConfig {
   int left;
@@ -40,19 +41,23 @@ void buildStackHelper(void* config) {
   lowerLiftTo(left_lower, right_lower);
   openClawFully();
   moveLift(100);
-  delay(400);
+  delay(300);
   moveLift(40);
   lowerClawPartial();
   lowerLift();
   lowerClaw();
   moveLift(-127);
-  delay(350);
+  delay(400);
   moveLift(0);
   autoBuildRunning = false;
 }
 
 void buildStack(int cone_level) {
-  buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
+  stackConfig.left = left[cone_level];
+  stackConfig.right = right[cone_level];
+  stackConfig.left_lower = leftLower[cone_level];
+  stackConfig.right_lower = rightLower[cone_level];
+  buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_HIGH);
 }
 
 void stopStack() {

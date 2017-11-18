@@ -72,6 +72,7 @@ void operatorControl() {
   // startVertibarPid();
   // startLiftPid();
   int cones = 0;
+  int build_delay = 0;
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -99,7 +100,8 @@ void operatorControl() {
         isClawPartial = true;
         raiseClawPartial(true);
       } else {
-        raiseSwitchLift(0);
+        if (!isClawPartial)
+          raiseSwitchLift(0);
       }
 
       if (getToggleClaw()) {
@@ -125,8 +127,11 @@ void operatorControl() {
         cones = 0;
       }
     } else {
-      if (getBuildStack()) {
+      if (getBuildStack() && build_delay < 400) {
         stopStack();
+        build_delay = 0;
+      } else {
+        build_delay += 40;
       }
     }
     delay(40);

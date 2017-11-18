@@ -11,7 +11,7 @@ void raiseLift(int left, int right, bool stall) {
                !withinf(0.9 * left, getLeftPot(), 10) &&
                    !withinf(0.9 * right, getRightPot(), 10),
                2000);
-  executeUntil({ moveLift(80); },
+  executeUntil({ moveLift((left - getLeftPot()) * 0.6); },
                !withinf(left, getLeftPot(), 10) &&
                    !withinf(right, getRightPot(), 10),
                2000);
@@ -26,7 +26,7 @@ void lowerLift() {
                4000);
 }
 
-const int RAISED_POSITION = 3300;
+const int RAISED_POSITION = 3260;
 void raiseClaw() {
   setVertTarget(RAISED_POSITION);
   executeUntil({ raiseSwitchLift(100); },
@@ -39,14 +39,14 @@ void raiseClaw() {
   raiseSwitchLift(0);
 }
 
-const int LOWERED_POSITION = 1630;
+const int LOWERED_POSITION = 1660;
 void lowerClaw() {
   setVertTarget(LOWERED_POSITION);
   executeUntil({ lowerSwitchLift(80); }, getSwitchLiftPot() > 1770, 4000);
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - 1750) * 0.6); },
                getSwitchLiftPot() > 1750, 2000);
   executeUntil({ raiseSwitchLift((1750 - getSwitchLiftPot()) * 0.6); },
-               getSwitchLiftPot() < 1750, 2000);
+               getSwitchLiftPot() < 1750, 400);
   raiseSwitchLift(10);
 }
 
@@ -58,7 +58,7 @@ void lowerLiftTo(int left, int right) {
   moveLift(40);
 }
 
-const int PartialHeight = 2000;
+const int PartialHeight = 2120;
 void lowerClawPartial() {
   setVertTarget(PartialHeight);
   executeUntil({ lowerSwitchLift(80); },
@@ -66,9 +66,9 @@ void lowerClawPartial() {
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); },
                getSwitchLiftPot() > PartialHeight, 1000);
   executeUntil({ raiseSwitchLift((PartialHeight - getSwitchLiftPot()) * 0.3); },
-               PartialHeight > getSwitchLiftPot(), 400);
+               PartialHeight > getSwitchLiftPot(), 200);
 
-  raiseSwitchLift(10);
+  raiseSwitchLift(30);
 }
 
 void raiseClawPartial(bool stall) {
@@ -76,9 +76,9 @@ void raiseClawPartial(bool stall) {
   executeUntil({ raiseSwitchLift(90); }, getSwitchLiftPot() < PartialHeight,
                2000);
   executeUntil({ lowerSwitchLift((getSwitchLiftPot() - PartialHeight) * 0.6); },
-               getSwitchLiftPot() > PartialHeight, 700);
+               getSwitchLiftPot() > PartialHeight, 100);
   if (stall) {
-    raiseSwitchLift(10);
+    raiseSwitchLift(30);
   }
 }
 
