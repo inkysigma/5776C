@@ -8,12 +8,10 @@ void setLiftInit(int left, int right);
 int getLeftPot();
 int getRightPot();
 
-
-
 void setMobileGoalInit(int left, int right);
-int getLeftMobilePot();
-int getRightMobilePot();
-
+inline int getMobileGoalPot() {
+  return analogRead(MobileGoalPot);
+}
 int getSwitchLiftPot();
 
 #endif
