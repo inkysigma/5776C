@@ -10,7 +10,7 @@ int right[12] = {0, 0, 90, 120, 202, 515, 700, 911, 0, 0};
 
 int leftLower[12] = {0, 0, 0, 20, 100, 300, 350, 650};
 
-int rightLower [12] = {0, 0, 0, 20, 100, 260, 450, 800};
+int rightLower[12] = {0, 0, 0, 20, 100, 260, 450, 800};
 
 struct StackConfig {
   int left;
@@ -33,6 +33,7 @@ void buildStackHelper(void* config) {
   int right_lower = stackConfig.right_lower;
   updateValue("left_height", left);
   updateValue("right_height", right);
+  // Steps to build the stack
   closeClawFully(true);
   raiseClawPartial(true);
   raiseLift(left, right, true);
