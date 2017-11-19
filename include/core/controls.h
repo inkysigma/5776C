@@ -55,14 +55,18 @@ inline bool getBuildStack() {
 }
 
 inline bool getDecreaseStack() {
-  return joystickGetDigital(1, 8, JOY_LEFT);
+  return joystickGetDigital(2, 8, JOY_LEFT);
 }
 
 inline bool getResetStack() {
-  return joystickGetDigital(1, 8, JOY_UP);
+  return joystickGetDigital(2, 8, JOY_UP);
 }
 
 inline bool getIncreaseStack() {
-  return joystickGetDigital(1, 8, JOY_RIGHT);
+  return joystickGetDigital(2, 8, JOY_RIGHT);
+}
+
+inline bool altGetRaiseLift() {
+  return joystickGetDigital(2, 5, JOY_UP);
 }
 #endif

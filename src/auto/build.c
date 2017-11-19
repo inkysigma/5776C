@@ -1,7 +1,6 @@
 #include "auto/build.h"
 #include "JINX.h"
-#include "ops/auto_ops.h"
-#include "ops/motor_ops.h"
+#include "ops/motors.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
@@ -36,16 +35,16 @@ void buildStackHelper(void *config) {
   autoBuildRunning = true;
   closeClawFully(true);
   raiseClawPartial(true);
-  raiseLift(stackConfig.left, stackConfig.right, true);
-  raiseClawPid(stackConfig.vert);
+  raiseLift(stackConfig.left, stackConfig.right);
+  raiseClaw(stackConfig.vert);
   lowerLiftTo(stackConfig.left_lower, stackConfig.right_lower);
   openClawFully();
-  raiseLift(stackConfig.left, stackConfig.right, true);
+  raiseLift(stackConfig.left, stackConfig.right);
   lowerClawPartial();
   autoBuildRunning = false;
   if (full_lower) {
     lowerLift();
-    lowerClawPid(1750);
+    lowerClaw(1750);
   } else {
     lowerLiftTo(126, 126);
     lowerClaw(1750);

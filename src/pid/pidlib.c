@@ -1,9 +1,11 @@
 #include "pid/pidlib.h"
 #include "util/math.h"
+#if DEBUG
 #include "JINX.h"
 #include "util/jinx.h"
+#endif
 
-void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
+void initPid(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   // initialize the pid to some constants. for tSensors sensor, pass in
   // an actual sensor like initPid(kp, ki, kd, dt, in1) or
   // also initPid(kp, ki, kd, dt, LeftLiftPot)
@@ -20,8 +22,8 @@ void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   ref->func = sensor;
 }
 
-void setBounds(pid *ref, int max_int, int min_int, int max_total,
-               int min_total, int min_der, int max_der) {
+void setBounds(pid *ref, int max_int, int min_int, int max_total, int min_total,
+               int min_der, int max_der) {
   ref->max_int = max_int;
   ref->min_int = min_int;
   ref->max_total = max_total;
@@ -60,6 +62,4 @@ float pidStep(pid *config) {
   return bound(total, config->max_total, config->min_total);
 }
 
-void waitPid(pid *config) {
-  delay(config->dt);
-}
+void waitPid(pid *config) { delay(config->dt); }

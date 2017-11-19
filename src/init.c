@@ -12,14 +12,15 @@
  */
 
 #include "JINX.h"
+#include "configuration/pid/lift.h"
 #include "core/robot.h"
 #include "core/sensors.h"
-#include "pid/lift.h"
 #include "debug/pot.h"
 #include "main.h"
-#include "ops/auto_ops.h"
-#include "ops/motor_ops.h"
-#include "ops/userops.h"
+#include "ops/motors.h"
+#include "ops/user.h"
+#include "pid/lift.h"
+#include "pid/vertibar.h"
 /*
  * Runs pre-initialization code. This function will be started in kernel mode
  * one time while the VEX Cortex is starting up. As the scheduler is still
@@ -52,6 +53,7 @@ TaskHandle flash;
 void initialize() {
   setTeamName("5776C");
   initVertibarPid(0.7, 0.1, 0.2);
+  setLiftPidConfig(LEFT_KP, LEFT_KI, LEFT_KD, RIGHT_KP, RIGHT_KI, RIGHT_KD);
   analogCalibrate(LeftLiftPot);
   analogCalibrate(RightLiftPot);
   analogCalibrate(SwitchLiftPot);

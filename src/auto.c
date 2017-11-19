@@ -13,7 +13,7 @@
 
 #include "core/motors.h"
 #include "main.h"
-#include "ops/motor_ops.h"
+#include "ops/motors.h"
 #include "util/math.h"
 
 /*

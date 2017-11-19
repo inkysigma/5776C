@@ -17,7 +17,7 @@
 #include "main.h"
 #include "util/jinx.h"
 
-#include "ops/userops.h"
+#include "ops/user.h"
 
 #include "JINX.h"
 
@@ -28,10 +28,8 @@
 #include "pid/lift.h"
 #include "pid/pidlib.h"
 
-#include "ops/motor_ops.h"
+#include "ops/motors.h"
 #include "util/math.h"
-
-pid liftConfig;
 
 bool isClawPartial = false;
 
@@ -64,24 +62,16 @@ bool isClawPartial = false;
  * even if empty.
  */
 void operatorControl() {
-  initPid(&liftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
-  setLiftPidConfig(&liftConfig);
   startLiftPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
 
     if (!getAutoBuildRunning() && !getDebugTaskRunning()) {
-      if (getRaiseLift()) {
-        moveLift(127);
+      if (getRaiseLift() || altGetRaiseLift()) {
+        incrementLift();
       } else if (getLowerLift()) {
-        moveLift(-127);
-      } else {
-        if (getRightPot() < 300) {
-          moveLift(0);
-        } else if (!getAutoBuildRunning()) {
-          moveLift(30);
-        }
+        decrementLift();
       }
 
       if (getRaiseClaw()) {
