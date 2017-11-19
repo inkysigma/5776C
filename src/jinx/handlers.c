@@ -2,6 +2,8 @@
 #include "auto/build.h"
 #include "ops/motor_ops.h"
 #include "ops/userops.h"
+#include "ops/auto_ops.h"
+#include "pid/lift.h"
 
 bool taskRunning = false;
 
@@ -13,19 +15,15 @@ void parseMessage(JINX *inStr) {
   if (strcmp(inStr->token, "raise") == 0) {
     getToken(inStr, 1);
     int pos = atoi(inStr->token);
-    raiseClaw(pos);
+    raiseClawPid(pos);
   } else if (strcmp(inStr->token, "lower") == 0) {
-    getToken(inStr, 2);
+    getToken(inStr, 1);
     int pos = atoi(inStr->token);
-    lowerClaw(pos);
-  } else if (strcmp(inStr->token, "lower_lift") == 0) {
-    lowerLift();
-  } else if (strcmp(inStr->token, "raise_lift") == 0) {
+    lowerClawPid(pos);
+  } else if (strcmp(inStr->token, "set_lift") == 0) {
     getToken(inStr, 1);
     int left = atoi(inStr->token);
-    getToken(inStr, 2);
-    int right = atoi(inStr->token);
-    raiseLift(left, right, true);
+    setLiftTarget(left);
   } else if (strcmp(inStr->token, "open") == 0) {
     openClawFully();
   } else if (strcmp(inStr->token, "close") == 0) {

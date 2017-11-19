@@ -4,8 +4,8 @@
 #include "API.h"
 #include "pid/pidlib.h"
 
-void setLiftTargets(int target);
-void setLiftPidConfig(pid *left, pid *right);
+void setLiftTarget(int target);
+void setLiftPidConfig(pid *lift);
 void startLiftPid();
 void stopLiftPid();
 

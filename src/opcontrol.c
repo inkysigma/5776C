@@ -11,10 +11,11 @@
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
 
-#include "main.h"
 #include "core/controls.h"
 #include "core/motors.h"
 #include "core/sensors.h"
+#include "main.h"
+#include "util/jinx.h"
 
 #include "ops/userops.h"
 
@@ -30,8 +31,7 @@
 #include "ops/motor_ops.h"
 #include "util/math.h"
 
-pid leftConfig;
-pid rightConfig;
+pid liftConfig;
 
 bool isClawPartial = false;
 
@@ -64,13 +64,9 @@ bool isClawPartial = false;
  * even if empty.
  */
 void operatorControl() {
-  initPid(&leftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
-  initPid(&rightConfig, RIGHT_KP, RIGHT_KI, RIGHT_KD, RIGHT_DT, &getRightPot);
-  // setLiftPidConfig(&leftConfig, &rightConfig);
-  // setVertibarPidConfig(&vertibarConfig);
-  // startVertibarPid();
-  // startLiftPid();
-  int build_delay = 0;
+  initPid(&liftConfig, LEFT_KP, LEFT_KI, LEFT_KD, LEFT_DT, &getLeftPot);
+  setLiftPidConfig(&liftConfig);
+  startLiftPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -83,7 +79,7 @@ void operatorControl() {
       } else {
         if (getRightPot() < 300) {
           moveLift(0);
-        } else {
+        } else if (!getAutoBuildRunning()) {
           moveLift(30);
         }
       }
@@ -107,28 +103,24 @@ void operatorControl() {
       }
 
       if (getToggleGoal()) {
-        toggleGoal();
+        moveGoal(100);
+      } else if (getBuildStackPartial()) {
+        moveGoal(-100);
+      } else {
+        moveGoal(0);
       }
 
-      if (getBuildStackPartial()) {
-        buildPartialStack(getConeCount());
-        incrementConeCount();
-      } else if (getBuildStack()) {
+      if (getBuildStack()) {
         buildStack(getConeCount());
         incrementConeCount();
       } else if (getIncreaseStack()) {
-        incrementConeCount();
+        if (getConeCount() < 14)
+          incrementConeCount();
       } else if (getDecreaseStack()) {
-        decrementConeCount();
+        if (getConeCount() > 0)
+          decrementConeCount();
       } else if (getResetStack()) {
         resetConeCount();
-      }
-    } else {
-      if (getBuildStack() && build_delay > 400 && !getDebugTaskRunning()) {
-        stopStack();
-        build_delay = 0;
-      } else {
-        build_delay += 40;
       }
     }
     delay(40);

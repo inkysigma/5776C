@@ -39,4 +39,7 @@
  */
 
 void autonomous() {
+    moveDrive(127, 127);
+    delay(2000);
+    moveDrive(0, 0);
 }

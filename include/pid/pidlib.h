@@ -17,6 +17,9 @@ typedef struct
 	float min_total;
 	float max_total;
 
+	float max_der;
+	float min_der;
+
 	// delta time in milliseconds
 	float dt;
 
@@ -34,7 +37,8 @@ typedef struct
 void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)());
 
 // set the max and min values of the integral and total output. this is optional.
-void setBounds(pid* ref, int max_int, int min_int, int max_total, int min_total);
+void setBounds(pid *ref, int max_int, int min_int, int max_total,
+               int min_total, int min_der, int max_der);
 
 // reset the accumulator and previous error of the pid struct. use this to reuse
 // a pid after it has been shut off and the target reset

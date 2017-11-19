@@ -3,30 +3,31 @@
 
 #include "configuration/motors.h"
 #include "API.h"
+#include "util/math.h"
 
 #define LEVEL_CHANGE 30
 
 inline void moveDrive(int left, int right) {
-	motorSet(LeftDrive, left);
-	motorSet(RightDrive, -right);
+	motorSet(LeftDrive, bound(left, 127, -127));
+	motorSet(RightDrive, -bound(right, 127, -127));
 }
 
 inline void rotateDrive(int speed) {
-	motorSet(LeftDrive, speed);
-	motorSet(RightDrive, speed);
+	motorSet(LeftDrive, bound(speed, 127, -127));
+	motorSet(RightDrive, bound(speed, 127, -127));
 }
 
 inline void moveLeftLift(int power) {
-	motorSet(LeftLift, power);
+	motorSet(LeftLift, bound(power, 127, -127));
 }
 
 inline void moveRightLift(int power) {
-	motorSet(RightLift, -power);
+	motorSet(RightLift, -bound(power, 127, -127));
 }
 
 inline void moveLift(int power) {
-	moveLeftLift(power);
-	moveRightLift(power);
+	moveLeftLift(bound(power, 127, -127));
+	moveRightLift(bound(power, 127, -127));
 }
 
 inline void openClaw(int power) {
@@ -46,21 +47,21 @@ inline void stallClaw() {
 }
 
 inline void moveSwitchLift(int power) {
-	motorSet(SwitchLift, power);
+	motorSet(SwitchLift, bound(power, 127, -127));
 }
 
 inline void lowerSwitchLift(int power) {
 	// move the switch lift until it rotates the other way
-	moveSwitchLift(power);
+	moveSwitchLift(bound(power, 127, -127));
 }
 
 inline void raiseSwitchLift(int power) {
-	moveSwitchLift(-power);
+	moveSwitchLift(-bound(power, 127, -127));
 }
 
 inline void moveGoal(int power) {
-	motorSet(LeftMobileGoal, -power);
-	motorSet(RightMobileGoal, power);
+	motorSet(LeftMobileGoal, -bound(power, 127, -127));
+	motorSet(RightMobileGoal, bound(power, 127, -127));
 }
 
 #endif

@@ -1,7 +1,8 @@
 /** @file init.c
  * @brief File for initialization code
  *
- * This file should contain the user initialize() function and any functions related to it.
+ * This file should contain the user initialize() function and any functions
+ * related to it.
  *
  * Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/
@@ -10,49 +11,57 @@
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
 
-#include "main.h"
+#include "JINX.h"
 #include "core/robot.h"
-#include "debug/pot.h"
 #include "core/sensors.h"
+#include "pid/lift.h"
+#include "debug/pot.h"
+#include "main.h"
+#include "ops/auto_ops.h"
 #include "ops/motor_ops.h"
 #include "ops/userops.h"
-#include "JINX.h"
 /*
- * Runs pre-initialization code. This function will be started in kernel mode one time while the
- * VEX Cortex is starting up. As the scheduler is still paused, most API functions will fail.
+ * Runs pre-initialization code. This function will be started in kernel mode
+ * one time while the VEX Cortex is starting up. As the scheduler is still
+ * paused, most API functions will fail.
  *
- * The purpose of this function is solely to set the default pin modes (pinMode()) and port
- * states (digitalWrite()) of limit switches, push buttons, and solenoids. It can also safely
- * configure a UART port (usartOpen()) but cannot set up an LCD (lcdInit()).
+ * The purpose of this function is solely to set the default pin modes
+ * (pinMode()) and port states (digitalWrite()) of limit switches, push buttons,
+ * and solenoids. It can also safely configure a UART port (usartOpen()) but
+ * cannot set up an LCD (lcdInit()).
  */
-void initializeIO() {
-    watchdogInit();
-}
+void initializeIO() { watchdogInit(); }
 
 TaskHandle jinx;
 TaskHandle debug;
 TaskHandle flash;
 
 /*
- * Runs user initialization code. This function will be started in its own task with the default
- * priority and stack size once when the robot is starting up. It is possible that the VEXnet
- * communication link may not be fully established at this time, so reading from the VEX
- * Joystick may fail.
+ * Runs user initialization code. This function will be started in its own task
+ * with the default priority and stack size once when the robot is starting up.
+ * It is possible that the VEXnet communication link may not be fully
+ * established at this time, so reading from the VEX Joystick may fail.
  *
- * This function should initialize most sensors (gyro, encoders, ultrasonics), LCDs, global
- * variables, and IMEs.
+ * This function should initialize most sensors (gyro, encoders, ultrasonics),
+ * LCDs, global variables, and IMEs.
  *
- * This function must exit relatively promptly, or the operatorControl() and autonomous() tasks
- * will not start. An autonomous mode selection menu like the pre_auton() in other environments
- * can be implemented in this task if desired.
+ * This function must exit relatively promptly, or the operatorControl() and
+ * autonomous() tasks will not start. An autonomous mode selection menu like the
+ * pre_auton() in other environments can be implemented in this task if desired.
  */
 void initialize() {
-    setTeamName("5776C");
-    analogCalibrate(LeftLiftPot);
-    analogCalibrate(RightLiftPot);
-    analogCalibrate(SwitchLiftPot);
-    setLiftInit(analogReadCalibrated(LeftLiftPot), analogReadCalibrated(RightLiftPot));
-    jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, (TASK_PRIORITY_DEFAULT));
-    flash = taskCreate(flashLed, TASK_MINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST);
-    openClawFully();
+  setTeamName("5776C");
+  initVertibarPid(0.7, 0.1, 0.2);
+  analogCalibrate(LeftLiftPot);
+  analogCalibrate(RightLiftPot);
+  analogCalibrate(SwitchLiftPot);
+  setLiftInit(analogReadCalibrated(LeftLiftPot),
+              analogReadCalibrated(RightLiftPot));
+  jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
+                    (TASK_PRIORITY_DEFAULT));
+  debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL,
+                     TASK_PRIORITY_DEFAULT);
+  flash =
+      taskCreate(flashLed, TASK_MINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST);
+  openClawFully();
 }

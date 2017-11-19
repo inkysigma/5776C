@@ -39,10 +39,10 @@ void openGoal(void *args) {
 void retractGoal(void *args) {
   executeUntil({
     moveGoal(-100);
-  }, !withinf(getMobileGoalPot(), 275, 10) && getMobileGoalPot() > 230, 2000);
+  }, !withinf(getMobileGoalPot(), 300, 10) && getMobileGoalPot() > 230, 2000);
   executeUntil( {
-    moveGoal(-(getMobileGoalPot() - 235) * 0.6);
-  }, !withinf(getMobileGoalPot(), 235, 30) && getMobileGoalPot() > 230, 2000);
+    moveGoal(-(getMobileGoalPot() - 250) * 0.6);
+  }, !withinf(getMobileGoalPot(), 270, 30) && getMobileGoalPot() > 230, 2000);
 	moveGoal(0);
   taskDelete(NULL);
 }
