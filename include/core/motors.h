@@ -17,17 +17,8 @@ inline void rotateDrive(int speed) {
 	motorSet(RightDrive, bound(speed, 127, -127));
 }
 
-inline void moveLeftLift(int power) {
-	motorSet(LeftLift, bound(power, 127, -127));
-}
-
-inline void moveRightLift(int power) {
-	motorSet(RightLift, -bound(power, 127, -127));
-}
-
 inline void moveLift(int power) {
-	moveLeftLift(bound(power, 127, -127));
-	moveRightLift(bound(power, 127, -127));
+	motorSet(Lift, bound(power, 127, -127));
 }
 
 inline void openClaw(int power) {
@@ -47,7 +38,7 @@ inline void stallClaw() {
 }
 
 inline void moveSwitchLift(int power) {
-	motorSet(SwitchLift, bound(power, 127, -127));
+	motorSet(Vertibar, bound(power, 127, -127));
 }
 
 inline void lowerSwitchLift(int power) {

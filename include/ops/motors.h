@@ -8,13 +8,13 @@
 
 void raiseClaw(int pos);
 void lowerClaw(int pos);
-void raiseLift(int left, int right);
+void raiseLift(int lift);
 void lowerLift();
 void lowerClawPartial();
 void raiseClawPartial(bool stall);
 void openClawFully();
 void closeClawFully(bool stall);
-void lowerLiftTo(int left, int right);
+void lowerLiftTo(int lift);
 void toggleClawOpen(bool stall);
 
 extern bool claw_open;

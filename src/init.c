@@ -14,10 +14,10 @@
 #include "core/robot.h"
 #if DEBUG
 #include "JINX.h"
+#include "debug/pot.h"
 #endif
 #include "configuration/pid/lift.h"
 #include "core/sensors.h"
-#include "debug/pot.h"
 #include "main.h"
 #include "ops/motors.h"
 #include "ops/user.h"
@@ -38,6 +38,7 @@ void initializeIO() { watchdogInit(); }
 TaskHandle jinx;
 TaskHandle debug;
 TaskHandle flash;
+Encoder chainEncoder;
 
 /*
  * Runs user initialization code. This function will be started in its own task
@@ -55,12 +56,8 @@ TaskHandle flash;
 void initialize() {
   setTeamName("5776C");
   initVertibarPid(0.7, 0.1, 0.2);
-  setLiftPidConfig(LEFT_KP, LEFT_KI, LEFT_KD, RIGHT_KP, RIGHT_KI, RIGHT_KD);
-  analogCalibrate(LeftLiftPot);
-  analogCalibrate(RightLiftPot);
-  analogCalibrate(SwitchLiftPot);
-  setLiftInit(analogReadCalibrated(LeftLiftPot),
-              analogReadCalibrated(RightLiftPot));
+  setLiftPidConfig(LEFT_KP, LEFT_KI, LEFT_KD);
+  chainEncoder = encoderInit(ChainLiftTop, ChainLiftBottom, false);
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));

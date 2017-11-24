@@ -1,4 +1,5 @@
 #include "auto/build.h"
+#include "core/robot.h"
 #if DEBUG
 #include "JINX.h"
 #endif
@@ -6,22 +7,16 @@
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int left[12] = {0, 0, 140, 212, 222, 386, 484, 509, 573, 686};
+int lift[12] = {0, 0, 140, 212, 222, 386, 484, 509, 573, 686};
 
-int right[12] = {0, 0, 140, 212, 222, 515, 505, 622, 751, 800};
-
-int leftLower[12] = {0, 0, 20, 20, 100, 300, 400, 480, 540, 640};
-
-int rightLower[12] = {0, 0, 20, 20, 100, 260, 425, 600, 520, 870};
+int liftLower[12] = {0};
 
 int vertbarHigh[12] = {3450, 3500, 3445, 3240, 3225,
                        3230, 3225, 3220, 3210, 3205};
 
 typedef struct {
-  int left;
-  int right;
-  int left_lower;
-  int right_lower;
+  int lift;
+  int lift_lower;
   int vert;
 } StackConfig;
 
@@ -38,37 +33,33 @@ void buildStackHelper(void *config) {
   autoBuildRunning = true;
   closeClawFully(true);
   raiseClawPartial(true);
-  raiseLift(stackConfig.left, stackConfig.right);
+  raiseLift(stackConfig.lift);
   raiseClaw(stackConfig.vert);
-  lowerLiftTo(stackConfig.left_lower, stackConfig.right_lower);
+  lowerLiftTo(stackConfig.lift_lower);
   openClawFully();
-  raiseLift(stackConfig.left, stackConfig.right);
+  raiseLift(stackConfig.lift);
   lowerClawPartial();
   autoBuildRunning = false;
   if (full_lower) {
     lowerLift();
     lowerClaw(1750);
   } else {
-    lowerLiftTo(126, 126);
+    lowerLiftTo(stackConfig.lift_lower);
     lowerClaw(1750);
   }
 }
 
 void buildStack(int cone_level) {
-  stackConfig.left = left[cone_level];
-  stackConfig.right = right[cone_level];
-  stackConfig.left_lower = leftLower[cone_level];
-  stackConfig.right_lower = rightLower[cone_level];
+  stackConfig.lift = lift[cone_level];
+  stackConfig.lift_lower = liftLower[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_HIGHEST - 1);
 }
 
 void buildPartialStack(int cone_level) {
-  stackConfig.left = left[cone_level];
-  stackConfig.right = right[cone_level];
-  stackConfig.left_lower = leftLower[cone_level];
-  stackConfig.right_lower = rightLower[cone_level];
+  stackConfig.lift = lift[cone_level];
+  stackConfig.lift_lower = liftLower[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_HIGHEST - 1);

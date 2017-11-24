@@ -14,6 +14,7 @@
 #include "core/controls.h"
 #include "core/motors.h"
 #include "core/sensors.h"
+#include "core/robot.h"
 
 #include "main.h"
 
@@ -65,8 +66,9 @@
  */
 void operatorControl() {
   bool isClawPartial = false;
+  setLiftTarget(getLiftPot());
   startLiftPid();
-  startVertibarPid();
+  // startVertibarPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -76,7 +78,7 @@ void operatorControl() {
         && !getDebugTaskRunning()
 #endif
     ) {
-      if (getRaiseLift() || altGetRaiseLift()) {
+      if (getRaiseLift()) {
         incrementLift();
       } else if (getLowerLift()) {
         decrementLift();

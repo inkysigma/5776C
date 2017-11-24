@@ -69,4 +69,13 @@ inline bool getIncreaseStack() {
 inline bool altGetRaiseLift() {
   return joystickGetDigital(2, 5, JOY_UP);
 }
+
+inline bool altGetLowerLift() {
+  return joystickGetDigital(2, 5, JOY_DOWN);
+}
+
+inline bool getPidToggle() {
+  return joystickGetDigital(2, 7, JOY_DOWN);
+}
+
 #endif

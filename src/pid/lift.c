@@ -1,5 +1,6 @@
 #include "core/motors.h"
 #include "core/sensors.h"
+#include "core/robot.h"
 #include "configuration/tasks.h"
 #include "configuration/motors.h"
 #include "pid/pidlib.h"
@@ -13,42 +14,46 @@ bool liftCreated = false;
 bool liftRunning = true;
 TaskHandle liftPid;
 
-pid lliftConfig;
-pid rliftConfig;
+pid liftConfig;
+
+
+int liftPot() {
+  return getLiftPot();
+}
 
 // setConfig sets the left and right pid configuration. use initPid(kp, ki, kd,
 // dt, sensor) to create a configuration. pass the reference to config.
-void setLiftPidConfig(float lkp, float lki, float lkd, float rkp, float rki, float rkd) {
-  initPid(&lliftConfig, lkp, lki, lkd, 40, &getLeftPot);
-  initPid(&rliftConfig, rkp, rki, rkd, 40, &getRightPot);
+void setLiftPidConfig(float kp, float ki, float kd) {
+  initPid(&liftConfig, kp, ki, kd, 80, &liftPot);
 }
 
-void setLiftTarget(int left, int right) {
-  setTarget(&lliftConfig, left);
-  setTarget(&rliftConfig, right);
+void setLiftTarget(int target) {
+  if (target > 2760) {
+    setTarget(&liftConfig, 2760);
+  } else if (target < 1526) {
+    setTarget(&liftConfig, 1526);
+  } else {
+    setTarget(&liftConfig, target);
+  }
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should
 // target the right side
 void holdLift(void *arguments) {
-  float ltotal = 0;
-  float rtotal = 0;
+  float total = 0;
   while (liftRunning) {
-    ltotal = pidStep(&lliftConfig);
-    rtotal = pidStep(&rliftConfig);
+    total = pidStep(&liftConfig);
     #if DEBUG
     updateValue("right_lift_pid", total);
     #endif
-    moveLeftLift(ltotal);
-    moveRightLift(rtotal);
-    waitPid(&lliftConfig);
+    moveLift(total);
+    waitPid(&liftConfig);
   }
 }
 
 void startLiftPid() {
   if (taskGetState(liftPid) == TASK_SUSPENDED) {
-    resetPid(&lliftConfig);
-    resetPid(&rliftConfig);
+    resetPid(&liftConfig);
     taskResume(liftPid);
     return;
   }
@@ -56,13 +61,19 @@ void startLiftPid() {
 }
 
 void incrementLift() {
-  incrementTarget(&lliftConfig, 40);
-  incrementTarget(&rliftConfig, 40);
+  if (liftConfig.target + 40 > 2760) {
+    setTarget(&liftConfig, 2760);
+  } else {
+    incrementTarget(&liftConfig, 40);
+  }
 }
 
 void decrementLift() {
-  incrementTarget(&lliftConfig, -40);
-  incrementTarget(&rliftConfig, -40);
+  if (liftConfig.target - 40 < 1527) {
+    setTarget(&liftConfig, 1527);
+  } else {
+    incrementTarget(&liftConfig, -40);
+  }
 }
 
 void stopLiftPid() {

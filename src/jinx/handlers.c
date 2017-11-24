@@ -1,3 +1,4 @@
+#include "core/robot.h"
 #if DEBUG
 #include "JINX.h"
 
@@ -19,10 +20,8 @@ void parseMessage(JINX *inStr) {
     raiseClaw(pos);
   } else if (strcmp(inStr->token, "set_lift") == 0) {
     getToken(inStr, 1);
-    int left = atoi(inStr->token);
-    getToken(inStr, 2);
-    int right = atoi(inStr->token);
-    setLiftTarget(left, right);
+    int lift = atoi(inStr->token);
+    setLiftTarget(lift);
   } else if (strcmp(inStr->token, "build") == 0) {
     getToken(inStr, 1);
     buildStack(atoi(inStr->token));

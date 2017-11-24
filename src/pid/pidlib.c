@@ -1,5 +1,6 @@
 #include "pid/pidlib.h"
 #include "util/math.h"
+#include "core/robot.h"
 #if DEBUG
 #include "JINX.h"
 #include "util/jinx.h"

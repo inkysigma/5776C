@@ -1,5 +1,6 @@
 #include "pid/vertibar.h"
 #include "core/motors.h"
+#include "core/robot.h"
 #include "core/sensors.h"
 #include "pid/pidlib.h"
 #if DEBUG
@@ -9,8 +10,12 @@
 pid vertibarPid;
 TaskHandle vertibarHandle;
 
+int switchPot() {
+  return getChainLift();
+}
+
 void initVertibarPid(float kp, float ki, float kd) {
-  initPid(&vertibarPid, kp, ki, kd, 40, &getSwitchLiftPot);
+  initPid(&vertibarPid, kp, ki, kd, 40, &switchPot);
 }
 
 void setVertibarTarget(float target) {
@@ -22,7 +27,7 @@ void vertibarTarget(void *args) {
   while (true) {
     raiseSwitchLift(pidStep(&vertibarPid));
 #if DEBUG
-    updateValue("vertibar_lift", pidStep(&vertibarConfig));
+    updateValue("vertibar_lift", pidStep(&vertibarPid));
 #endif
     waitPid(&vertibarPid);
   }

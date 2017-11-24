@@ -8,7 +8,7 @@ BINDIR=$(ROOT)/bin
 EXTERNALDIR=$(ROOT)/libbin
 
 # Subdirectories to include in the build
-SUBDIRS=src src/core src/pid src/ops src/auto  src/jinx src/debug src/util
+SUBDIRS=src src/pid src/ops src/auto  src/jinx src/debug src/util
 
 # Nothing below here needs to be modified by typical users
 

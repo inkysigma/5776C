@@ -5,9 +5,10 @@
 * Analog sensor configuration
 **/
 #define PrimaryGyro 1
-#define LeftLiftPot 2
-#define RightLiftPot 3
-#define SwitchLiftPot 4
-#define MobileGoalPot 1
+#define LiftPot 2
+#define MobileGoalPot 3
+
+#define ChainLiftTop 1
+#define ChainLiftBottom 2
 
 #endif

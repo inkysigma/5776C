@@ -3,6 +3,6 @@
 
 #include "API.h"
 
-#define DEBUG false
+#define DEBUG 1
 
 #endif

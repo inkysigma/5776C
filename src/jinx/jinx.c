@@ -9,8 +9,8 @@
  *They may of course create helper functions to call, if they desire.
  *An example helper function is defined in the space below
  */
-
-#if DEBUGs
+#include "core/robot.h"
+#if DEBUG
 #include "main.h"
 #include "JINX.h"
 

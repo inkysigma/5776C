@@ -1,4 +1,5 @@
 #include "ops/user.h"
+#include "core/robot.h"
 #if DEBUG
 #include "JINX.h"
 #endif
