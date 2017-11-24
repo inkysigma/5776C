@@ -1,5 +1,7 @@
 #include "auto/build.h"
+#if DEBUG
 #include "JINX.h"
+#endif
 #include "ops/motors.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
@@ -12,7 +14,8 @@ int leftLower[12] = {0, 0, 20, 20, 100, 300, 400, 480, 540, 640};
 
 int rightLower[12] = {0, 0, 20, 20, 100, 260, 425, 600, 520, 870};
 
-int vertbarHigh[12] = {3450, 3500, 3445, 3240, 3225, 3230, 3225, 3220, 3210, 3205};
+int vertbarHigh[12] = {3450, 3500, 3445, 3240, 3225,
+                       3230, 3225, 3220, 3210, 3205};
 
 typedef struct {
   int left;
@@ -72,28 +75,18 @@ void buildPartialStack(int cone_level) {
 }
 
 int cone_count = 0;
-void incrementConeCount() {
-  cone_count++;
-}
+void incrementConeCount() { cone_count++; }
 
-void decrementConeCount() {
-  cone_count--;
-}
+void decrementConeCount() { cone_count--; }
 
-void resetConeCount() {
-  cone_count = 0;
-}
+void resetConeCount() { cone_count = 0; }
 
-int getConeCount() {
-  return cone_count;
-}
+int getConeCount() { return cone_count; }
 
 void stopStack() {
   autoBuildRunning = false;
-  writeJINXMessage("stopping stack building");
   taskSuspend(buildStackH);
   taskDelete(buildStackH);
-  writeJINXMessage("stopped build stack");
 }
 
 int getAutoBuildRunning() { return autoBuildRunning; }

@@ -10,6 +10,7 @@
  *An example helper function is defined in the space below
  */
 
+#if DEBUGs
 #include "main.h"
 #include "JINX.h"
 
@@ -169,3 +170,4 @@ void JINXRun(void* ignore) {
 	}
 
 }
+#endif

@@ -1,3 +1,4 @@
+#if DEBUG
 #include "debug/pot.h"
 #include "configuration/motors.h"
 #include "pid/pidlib.h"
@@ -18,3 +19,4 @@ void writePots(void *args) {
     delay(700);
   }
 }
+#endif

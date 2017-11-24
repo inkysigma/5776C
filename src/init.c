@@ -11,9 +11,11 @@
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
 
-#include "JINX.h"
-#include "configuration/pid/lift.h"
 #include "core/robot.h"
+#if DEBUG
+#include "JINX.h"
+#endif
+#include "configuration/pid/lift.h"
 #include "core/sensors.h"
 #include "debug/pot.h"
 #include "main.h"
@@ -59,10 +61,12 @@ void initialize() {
   analogCalibrate(SwitchLiftPot);
   setLiftInit(analogReadCalibrated(LeftLiftPot),
               analogReadCalibrated(RightLiftPot));
+#if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));
   debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL,
                      TASK_PRIORITY_DEFAULT);
+#endif
   flash =
       taskCreate(flashLed, TASK_MINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST);
   openClawFully();

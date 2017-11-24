@@ -1,5 +1,7 @@
 #include "ops/user.h"
+#if DEBUG
 #include "JINX.h"
+#endif
 #include "auto/build.h"
 #include "configuration/led.h"
 #include "util/concurrency.h"

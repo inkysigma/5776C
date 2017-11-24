@@ -14,12 +14,15 @@
 #include "core/controls.h"
 #include "core/motors.h"
 #include "core/sensors.h"
-#include "main.h"
-#include "util/jinx.h"
 
+#include "main.h"
+
+#include "ops/motors.h"
 #include "ops/user.h"
 
+#if DEBUG
 #include "JINX.h"
+#endif
 
 #include "auto/build.h"
 #include "configuration/pid/lift.h"
@@ -27,11 +30,10 @@
 
 #include "pid/lift.h"
 #include "pid/pidlib.h"
+#include "pid/vertibar.h"
 
-#include "ops/motors.h"
+#include "util/jinx.h"
 #include "util/math.h"
-
-bool isClawPartial = false;
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -62,12 +64,18 @@ bool isClawPartial = false;
  * even if empty.
  */
 void operatorControl() {
+  bool isClawPartial = false;
   startLiftPid();
+  startVertibarPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
 
-    if (!getAutoBuildRunning() && !getDebugTaskRunning()) {
+    if (!getAutoBuildRunning()
+#if DEBUG
+        && !getDebugTaskRunning()
+#endif
+    ) {
       if (getRaiseLift() || altGetRaiseLift()) {
         incrementLift();
       } else if (getLowerLift()) {

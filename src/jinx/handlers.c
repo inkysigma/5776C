@@ -1,4 +1,6 @@
+#if DEBUG
 #include "JINX.h"
+
 #include "auto/build.h"
 #include "ops/motors.h"
 #include "ops/user.h"
@@ -31,3 +33,4 @@ void parseMessage(JINX *inStr) {
   }
   taskRunning = false;
 }
+#endif

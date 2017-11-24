@@ -1,3 +1,4 @@
+#if DEBUG
 #include "JINX.h"
 #include "main.h"
 
@@ -57,3 +58,4 @@ int parseInt(const char *intString) {
 
   return atoi(tempStr);
 }
+#endif

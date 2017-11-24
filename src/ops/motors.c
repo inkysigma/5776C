@@ -1,9 +1,11 @@
 #include "ops/motors.h"
+#if DEBUG
 #include "JINX.h"
+#include "util/jinx.h"
+#endif
 #include "auto/build.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
-#include "util/jinx.h"
 #include "util/math.h"
 
 bool claw_open = false;

@@ -4,14 +4,19 @@
 #include "configuration/sensors.h"
 #include "API.h"
 
-void setLiftInit(int left, int right);
-int getLeftPot();
-int getRightPot();
+inline int getLeftPot() {
+  return analogRead(LeftLiftPot);
+}
 
-void setMobileGoalInit(int left, int right);
+inline int getRightPot() {
+  return analogRead(RightLiftPot);
+}
+
 inline int getMobileGoalPot() {
   return analogRead(MobileGoalPot);
 }
-int getSwitchLiftPot();
+inline int getSwitchLiftPot() {
+  return analogRead(SwitchLiftPot);
+}
 
 #endif

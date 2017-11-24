@@ -3,7 +3,6 @@
 
 #include "API.h"
 
-extern TaskHandle jinx;
-extern TaskHandle debug;
+#define DEBUG false
 
 #endif
