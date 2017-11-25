@@ -22,11 +22,11 @@ inline void moveLift(int power) {
 }
 
 inline void openClaw(int power) {
-	motorSet(Claw, -power);
+	motorSet(Claw, power);
 }
 
 inline void closeClaw(int power) {
-	motorSet(Claw, power);
+	motorSet(Claw, -power);
 }
 
 inline void stopClaw() {
