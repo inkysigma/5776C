@@ -55,9 +55,9 @@ Encoder chainEncoder;
  */
 void initialize() {
   setTeamName("5776C");
-  initVertibarPid(0.7, 0.1, 0.2);
+  initVertibarPid(1.4, 0, 0.2);
   setLiftPidConfig(LEFT_KP, LEFT_KI, LEFT_KD);
-  chainEncoder = encoderInit(ChainLiftTop, ChainLiftBottom, false);
+  chainEncoder = encoderInit(ChainLiftTop, ChainLiftBottom, true);
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));
