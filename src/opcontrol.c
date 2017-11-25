@@ -72,9 +72,6 @@ void operatorControl() {
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
-    if (analogRead(EncoderButton)) {
-        encoderReset(chainEncoder);
-    }
 
     if (!getAutoBuildRunning()
 #if DEBUG
