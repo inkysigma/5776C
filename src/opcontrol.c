@@ -91,6 +91,12 @@ void operatorControl() {
         toggleClawOpen(true);
       }
 
+      if (getRaiseClaw()) {
+        incrementVertibar();
+      } else if (getLowerClaw()) {
+        decrementVertibar();
+      }
+
       if (getToggleGoal()) {
         moveGoal(100);
       } else if (getBuildStackPartial()) {

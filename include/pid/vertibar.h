@@ -6,5 +6,7 @@ void setVertibarTarget(float target);
 void startVertibarPid();
 void stopVertibarPid();
 void resetVertibarPid();
+void incrementVertibar();
+void decrementVertibar();
 
 #endif

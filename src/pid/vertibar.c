@@ -49,3 +49,11 @@ void resetVertibarPid() {
   setTarget(&vertibarPid, getChainLift());
   resetPid(&vertibarPid);
 }
+
+void incrementVertibar() {
+  incrementTarget(&vertibarPid, 5);
+}
+
+void decrementVertibar() {
+  incrementTarget(&vertibarPid, -5);
+}
