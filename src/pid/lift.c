@@ -42,7 +42,7 @@ void setLiftTarget(int target) {
 void holdLift(void *arguments) {
   float total = 0;
   while (liftRunning) {
-    total = pidStep(&liftConfig, false);
+    total = pidStep(&liftConfig);
     #if DEBUG
     updateValue("right_lift_pid", total);
     #endif

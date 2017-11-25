@@ -17,13 +17,13 @@ void raiseLift(int lift) {
 }
 
 void lowerLift() {
-  setLiftTarget(1560);
+  setLiftTarget(0);
   executeUntil({}, !withinf(0, getLiftPot(), 10), 4000);
 }
 
 void raiseClaw(int pos) {
   setVertibarTarget(pos);
-  executeUntil({}, !withinf(getChainLift(), pos, 5), 2500);
+  executeUntil({}, !withinf(getChainLift(), pos, 5), 2000);
 }
 
 void lowerClaw(int pos) {
@@ -31,19 +31,20 @@ void lowerClaw(int pos) {
   executeUntil({}, !withinf(getChainLift(), pos, 10), 1000);
 }
 
-void resetClaw() {
-  stopVertibarPid();
-  raiseSwitchLift(80);
-  updateValue("button", digitalRead(3));
-  executeUntil({updateValue("button", digitalRead(3));}, digitalRead(3), 2000);
-  raiseSwitchLift(0);
-  resetVertibarPid();
-  startVertibarPid();
-}
-
 void lowerLiftTo(int lift) {
   setLiftTarget(lift);
   executeUntil({}, !withinf(getLiftPot(), lift, 5), 1000);
+}
+
+const int PARTIAL_HEIGHT = 2120;
+void lowerClawPartial() {
+  setVertibarTarget(PARTIAL_HEIGHT);
+  executeUntil({}, !withinf(getChainLift(), PARTIAL_HEIGHT, 10), 1000);
+}
+
+void raiseClawPartial(bool stall) {
+  setVertibarTarget(PARTIAL_HEIGHT);
+  executeUntil({}, !withinf(getChainLift(), PARTIAL_HEIGHT, 10), 100);
 }
 
 void openClawFully() {
@@ -67,4 +68,14 @@ void toggleClawOpen(bool stall) {
   } else {
     openClawFully();
   }
+}
+
+void raiseClawPid(int pos) {
+  setVertibarTarget(pos);
+  executeUntil({}, !withinf(getChainLift(), pos, 10), 3000);
+}
+
+void lowerClawPid(int pos) {
+  setVertibarTarget(pos);
+  executeUntil({}, !withinf(getChainLift(), pos, 10), 3000);
 }

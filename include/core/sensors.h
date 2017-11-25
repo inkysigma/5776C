@@ -15,7 +15,7 @@ inline int getMobileGoalPot() {
 extern Encoder chainEncoder;
 
 inline int getChainLift() {
-  return encoderGet(chainEncoder) / 1.5;
+  return encoderGet(chainEncoder);
 }
 
 inline void resetChainLift() {
