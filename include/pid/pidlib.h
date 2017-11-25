@@ -48,7 +48,7 @@ void resetPid(pid *config);
 void setTarget(pid *config, float target);
 
 // get the pid output after one step. use continuously to power motors
-float pidStep(pid *config);
+float pidStep(pid *config, bool reversed);
 
 // wait the time required by the pid configuration
 void waitPid(pid *config);

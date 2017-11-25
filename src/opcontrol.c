@@ -68,12 +68,12 @@ void operatorControl() {
   bool isClawPartial = false;
   setLiftTarget(getLiftPot());
   startLiftPid();
-  // startVertibarPid();
+  startVertibarPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
-    if (digitalRead(EncoderButton)) {
-        encoderReset(chainEncoder);
+    if (!digitalRead(EncoderButton)) {
+        resetChainLift();
     }
 
     if (!getAutoBuildRunning()
@@ -85,21 +85,6 @@ void operatorControl() {
         incrementLift();
       } else if (getLowerLift()) {
         decrementLift();
-        // something
-      }
-
-      if (getRaiseClaw()) {
-        isClawPartial = false;
-        raiseSwitchLift(100);
-      } else if (getLowerClaw()) {
-        isClawPartial = false;
-        lowerSwitchLift(100);
-      } else if (getRaiseClawPartial()) {
-        isClawPartial = true;
-        raiseClawPartial(true);
-      } else {
-        if (!isClawPartial)
-          raiseSwitchLift(0);
       }
 
       if (getToggleClaw()) {

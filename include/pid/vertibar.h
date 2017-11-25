@@ -5,5 +5,6 @@ void initVertibarPid(float kp, float ki, float kd);
 void setVertibarTarget(float target);
 void startVertibarPid();
 void stopVertibarPid();
+void resetVertibarPid();
 
 #endif
