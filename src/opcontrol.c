@@ -85,6 +85,7 @@ void operatorControl() {
         incrementLift();
       } else if (getLowerLift()) {
         decrementLift();
+        // something
       }
 
       if (getRaiseClaw()) {
