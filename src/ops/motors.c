@@ -58,6 +58,7 @@ void closeClawFully(bool stall) {
   delay(200);
   closeClaw(40);
   resetChainLift();
+  resetVertibarPid();
   claw_open = false;
 }
 
