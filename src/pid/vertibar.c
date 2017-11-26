@@ -27,6 +27,7 @@ void vertibarTarget(void *args) {
   while (true) {
     raiseSwitchLift(pidStep(&vertibarPid, true));
 #if DEBUG
+    updateValue("vert_error", getChainLift() - vertibarPid.target);
     updateValue("vert_lift", pidStep(&vertibarPid, true));
 #endif
     waitPid(&vertibarPid);
@@ -51,9 +52,9 @@ void resetVertibarPid() {
 }
 
 void incrementVertibar() {
-  incrementTarget(&vertibarPid, 5);
+  incrementTarget(&vertibarPid, 2);
 }
 
 void decrementVertibar() {
-  incrementTarget(&vertibarPid, -5);
+  incrementTarget(&vertibarPid, -2);
 }

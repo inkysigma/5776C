@@ -68,7 +68,7 @@ void operatorControl() {
   bool isClawPartial = false;
   setLiftTarget(getLiftPot());
   startLiftPid();
-  startVertibarPid();
+  // startVertibarPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -92,9 +92,13 @@ void operatorControl() {
       }
 
       if (getRaiseClaw()) {
-        incrementVertibar();
+        moveSwitchLift(50);
+        // incrementVertibar();
       } else if (getLowerClaw()) {
-        decrementVertibar();
+        moveSwitchLift(-50);
+        // decrementVertibar();
+      } else {
+        moveSwitchLift(0);
       }
 
       if (getToggleGoal()) {

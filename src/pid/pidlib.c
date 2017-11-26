@@ -60,6 +60,10 @@ float pidStep(pid *config, bool reversed) {
   integral = bound(integral, config->max_int, config->min_int);
   derivative = bound(derivative, config->max_der, config->min_der);
 
+  updateValue("error", error);
+  updateValue("integral", integral);
+  updateValue("derivative", derivative);
+
   config->accumulation = integral;
 
   float total =

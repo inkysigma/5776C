@@ -17,6 +17,7 @@
 #include "debug/pot.h"
 #endif
 #include "configuration/pid/lift.h"
+#include "configuration/pid/vertibar.h"
 #include "core/sensors.h"
 #include "main.h"
 #include "ops/motors.h"
@@ -55,7 +56,7 @@ Encoder chainEncoder;
  */
 void initialize() {
   setTeamName("5776C");
-  initVertibarPid(1.4, 0, 0.2);
+  initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LEFT_KP, LEFT_KI, LEFT_KD);
   chainEncoder = encoderInit(ChainLiftTop, ChainLiftBottom, true);
 #if DEBUG
