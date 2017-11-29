@@ -22,16 +22,17 @@ void lowerLift() {
 }
 
 void raiseClaw(int pos) {
-  moveSwitchLift(30);
+  moveSwitchLift(127);
   // setVertibarTarget(pos);
   executeUntil({}, !withinf(getChainLift(), pos, 5), 2500);
   moveSwitchLift(0);
 }
 
 void lowerClaw(int pos) {
-  moveSwitchLift(-30);
+  moveSwitchLift(-127);
   // setVertibarTarget(pos);
   executeUntil({}, !withinf(getChainLift(), pos, 10), 2500);
+  moveSwitchLift(0);
 }
 
 void resetClaw() {

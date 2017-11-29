@@ -11,8 +11,6 @@ void writePots(void *args) {
   while (true) {
     updateValue("lift", getLiftPot());
     updateValue("chain", getChainLift());
-    updateValue("3", analogRead(3));
-    updateValue("4", analogRead(4));
     updateValue("mobile", getMobileGoalPot());
     delay(700);
   }

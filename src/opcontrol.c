@@ -63,7 +63,14 @@
  *
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
- */
+ void testop() {
+     lowerClaw(-230);
+}
+
+/* void operatorControl() {
+     testop();
+ }
+*/
 void operatorControl() {
   bool isClawPartial = false;
   setLiftTarget(getLiftPot());
@@ -72,9 +79,6 @@ void operatorControl() {
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
-    if (!digitalRead(EncoderButton)) {
-        resetChainLift();
-    }
 
     if (!getAutoBuildRunning()
 #if DEBUG
@@ -92,10 +96,10 @@ void operatorControl() {
       }
 
       if (getRaiseClaw()) {
-        moveSwitchLift(50);
+        moveSwitchLift(127);
         // incrementVertibar();
       } else if (getLowerClaw()) {
-        moveSwitchLift(-50);
+        moveSwitchLift(-127);
         // decrementVertibar();
       } else {
         moveSwitchLift(0);

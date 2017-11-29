@@ -24,11 +24,13 @@ void setVertibarTarget(float target) {
 }
 
 void vertibarTarget(void *args) {
+    int vertibarPidVal;
   while (true) {
-    raiseSwitchLift(pidStep(&vertibarPid, true));
+    vertibarPidVal = pidStep(&vertibarPid, true);
+    raiseSwitchLift(vertibarPidVal);
 #if DEBUG
-    updateValue("vert_error", getChainLift() - vertibarPid.target);
-    updateValue("vert_lift", pidStep(&vertibarPid, true));
+    updateValue("vert_error", vertibarPid.target - getChainLift());
+    updateValue("vert_lift", vertibarPidVal);
 #endif
     waitPid(&vertibarPid);
   }
