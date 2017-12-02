@@ -28,25 +28,17 @@ TaskHandle buildStackH;
 bool autoBuildRunning = false;
 
 void buildStackHelper(void *config) {
-  bool full_lower = true;
-  if (config != NULL)
-    full_lower = *((bool *)config);
   autoBuildRunning = true;
   resetClaw();
   closeClawFully(true);
   delay(400);
   setLiftTarget(stackConfig.lift);
   raiseClaw(stackConfig.vert);
+
   // lowerLiftTo(stackConfig.lift_lower);
   openClawFully();
-  // raiseLift(stackConfig.lift);
+  setLiftTarget(stackConfig.lift);
   autoBuildRunning = false;
-  if (full_lower) {
-    // lowerLift();
-    // lowerClaw(1750);
-  } else {
-    // lowerClaw(1750);
-  }
 }
 
 void buildStack(int cone_level) {
