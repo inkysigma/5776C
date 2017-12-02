@@ -6,8 +6,8 @@
 	int time_macro_keeper = 0; \
 	while (condition && time_macro_keeper < timeout) { \
 		method \
-    	delay(40); \
-		time_macro_keeper += 40; \
+    delay(20); \
+		time_macro_keeper += 20; \
 	} \
 }
 

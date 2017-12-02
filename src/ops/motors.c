@@ -10,6 +10,7 @@
 #include "util/math.h"
 
 bool claw_open = false;
+bool claw_running = false;
 
 void raiseLift(int lift) {
   setLiftTarget(lift);
@@ -22,25 +23,22 @@ void lowerLift() {
 }
 
 void raiseClaw(int pos) {
-  moveSwitchLift(127);
-  // setVertibarTarget(pos);
+  setVertibarTarget(pos);
   executeUntil({}, !withinf(getChainLift(), pos, 5), 2500);
   moveSwitchLift(0);
 }
 
 void lowerClaw(int pos) {
-  moveSwitchLift(-127);
-  // setVertibarTarget(pos);
+  setVertibarTarget(pos);
   executeUntil({}, !withinf(getChainLift(), pos, 10), 2500);
   moveSwitchLift(0);
 }
 
 void resetClaw() {
+  writeJINXMessage("reset the claw");
   stopVertibarPid();
   raiseSwitchLift(80);
-  updateValue("button", digitalRead(3));
-  executeUntil({updateValue("button", digitalRead(3));}, digitalRead(3), 2000);
-  raiseSwitchLift(0);
+  executeUntil({}, digitalRead(3) == HIGH, 3000);
   resetVertibarPid();
   startVertibarPid();
 }
@@ -52,21 +50,23 @@ void lowerLiftTo(int lift) {
 
 void openClawFully() {
   openClaw(100);
-  delay(200);
-  openClaw(20);
   claw_open = true;
+  claw_running = true;
 }
 
 void closeClawFully(bool stall) {
   closeClaw(100);
-  delay(200);
-  closeClaw(40);
-  resetChainLift();
-  resetVertibarPid();
   claw_open = false;
+  claw_running = true;
 }
 
 void toggleClawOpen(bool stall) {
+  if (claw_running) {
+    writeJINXMessage("hello");
+    claw_running = false;
+    stopClaw();
+    return;
+  }
   if (claw_open) {
     closeClawFully(stall);
   } else {

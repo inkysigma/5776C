@@ -1,6 +1,7 @@
 #include "core/robot.h"
 #if DEBUG
 #include "JINX.h"
+#include "util/JINX.h"
 
 #include "auto/build.h"
 #include "ops/motors.h"
@@ -19,12 +20,20 @@ void parseMessage(JINX *inStr) {
     getToken(inStr, 1);
     int vert = atoi(inStr->token);
     setVertibarTarget(vert);
+  } else if (strcmp(inStr->token, "sub") == 0) {
+    getToken(inStr, 1);
+    int a = atoi(inStr->token);
+    getToken(inStr, 2);
+    int b = atoi(inStr->token);
+    updateValue("sub_test", a - b);
   } else if (strcmp(inStr->token, "lift") == 0) {
     getToken(inStr, 1);
     int lift = atoi(inStr->token);
     setLiftTarget(lift);
   } else if (strcmp(inStr->token, "vres") == 0) {
-    resetClaw();
+    stopVertibarPid();
+  } else if (strcmp(inStr->token, "sres") == 0) {
+    startVertibarPid();
   } else if (strcmp(inStr->token, "build") == 0) {
     getToken(inStr, 1);
     buildStack(atoi(inStr->token));

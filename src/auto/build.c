@@ -3,15 +3,16 @@
 #if DEBUG
 #include "JINX.h"
 #endif
+#include "pid/lift.h"
 #include "ops/motors.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int lift[12] = {0, 1520, 140, 212, 222, 386, 484, 509, 573, 686};
+int lift[12] = {1520, 1520, 1570, 212, 222, 386, 484, 509, 573, 686};
 
-int liftLower[12] = {0, 540, 1520, 1520};
+int liftLower[12] = {1520, 1520, 1520, 1520, 1520, 1520, 1520, 1520};
 
-int vertbarHigh[12] = {11, 1600, 3445, 3240, 3225,
+int vertbarHigh[12] = {-750, -850, -850, -850, 3225,
                        3230, 3225, 3220, 3210, 3205};
 
 typedef struct {
@@ -31,18 +32,20 @@ void buildStackHelper(void *config) {
   if (config != NULL)
     full_lower = *((bool *)config);
   autoBuildRunning = true;
+  resetClaw();
   closeClawFully(true);
-  raiseLift(stackConfig.lift);
+  delay(400);
+  setLiftTarget(stackConfig.lift);
   raiseClaw(stackConfig.vert);
-  lowerLiftTo(stackConfig.lift_lower);
+  // lowerLiftTo(stackConfig.lift_lower);
   openClawFully();
-  raiseLift(stackConfig.lift);
+  // raiseLift(stackConfig.lift);
   autoBuildRunning = false;
   if (full_lower) {
-    lowerLift();
-    lowerClaw(1750);
+    // lowerLift();
+    // lowerClaw(1750);
   } else {
-    lowerClaw(1750);
+    // lowerClaw(1750);
   }
 }
 
@@ -75,6 +78,7 @@ void stopStack() {
   autoBuildRunning = false;
   taskSuspend(buildStackH);
   taskDelete(buildStackH);
+  writeJINXMessage("Cancelled build");
 }
 
 int getAutoBuildRunning() { return autoBuildRunning; }

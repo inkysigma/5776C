@@ -13,8 +13,8 @@
 
 #include "core/controls.h"
 #include "core/motors.h"
-#include "core/sensors.h"
 #include "core/robot.h"
+#include "core/sensors.h"
 
 #include "main.h"
 
@@ -35,6 +35,8 @@
 
 #include "util/jinx.h"
 #include "util/math.h"
+
+bool vertibarRunning = false;
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -63,19 +65,11 @@
  *
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
- void testop() {
-     lowerClaw(-230);
-}
-
-/* void operatorControl() {
-     testop();
- }
-*/
+ */
 void operatorControl() {
-  bool isClawPartial = false;
   setLiftTarget(getLiftPot());
   startLiftPid();
-  // startVertibarPid();
+  startVertibarPid();
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -93,16 +87,21 @@ void operatorControl() {
 
       if (getToggleClaw()) {
         toggleClawOpen(true);
+        delay(300);
       }
 
+      if (digitalRead(3) == LOW) {
+        resetChainLift();
+        resetVertibarPid();
+        setVertibarTarget(25);
+      }
+
+      updateValue("button", digitalRead(3));
+
       if (getRaiseClaw()) {
-        moveSwitchLift(127);
-        // incrementVertibar();
+        incrementVertibar();
       } else if (getLowerClaw()) {
-        moveSwitchLift(-127);
-        // decrementVertibar();
-      } else {
-        moveSwitchLift(0);
+        decrementVertibar();
       }
 
       if (getToggleGoal()) {
@@ -116,6 +115,7 @@ void operatorControl() {
       if (getBuildStack()) {
         buildStack(getConeCount());
         incrementConeCount();
+        delay(400);
       } else if (getIncreaseStack()) {
         if (getConeCount() < 14)
           incrementConeCount();
@@ -124,6 +124,11 @@ void operatorControl() {
           decrementConeCount();
       } else if (getResetStack()) {
         resetConeCount();
+      }
+    } else {
+      if (getBuildStack()) {
+        stopStack();
+        decrementConeCount();
       }
     }
     delay(40);

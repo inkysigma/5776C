@@ -12,21 +12,6 @@ TaskHandle open;
 TaskHandle close;
 bool goalRunning = true;
 
-void flashLed(void *args) {
-  while (true) {
-    int cones = getConeCount();
-    for (int i = 0; i < cones; i++) {
-      delay(200);
-      digitalWrite(GREEN_LED, 0);
-      digitalWrite(RED_LED, 0);
-      delay(200);
-      digitalWrite(GREEN_LED, 1);
-      digitalWrite(RED_LED, 1);
-    }
-    delay(2000);
-  }
-}
-
 void openGoal(void *args) {
   executeUntil({ moveGoal(100); },
                !withinf(getMobileGoalPot(), 1370, 50) &&

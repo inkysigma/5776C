@@ -48,25 +48,22 @@ void setTarget(pid *config, float target) {
 
 float pidStep(pid *config, bool reversed) {
   // calculate the value derived by a pid
-  float current_pos = config->func();
-  float error;
+  double current_pos = config->func();
+  double error;
   if (!reversed)
     error = config->target - current_pos;
   else
     error = current_pos - config->target;
-  float integral = config->accumulation + error * config->dt / 1000;
-  float derivative = (error - config->prev_error) / (config->dt / 1000);
+  double integral = config->accumulation + error * config->dt / 1000;
+  double derivative = (error - config->prev_error) / (config->dt / 1000);
 
   integral = bound(integral, config->max_int, config->min_int);
   derivative = bound(derivative, config->max_der, config->min_der);
 
-  updateValue("error", error);
-  updateValue("integral", integral);
-  updateValue("derivative", derivative);
-
   config->accumulation = integral;
+  config->prev_error = error;
 
-  float total =
+  double total =
       config->kp * error + config->ki * integral + config->kd * derivative;
   return bound(total, config->max_total, config->min_total);
 }

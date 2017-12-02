@@ -34,11 +34,13 @@
  * and solenoids. It can also safely configure a UART port (usartOpen()) but
  * cannot set up an LCD (lcdInit()).
  */
-void initializeIO() { watchdogInit(); }
+void initializeIO() {
+  pinMode(3, INPUT);
+  watchdogInit();
+}
 
 TaskHandle jinx;
 TaskHandle debug;
-TaskHandle flash;
 Encoder chainEncoder;
 
 /*
@@ -56,16 +58,14 @@ Encoder chainEncoder;
  */
 void initialize() {
   setTeamName("5776C");
+  chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, true);
   initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LEFT_KP, LEFT_KI, LEFT_KD);
-  chainEncoder = encoderInit(ChainLiftTop, ChainLiftBottom, true);
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));
   debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL,
                      TASK_PRIORITY_DEFAULT);
 #endif
-  flash =
-      taskCreate(flashLed, TASK_MINIMAL_STACK_SIZE, NULL, TASK_PRIORITY_LOWEST);
   openClawFully();
 }

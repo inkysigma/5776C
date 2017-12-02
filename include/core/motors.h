@@ -38,7 +38,7 @@ inline void stallClaw() {
 }
 
 inline void moveSwitchLift(int power) {
-	motorSet(Vertibar, bound(power, 127, -127));
+	motorSet(Vertibar, power);
 }
 
 inline void lowerSwitchLift(int power) {

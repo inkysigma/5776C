@@ -17,6 +17,8 @@ int switchPot() {
 
 void initVertibarPid(float kp, float ki, float kd) {
   initPid(&vertibarPid, kp, ki, kd, 120, &switchPot);
+  setVertibarTarget(switchPot());
+  setTarget(&vertibarPid, switchPot());
 }
 
 void setVertibarTarget(float target) {
@@ -24,13 +26,13 @@ void setVertibarTarget(float target) {
 }
 
 void vertibarTarget(void *args) {
-    int vertibarPidVal;
+  float vertibarPidVal;
   while (true) {
-    vertibarPidVal = pidStep(&vertibarPid, true);
+    vertibarPidVal = pidStep(&vertibarPid, false);
     raiseSwitchLift(vertibarPidVal);
 #if DEBUG
-    updateValue("vert_error", vertibarPid.target - getChainLift());
-    updateValue("vert_lift", vertibarPidVal);
+    updateValue("vert_err", vertibarPid.target - switchPot());
+    updateValue("vert_output", vertibarPidVal);
 #endif
     waitPid(&vertibarPid);
   }
@@ -49,14 +51,17 @@ void stopVertibarPid() {
 }
 
 void resetVertibarPid() {
-  setTarget(&vertibarPid, getChainLift());
+  setTarget(&vertibarPid, 25);
   resetPid(&vertibarPid);
 }
 
 void incrementVertibar() {
-  incrementTarget(&vertibarPid, 2);
+  incrementTarget(&vertibarPid, 35);
 }
 
 void decrementVertibar() {
-  incrementTarget(&vertibarPid, -2);
+  if (vertibarPid.target < -989) {
+    return;
+  }
+  incrementTarget(&vertibarPid, -35);
 }

@@ -1,6 +1,7 @@
 #ifndef CORE_SENSORS_H
 #define CORE_SENSORS_H
 
+#include "util/JINX.h"
 #include "configuration/sensors.h"
 #include "API.h"
 
@@ -15,7 +16,7 @@ inline int getMobileGoalPot() {
 extern Encoder chainEncoder;
 
 inline int getChainLift() {
-  return analogRead(ChainLiftPot);
+  return encoderGet(chainEncoder);
 }
 
 inline void resetChainLift() {
