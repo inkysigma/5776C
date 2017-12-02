@@ -14,12 +14,12 @@ bool goalRunning = true;
 
 void openGoal(void *args) {
   executeUntil({ moveGoal(100); },
-               !withinf(getMobileGoalPot(), 1370, 50) &&
-                   getMobileGoalPot() < 1400,
+               !withinf(getMobileGoalPot(), 1179, 50) &&
+                   getMobileGoalPot() < 1000,
                2000);
   executeUntil({
-    moveGoal((1385 - getMobileGoalPot()) * 0.6);
-  }, !withinf(getMobileGoalPot(), 1445, 10) && getMobileGoalPot() < 1460, 2000);
+    moveGoal((1179 - getMobileGoalPot()) * 0.6);
+  }, !withinf(getMobileGoalPot(), 1179, 10) && getMobileGoalPot() < 1179, 2000);
 	moveGoal(0);
   taskDelete(NULL);
 }
@@ -27,10 +27,10 @@ void openGoal(void *args) {
 void retractGoal(void *args) {
   executeUntil({
     moveGoal(-100);
-  }, !withinf(getMobileGoalPot(), 300, 10) && getMobileGoalPot() > 230, 2000);
+  }, !withinf(getMobileGoalPot(), 50, 10) && getMobileGoalPot() > 50, 2000);
   executeUntil( {
-    moveGoal(-(getMobileGoalPot() - 250) * 0.6);
-  }, !withinf(getMobileGoalPot(), 270, 30) && getMobileGoalPot() > 230, 2000);
+    moveGoal(-(getMobileGoalPot() - 11) * 0.6);
+  }, !withinf(getMobileGoalPot(), 14, 30) && getMobileGoalPot() > 11, 2000);
 	moveGoal(0);
   taskDelete(NULL);
 }
