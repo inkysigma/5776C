@@ -96,8 +96,6 @@ void operatorControl() {
         setVertibarTarget(25);
       }
 
-      updateValue("button", digitalRead(3));
-
       if (getRaiseClaw()) {
         incrementVertibar();
       } else if (getLowerClaw()) {
