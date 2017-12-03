@@ -37,7 +37,6 @@ void buildStackHelper(void *config) {
   raiseClaw(stackConfig.vert);
   openClawFully();
   resetClaw();
-  updateValue("autoBuildRunning", autoBuildRunning);
   autoBuildRunning = false;
 }
 
