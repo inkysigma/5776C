@@ -60,8 +60,10 @@ void incrementVertibar() {
 }
 
 void decrementVertibar() {
+  /*
   if (vertibarPid.target < -989) {
     return;
   }
+  */
   incrementTarget(&vertibarPid, -35);
 }

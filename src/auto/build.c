@@ -8,11 +8,11 @@
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int lift[12] = {1520, 1520, 1570, 212, 222, 386, 484, 509, 573, 686};
+int lift[12] = {135, 1520, 1570, 212, 222, 386, 484, 509, 573, 686};
 
 int liftLower[12] = {1520, 1520, 1520, 1520, 1520, 1520, 1520, 1520};
 
-int vertbarHigh[12] = {-950, -950, -950, -950, 3225,
+int vertbarHigh[12] = {-1507, -950, -950, -950, 3225,
                        3230, 3225, 3220, 3210, 3205};
 
 typedef struct {
@@ -28,16 +28,16 @@ TaskHandle buildStackH;
 bool autoBuildRunning = false;
 
 void buildStackHelper(void *config) {
+  updateValue("autoBuildRunning", autoBuildRunning);
   autoBuildRunning = true;
   resetClaw();
   closeClawFully(true);
   delay(400);
-  setLiftTarget(stackConfig.lift);
+  lowerLiftTo(stackConfig.lift);
   raiseClaw(stackConfig.vert);
-
-  // lowerLiftTo(stackConfig.lift_lower);
   openClawFully();
-  setLiftTarget(stackConfig.lift);
+  resetClaw();
+  updateValue("autoBuildRunning", autoBuildRunning);
   autoBuildRunning = false;
 }
 

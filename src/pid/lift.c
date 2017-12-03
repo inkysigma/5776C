@@ -30,11 +30,12 @@ void setLiftPidConfig(float kp, float ki, float kd) {
 void setLiftTarget(int target) {
   if (target > 2760) {
     setTarget(&liftConfig, 2760);
-  } else if (target < 1526) {
-    setTarget(&liftConfig, 1526);
+  } else if (target < 125) {
+    setTarget(&liftConfig, 125);
   } else {
     setTarget(&liftConfig, target);
   }
+  updateValue("lift_target", liftConfig.target);
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should

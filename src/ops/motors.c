@@ -7,6 +7,7 @@
 #include "auto/build.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
+#include "configuration/pid/lift.h"
 #include "util/math.h"
 
 bool claw_open = false;
@@ -18,7 +19,7 @@ void raiseLift(int lift) {
 }
 
 void lowerLift() {
-  setLiftTarget(1560);
+  setLiftTarget(LEFT_MIN);
   executeUntil({}, !withinf(0, getLiftPot(), 10), 4000);
 }
 
@@ -49,13 +50,13 @@ void lowerLiftTo(int lift) {
 }
 
 void openClawFully() {
-  openClaw(100);
+  openClaw(80);
   claw_open = true;
   claw_running = true;
 }
 
 void closeClawFully(bool stall) {
-  closeClaw(100);
+  closeClaw(80);
   claw_open = false;
   claw_running = true;
 }
