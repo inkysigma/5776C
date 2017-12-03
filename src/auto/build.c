@@ -8,7 +8,7 @@
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int lift[12] = {135, 1520, 1570, 212, 222, 386, 484, 509, 573, 686};
+int lift[12] = {135, 135, 135, 212, 222, 386, 484, 509, 573, 686};
 
 int liftLower[12] = {1520, 1520, 1520, 1520, 1520, 1520, 1520, 1520};
 
@@ -37,7 +37,6 @@ void buildStackHelper(void *config) {
   raiseClaw(stackConfig.vert);
   openClawFully();
   resetClaw();
-  updateValue("autoBuildRunning", autoBuildRunning);
   autoBuildRunning = false;
 }
 
