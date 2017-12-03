@@ -3,6 +3,7 @@
 #include "core/robot.h"
 #include "configuration/tasks.h"
 #include "configuration/motors.h"
+#include "configuration/pid/lift.h"
 #include "pid/pidlib.h"
 #include "pid/lift.h"
 #if DEBUG
@@ -30,8 +31,8 @@ void setLiftPidConfig(float kp, float ki, float kd) {
 void setLiftTarget(int target) {
   if (target > 2760) {
     setTarget(&liftConfig, 2760);
-  } else if (target < 125) {
-    setTarget(&liftConfig, 125);
+  } else if (target < LEFT_MIN) {
+    setTarget(&liftConfig, LEFT_MIN);
   } else {
     setTarget(&liftConfig, target);
   }
