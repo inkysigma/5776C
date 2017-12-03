@@ -33,7 +33,7 @@ void buildStackHelper(void *config) {
   resetClaw();
   closeClawFully(true);
   delay(400);
-  lowerLiftTo(stackConfig.lift);
+  setLiftTarget(stackConfig.lift);
   raiseClaw(stackConfig.vert);
   openClawFully();
   resetClaw();
