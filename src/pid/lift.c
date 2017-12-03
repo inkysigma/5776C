@@ -44,6 +44,9 @@ void holdLift(void *arguments) {
   float total = 0;
   while (liftRunning) {
     total = pidStep(&liftConfig, false);
+    #if DEBUG
+    updateValue("lift_output", total);
+    #endif
     moveLift(total);
     waitPid(&liftConfig);
   }
