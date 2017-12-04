@@ -26,8 +26,8 @@ int liftPot() {
 // dt, sensor) to create a configuration. pass the reference to config.
 void setLiftPidConfig(float kp, float ki, float kd) {
   initPid(&liftConfig, kp, ki, kd, 80, &liftPot);
-  setBounds(&liftConfig, 40, -40, 120, -120, 20, -20);
-  setMinimumOutput(&liftConfig, 35);
+  setBounds(&liftConfig, 40, -40, 120, -120, 10, -10);
+  setMinimumOutput(&liftConfig, 25);
 }
 
 
