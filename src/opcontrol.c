@@ -36,7 +36,7 @@
 #include "util/jinx.h"
 #include "util/math.h"
 
-bool vertibarRunning = false;
+bool alreadyReset = false;
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -70,6 +70,8 @@ void operatorControl() {
   setLiftTarget(getLiftPot());
   startLiftPid();
   startVertibarPid();
+
+  int sinceLastReset = 0;
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
@@ -91,15 +93,27 @@ void operatorControl() {
       }
 
       if (digitalRead(3) == LOW) {
-        resetChainLift();
-        resetVertibarPid();
-        setVertibarTarget(25);
+        if (!alreadyReset) {
+          resetChainLift();
+          resetVertibarPid();
+          setVertibarTarget(0);
+          alreadyReset = true;
+        }
+        if (getVertibarTarget() > 0) {
+          setVertibarTarget(0);
+        }
       }
 
       if (getRaiseClaw()) {
         incrementVertibar();
+        if (alreadyReset && sinceLastReset > 700) {
+          alreadyReset = false;
+        }
       } else if (getLowerClaw()) {
         decrementVertibar();
+        if (alreadyReset && sinceLastReset > 700) {
+          alreadyReset = false;
+        }
       }
 
       if (getToggleGoal()) {
@@ -122,6 +136,12 @@ void operatorControl() {
           decrementConeCount();
       } else if (getResetStack()) {
         resetConeCount();
+      }
+
+      if (!alreadyReset) {
+        sinceLastReset += 40;
+      } else {
+        sinceLastReset = 0;
       }
     } else {
       if (getBuildStack()) {

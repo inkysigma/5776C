@@ -34,7 +34,7 @@ inline void stopClaw() {
 }
 
 inline void stallClaw() {
-	closeClaw(15);
+	closeClaw(25);
 }
 
 inline void moveSwitchLift(int power) {

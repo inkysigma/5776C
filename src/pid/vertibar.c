@@ -51,19 +51,18 @@ void stopVertibarPid() {
 }
 
 void resetVertibarPid() {
-  setTarget(&vertibarPid, 25);
+  setTarget(&vertibarPid, 0);
   resetPid(&vertibarPid);
 }
 
 void incrementVertibar() {
-  incrementTarget(&vertibarPid, 35);
+  incrementTarget(&vertibarPid, 20);
 }
 
 void decrementVertibar() {
-  /*
-  if (vertibarPid.target < -989) {
-    return;
-  }
-  */
-  incrementTarget(&vertibarPid, -35);
+  incrementTarget(&vertibarPid, -20);
+}
+
+int getVertibarTarget() {
+  return vertibarPid.target;
 }

@@ -17,6 +17,7 @@ void closeClawFully(bool stall);
 void lowerLiftTo(int lift);
 void toggleClawOpen(bool stall);
 void resetClaw();
+void resetClawState();
 
 extern bool claw_open;
 

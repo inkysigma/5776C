@@ -17,6 +17,9 @@ typedef struct
 	float min_total;
 	float max_total;
 
+	// creating lowerbound for output
+	float min_output;
+
 	float max_der;
 	float min_der;
 
@@ -35,6 +38,8 @@ typedef struct
 // initialize a pid struct to the given values. the integral and total output
 // are set by default to 10 and 110 respectively.
 void initPid(pid* ref, float kp, float ki, float kd, int dt, int (*sensor)());
+
+void setMinimumOutput(pid* ref, float min_output);
 
 // set the max and min values of the integral and total output. this is optional.
 void setBounds(pid *ref, int max_int, int min_int, int max_total,

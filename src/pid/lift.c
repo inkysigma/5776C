@@ -26,13 +26,16 @@ int liftPot() {
 // dt, sensor) to create a configuration. pass the reference to config.
 void setLiftPidConfig(float kp, float ki, float kd) {
   initPid(&liftConfig, kp, ki, kd, 80, &liftPot);
+  setBounds(&liftConfig, 40, -40, 120, -120, 20, -20);
+  setMinimumOutput(&liftConfig, 35);
 }
+
 
 void setLiftTarget(int target) {
   if (target > 2760) {
     setTarget(&liftConfig, 2760);
-  } else if (target < LEFT_MIN) {
-    setTarget(&liftConfig, LEFT_MIN);
+  } else if (target < LIFT_MIN) {
+    setTarget(&liftConfig, LIFT_MIN);
   } else {
     setTarget(&liftConfig, target);
   }
@@ -63,7 +66,7 @@ void startLiftPid() {
 }
 
 void incrementLift() {
-  if (liftConfig.target + 40 > 2760) {
+  if (liftConfig.target + 20 > 2760) {
     setTarget(&liftConfig, 2760);
   } else {
     incrementTarget(&liftConfig, 40);
@@ -71,8 +74,8 @@ void incrementLift() {
 }
 
 void decrementLift() {
-  if (liftConfig.target - 40 < 1527) {
-    setTarget(&liftConfig, 1527);
+  if (liftConfig.target - 20 < LIFT_MIN) {
+    setTarget(&liftConfig, LIFT_MIN);
   } else {
     incrementTarget(&liftConfig, -40);
   }

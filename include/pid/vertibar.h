@@ -8,5 +8,6 @@ void stopVertibarPid();
 void resetVertibarPid();
 void incrementVertibar();
 void decrementVertibar();
+int getVertibarTarget();
 
 #endif

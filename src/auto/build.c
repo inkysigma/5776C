@@ -8,12 +8,12 @@
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int lift[12] = {1606, 1520, 1570, 212, 222, 386, 484, 509, 573, 686};
+int lift[12] = {1600, 1660, 1774, 1530, 1530, 1900, 484, 509, 573, 686};
 
-int liftLower[12] = {1520, 1520, 1520, 1520, 1520, 1520, 1520, 1520};
+int liftLower[12] = {1600, 1660, 1774, 1530, 1530, 1900, 1520, 1520};
 
-int vertbarHigh[12] = {-1507, -950, -950, -950, 3225,
-                       3230, 3225, 3220, 3210, 3205};
+int vertbarHigh[12] = {-750, -710, -782, -640, -590,
+                       -740, 3225, 3220, 3210, 3205};
 
 typedef struct {
   int lift;
@@ -31,13 +31,15 @@ void buildStackHelper(void *config) {
   updateValue("autoBuildRunning", autoBuildRunning);
   autoBuildRunning = true;
   resetClaw();
-  closeClawFully(true);
   delay(400);
   setLiftTarget(stackConfig.lift);
   raiseClaw(stackConfig.vert);
   openClawFully();
+  delay(1000);
   resetClaw();
+  stopClaw();
   autoBuildRunning = false;
+  resetClawState();
 }
 
 void buildStack(int cone_level) {
@@ -45,7 +47,7 @@ void buildStack(int cone_level) {
   stackConfig.lift_lower = liftLower[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
-                           TASK_PRIORITY_HIGHEST - 1);
+                           TASK_PRIORITY_HIGHEST - 2);
 }
 
 void buildPartialStack(int cone_level) {

@@ -26,11 +26,16 @@ void initPid(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
 void setBounds(pid *ref, int max_int, int min_int, int max_total, int min_total,
                int min_der, int max_der) {
   ref->max_int = max_int;
+
   ref->min_int = min_int;
   ref->max_total = max_total;
   ref->min_total = min_total;
   ref->min_der = min_der;
   ref->max_der = max_der;
+}
+
+void setMinimumOutput(pid* ref, float min_output) {
+  ref->min_output = min_output;
 }
 
 void incrementTarget(pid *ref, int inc) { ref->target += inc; }
@@ -65,6 +70,10 @@ float pidStep(pid *config, bool reversed) {
 
   double total =
       config->kp * error + config->ki * integral + config->kd * derivative;
+
+  if (absf(total) < config->min_output) {
+    return 0;
+  }
   return bound(total, config->max_total, config->min_total);
 }
 

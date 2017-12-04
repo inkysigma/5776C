@@ -34,6 +34,9 @@ clean:
 	-rm -f $(OUT)
 	-rm -rf $(BINDIR)
 
+pclean:
+	-rm -rf $(BINDIR)/pid
+
 # Uploads program to device
 upload: all
 	$(UPLOAD)
