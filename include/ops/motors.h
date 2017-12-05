@@ -6,6 +6,9 @@
 #include "util/concurrency.h"
 #include "API.h"
 
+#define MOGO_OUT 263
+#define MOGO_IN 256
+
 void raiseClaw(int pos);
 void lowerClaw(int pos);
 void raiseLift(int lift);
@@ -18,7 +21,5 @@ void lowerLiftTo(int lift);
 void toggleClawOpen(bool stall);
 void resetClaw();
 void resetClawState();
-
-extern bool claw_open;
 
 #endif

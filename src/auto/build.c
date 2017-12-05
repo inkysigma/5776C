@@ -8,12 +8,12 @@
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int lift[12] = {1600, 1660, 1774, 1530, 1530, 1900, 484, 509, 573, 686};
+int lift[12] = {1600, 1660, 1774, 1530, 1530, 1900, 1987, 2127, 2250, 2350};
 
 int liftLower[12] = {1600, 1660, 1774, 1530, 1530, 1900, 1520, 1520};
 
 int vertbarHigh[12] = {-740, -700, -772, -630, -580,
-                       -730, 3225, 3220, 3210, 3205};
+                       -730, -1504, -730, -730, -745};
 
 typedef struct {
   int lift;
@@ -33,6 +33,8 @@ void buildStackHelper(void *config) {
   resetClaw();
   delay(400);
   setLiftTarget(stackConfig.lift);
+  executeUntil({}, !withinf(getLiftPot(), stackConfig.lift, 5), 1000);
+  delay(500);
   raiseClaw(stackConfig.vert);
   openClawFully();
   delay(1000);

@@ -46,7 +46,11 @@ inline bool getToggleGoal() {
   return joystickGetDigital(1, 7, JOY_UP);
 }
 
-inline bool getBuildStackPartial() {
+inline bool getMoveGoalOut() {
+  return joystickGetDigital(1, 7, JOY_RIGHT);
+}
+
+inline bool getMoveGoalIn() {
   return joystickGetDigital(1, 7, JOY_LEFT);
 }
 

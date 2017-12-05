@@ -11,8 +11,11 @@
 TaskHandle open;
 TaskHandle close;
 bool goalRunning = true;
+bool expand = true;
 
 void openGoal(void *args) {
+  goalRunning = true;
+  expand = false;
   executeUntil({ moveGoal(100); },
                !withinf(getMobileGoalPot(), 1179, 50) &&
                    getMobileGoalPot() < 1000,
@@ -25,6 +28,8 @@ void openGoal(void *args) {
 }
 
 void retractGoal(void *args) {
+  goalRunning = true;
+  expand = true;
   executeUntil({
     moveGoal(-100);
   }, !withinf(getMobileGoalPot(), 50, 10) && getMobileGoalPot() > 50, 2000);
@@ -35,17 +40,12 @@ void retractGoal(void *args) {
   taskDelete(NULL);
 }
 
-bool expand = true;
 void toggleGoal() {
   if (expand) {
-    goalRunning = true;
     open = taskCreate(openGoal, TASK_DEFAULT_STACK_SIZE, NULL,
                       TASK_PRIORITY_DEFAULT);
-    expand = false;
   } else {
-    goalRunning = true;
     close = taskCreate(retractGoal, TASK_DEFAULT_STACK_SIZE, NULL,
                        TASK_PRIORITY_DEFAULT);
-    expand = true;
   }
 }
