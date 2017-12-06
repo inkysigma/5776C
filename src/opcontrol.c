@@ -117,11 +117,11 @@ void operatorControl() {
       }
 
       if (getToggleGoal()) {
-        moveGoal(100);
-      } else if (getBuildStackPartial()) {
-        moveGoal(-100);
+        toggleMobileGoal();
+      } else if (getMoveGoalIn()()) {
+        openGoal();
       } else {
-        moveGoal(0);
+        retractGoal();
       }
 
       if (getBuildStack()) {

@@ -3,6 +3,8 @@
 #include "core/motors.h"
 #include "core/sensors.h"
 
+void retractGoal(void *args);
+void openGoal(void *args);
 void toggleGoal();
 void flashLed(void* args);
 

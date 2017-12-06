@@ -58,6 +58,9 @@ Encoder chainEncoder;
  */
 void initialize() {
   setTeamName("5776C");
+  lcdInit(uart2);
+  lcdClear(uart2);
+  lcdSetText(uart2, 1, "Hello World");
   chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, true);
   initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
