@@ -46,7 +46,7 @@ inline bool getToggleGoal() {
   return joystickGetDigital(1, 7, JOY_UP);
 }
 
-inline bool getMoveGoalOut() {
+inline bool getHoldClaw() {
   return joystickGetDigital(1, 7, JOY_RIGHT);
 }
 

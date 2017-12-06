@@ -56,11 +56,11 @@ void resetVertibarPid() {
 }
 
 void incrementVertibar() {
-  incrementTarget(&vertibarPid, 20);
+  incrementTarget(&vertibarPid, 10);
 }
 
 void decrementVertibar() {
-  incrementTarget(&vertibarPid, -20);
+  incrementTarget(&vertibarPid, -10);
 }
 
 int getVertibarTarget() {

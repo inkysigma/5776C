@@ -70,7 +70,7 @@ void operatorControl() {
   setLiftTarget(getLiftPot());
   startLiftPid();
   startVertibarPid();
-
+  lcdSetText(uart1, 1, "some text");
   int sinceLastReset = 0;
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
@@ -117,11 +117,12 @@ void operatorControl() {
       }
 
       if (getToggleGoal()) {
-        toggleMobileGoal();
-      } else if (getMoveGoalIn()()) {
-        openGoal();
-      } else {
-        retractGoal();
+        toggleGoal();
+      }
+
+      if (getHoldClaw()) {
+        resetClaw();
+        setVertibarTarget(-2);
       }
 
       if (getBuildStack()) {

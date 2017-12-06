@@ -3,6 +3,7 @@
 #include "core/motors.h"
 #include "core/sensors.h"
 
+void initGoal(float kp, float ki, float kd, float dt);
 void retractGoal(void *args);
 void openGoal(void *args);
 void toggleGoal();

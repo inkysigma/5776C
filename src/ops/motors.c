@@ -24,22 +24,20 @@ void lowerLift() {
 
 void raiseClaw(int pos) {
   setVertibarTarget(pos);
-  executeUntil({}, !withinf(getChainLift(), pos, 5), 2500);
-  moveSwitchLift(0);
+  executeUntil({delay(100);}, !withinf(getChainLift(), pos, 17), 1500);
 }
 
 void lowerClaw(int pos) {
   setVertibarTarget(pos);
   executeUntil({}, !withinf(getChainLift(), pos, 10), 2500);
-  moveSwitchLift(0);
 }
 
 void resetClaw() {
   stopVertibarPid();
   raiseSwitchLift(100);
   executeUntil({}, digitalRead(3) == HIGH, 7000);
-  setVertibarTarget(0);
   resetChainLift();
+  setVertibarTarget(0);
   resetVertibarPid();
   startVertibarPid();
 }

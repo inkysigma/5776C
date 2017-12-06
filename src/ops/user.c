@@ -5,47 +5,59 @@
 #endif
 #include "auto/build.h"
 #include "configuration/led.h"
+#include "pid/pidlib.h"
 #include "util/concurrency.h"
 #include "util/math.h"
 
-TaskHandle open;
-TaskHandle close;
+TaskHandle goal;
+pid goalPid;
 bool goalRunning = true;
 bool expand = true;
+
+int getMobileGoal() { return getMobileGoalPot(); }
+
+void initGoal(float kp, float ki, float kd, float dt) {
+  initPid(&goalPid, kp, ki, kd, dt, &getMobileGoal);
+  setBounds(&goalPid, -40, 40, -50, 50, 10, -10);
+}
 
 void openGoal(void *args) {
   goalRunning = true;
   expand = false;
-  executeUntil({ moveGoal(100); },
-               !withinf(getMobileGoalPot(), 1179, 50) &&
-                   getMobileGoalPot() < 1000,
-               2000);
-  executeUntil({
-    moveGoal((1179 - getMobileGoalPot()) * 0.6);
-  }, !withinf(getMobileGoalPot(), 1179, 10) && getMobileGoalPot() < 1179, 2000);
-	moveGoal(0);
+  setTarget(&goalPid, 1100);
+  executeUntil(
+      {
+        moveGoal(pidStep(&goalPid, true));
+        updateValue("mobile_output", pidStep(&goalPid, true));
+      },
+      !withinf(getMobileGoalPot(), 1100, 10), 3000);
+  moveGoal(0);
   taskDelete(NULL);
 }
 
 void retractGoal(void *args) {
   goalRunning = true;
   expand = true;
-  executeUntil({
-    moveGoal(-100);
-  }, !withinf(getMobileGoalPot(), 50, 10) && getMobileGoalPot() > 50, 2000);
-  executeUntil( {
-    moveGoal(-(getMobileGoalPot() - 11) * 0.6);
-  }, !withinf(getMobileGoalPot(), 14, 30) && getMobileGoalPot() > 11, 2000);
-	moveGoal(0);
+  setTarget(&goalPid, 15);
+  executeUntil({ moveGoal(pidStep(&goalPid, true)); },
+               !withinf(getMobileGoalPot(), 14, 8) && getMobileGoalPot() > 11,
+               2000);
+  moveGoal(0);
   taskDelete(NULL);
 }
 
 void toggleGoal() {
+  writeJINXMessage("toggling goal");
+  if (goalRunning && taskGetState(goal) == TASK_SUSPENDED &&
+      taskGetState(goal) == TASK_RUNNING) {
+    taskDelete(goal);
+  }
   if (expand) {
-    open = taskCreate(openGoal, TASK_DEFAULT_STACK_SIZE, NULL,
+    writeJINXMessage("opening");
+    goal = taskCreate(openGoal, TASK_DEFAULT_STACK_SIZE, NULL,
                       TASK_PRIORITY_DEFAULT);
   } else {
-    close = taskCreate(retractGoal, TASK_DEFAULT_STACK_SIZE, NULL,
-                       TASK_PRIORITY_DEFAULT);
+    goal = taskCreate(retractGoal, TASK_DEFAULT_STACK_SIZE, NULL,
+                      TASK_PRIORITY_DEFAULT);
   }
 }

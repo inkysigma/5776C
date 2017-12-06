@@ -3,22 +3,24 @@
 #if DEBUG
 #include "JINX.h"
 #endif
-#include "pid/lift.h"
 #include "ops/motors.h"
+#include "pid/vertibar.h"
+#include "pid/lift.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
 
-int lift[12] = {1600, 1660, 1774, 1530, 1530, 1900, 1987, 2127, 2250, 2350};
+const int lift[12] = {1660, 1700, 1824, 1530, 1580,
+                      1900, 2170, 2427, 2270, 2450};
 
-int liftLower[12] = {1600, 1660, 1774, 1530, 1530, 1900, 1520, 1520};
+const int vertbarHigh[12] = {-670, -665, -732, -560, -427,
+                             -650, -609, -550, -605, -615};
 
-int vertbarHigh[12] = {-740, -700, -772, -630, -580,
-                       -730, -1504, -730, -730, -745};
+const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1100, 1200};
 
 typedef struct {
   int lift;
-  int lift_lower;
   int vert;
+  int delay;
 } StackConfig;
 
 StackConfig stackConfig;
@@ -28,36 +30,41 @@ TaskHandle buildStackH;
 bool autoBuildRunning = false;
 
 void buildStackHelper(void *config) {
-  updateValue("autoBuildRunning", autoBuildRunning);
   autoBuildRunning = true;
   resetClaw();
-  delay(400);
+  delay(200);
   setLiftTarget(stackConfig.lift);
-  executeUntil({}, !withinf(getLiftPot(), stackConfig.lift, 5), 1000);
-  delay(500);
+  delay(stackConfig.delay);
   raiseClaw(stackConfig.vert);
+  incrementVertibar();
   openClawFully();
-  delay(1000);
+  delay(200);
+  autoBuildRunning = false;
   resetClaw();
   stopClaw();
-  autoBuildRunning = false;
   resetClawState();
+  taskDelete(NULL);
 }
 
 void buildStack(int cone_level) {
+  if (taskGetState(buildStackH) == TASK_SUSPENDED ||
+      taskGetState(buildStackH) == TASK_SLEEPING) {
+    taskSuspend(buildStackH);
+    taskDelete(buildStackH);
+  }
   stackConfig.lift = lift[cone_level];
-  stackConfig.lift_lower = liftLower[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
+  stackConfig.delay = intraDelay[cone_level];
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_HIGHEST - 2);
 }
 
 void buildPartialStack(int cone_level) {
   stackConfig.lift = lift[cone_level];
-  stackConfig.lift_lower = liftLower[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
+  stackConfig.delay = intraDelay[cone_level];
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
-                           TASK_PRIORITY_HIGHEST - 1);
+                           TASK_PRIORITY_DEFAULT);
 }
 
 int cone_count = 0;
