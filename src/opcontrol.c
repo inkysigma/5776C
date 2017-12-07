@@ -142,6 +142,7 @@ void operatorControl() {
 
       if (getHoldClaw()) {
         resetClaw();
+        alreadyReset = true;
         setVertibarTarget(-10);
       }
 
