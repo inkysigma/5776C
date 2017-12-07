@@ -1,10 +1,6 @@
 #include "pid/pidlib.h"
 #include "util/math.h"
 #include "core/robot.h"
-#if DEBUG
-#include "JINX.h"
-#include "util/jinx.h"
-#endif
 
 void initPid(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   // initialize the pid to some constants. for tSensors sensor, pass in

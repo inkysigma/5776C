@@ -1,9 +1,5 @@
 #include "ops/motors.h"
 #include "core/robot.h"
-#if DEBUG
-#include "JINX.h"
-#include "util/jinx.h"
-#endif
 #include "auto/build.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
@@ -12,31 +8,20 @@
 
 int claw_state = 0;
 
-void raiseLift(int lift) {
+void setLift(int lift) {
   setLiftTarget(lift);
-  executeUntil({}, !withinf(lift, getLiftPot(), 10), 2000);
+  executeUntil({}, !within(lift, getLiftPot(), 10), 2000);
 }
 
-void lowerLift() {
-  setLiftTarget(LIFT_MIN);
-  executeUntil({}, !withinf(0, getLiftPot(), 10), 4000);
-}
-
-void raiseClaw(int pos) {
+void setClaw(int pos) {
   setVertibarTarget(pos);
-  executeUntil({delay(100);}, !withinf(getChainLift(), pos, 17), 1500);
-}
-
-void lowerClaw(int pos) {
-  setVertibarTarget(pos);
-  executeUntil({}, !withinf(getChainLift(), pos, 10), 2500);
+  executeUntil({delay(100);}, !within(getChainLift(), pos, 17), 1500);
 }
 
 void resetClaw() {
   stopVertibarPid();
   raiseSwitchLift(100);
   executeUntil({}, digitalRead(3) == HIGH, 7000);
-  writeJINXMessage("finished reset");
   raiseSwitchLift(60);
   delay(300);
   raiseSwitchLift(0);
@@ -44,11 +29,6 @@ void resetClaw() {
   setVertibarTarget(0);
   resetVertibarPid();
   startVertibarPid();
-}
-
-void lowerLiftTo(int lift) {
-  setLiftTarget(lift);
-  executeUntil({}, !withinf(getLiftPot(), lift, 5), 1000);
 }
 
 void openClawFully() {

@@ -1,8 +1,5 @@
 #include "auto/build.h"
 #include "core/robot.h"
-#if DEBUG
-#include "JINX.h"
-#endif
 #include "ops/motors.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
@@ -40,7 +37,7 @@ void buildStackHelper(void *config) {
   }
   setLiftTarget(stackConfig.lift);
   delay(stackConfig.delay);
-  raiseClaw(stackConfig.vert);
+  setClaw(stackConfig.vert);
 
   openClawFully();
   delay(300);
@@ -99,7 +96,6 @@ void stopStack() {
   autoBuildRunning = false;
   taskSuspend(buildStackH);
   taskDelete(buildStackH);
-  writeJINXMessage("Cancelled build");
 }
 
 int getAutoBuildRunning() { return autoBuildRunning; }

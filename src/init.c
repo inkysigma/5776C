@@ -21,7 +21,6 @@
 #include "core/sensors.h"
 #include "main.h"
 #include "ops/motors.h"
-#include "ops/user.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
 /*
@@ -71,5 +70,4 @@ void initialize() {
   debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL,
                      TASK_PRIORITY_DEFAULT);
 #endif
-  openClawFully();
 }

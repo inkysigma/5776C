@@ -20,7 +20,6 @@
 #include "secondop.h"
 
 #include "ops/motors.h"
-#include "ops/user.h"
 
 #if DEBUG
 #include "JINX.h"
@@ -73,7 +72,6 @@ void operatorControl() {
   setLiftTarget(getLiftPot());
   startLiftPid();
   startVertibarPid();
-  lcdSetText(uart1, 1, "some text");
   int sinceLastReset = 0;
   while (true) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
@@ -140,11 +138,7 @@ void operatorControl() {
         delay(400);
       }
 
-      if (!alreadyReset) {
-        sinceLastReset += 40;
-      } else {
-        sinceLastReset = 0;
-      }
+
 
       if (getIncreaseStack()) {
         if (getConeCount() < 10) {
@@ -162,6 +156,12 @@ void operatorControl() {
         resetConeCount();
         enableConfirm();
         delay(300);
+      }
+
+      if (!alreadyReset) {
+        sinceLastReset += 40;
+      } else {
+        sinceLastReset = 0;
       }
     } else {
       if (getHoldClaw()) {

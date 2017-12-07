@@ -3,10 +3,6 @@
 #include "core/robot.h"
 #include "core/sensors.h"
 #include "pid/pidlib.h"
-#if DEBUG
-#include "JINX.h"
-#include "util/jinx.h"
-#endif
 
 pid vertibarPid;
 TaskHandle vertibarHandle;
@@ -30,10 +26,6 @@ void vertibarTarget(void *args) {
   while (true) {
     vertibarPidVal = pidStep(&vertibarPid, false);
     raiseSwitchLift(vertibarPidVal);
-#if DEBUG
-    updateValue("vert_err", vertibarPid.target - switchPot());
-    updateValue("vert_output", vertibarPidVal);
-#endif
     waitPid(&vertibarPid);
   }
 }

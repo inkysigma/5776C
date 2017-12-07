@@ -9,12 +9,8 @@
 #define MOGO_OUT 263
 #define MOGO_IN 256
 
-void raiseClaw(int pos);
-void lowerClaw(int pos);
-void raiseLift(int lift);
-void lowerLift();
-void lowerClawPartial();
-void raiseClawPartial(bool stall);
+void setClaw(int pos);
+void setLift(int pos);
 void openClawFully();
 void closeClawFully(bool stall);
 void lowerLiftTo(int lift);

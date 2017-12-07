@@ -6,10 +6,6 @@
 #include "configuration/pid/lift.h"
 #include "pid/pidlib.h"
 #include "pid/lift.h"
-#if DEBUG
-#include "JINX.h"
-#include "util/jinx.h"
-#endif
 
 bool liftCreated = false;
 bool liftRunning = true;
@@ -39,7 +35,6 @@ void setLiftTarget(int target) {
   } else {
     setTarget(&liftConfig, target);
   }
-  updateValue("lift_target", liftConfig.target);
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should
@@ -48,9 +43,6 @@ void holdLift(void *arguments) {
   float total = 0;
   while (liftRunning) {
     total = pidStep(&liftConfig, false);
-    #if DEBUG
-    updateValue("lift_output", total);
-    #endif
     moveLift(total);
     waitPid(&liftConfig);
   }

@@ -14,11 +14,7 @@ inline float absf(float a) {
   return sgn(a) * a;
 }
 
-inline bool within(int a, int b, int tolerance) {
-  return abs(a - b) < tolerance;
-}
-
-inline bool withinf(float a, float b, float tolerance) {
+inline bool within(float a, float b, float tolerance) {
   return absf(a - b) < tolerance;
 }
 

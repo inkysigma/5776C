@@ -5,7 +5,6 @@
 
 #include "auto/build.h"
 #include "ops/motors.h"
-#include "ops/user.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
 
@@ -20,12 +19,6 @@ void parseMessage(JINX *inStr) {
     getToken(inStr, 1);
     int vert = atoi(inStr->token);
     setVertibarTarget(vert);
-  } else if (strcmp(inStr->token, "sub") == 0) {
-    getToken(inStr, 1);
-    int a = atoi(inStr->token);
-    getToken(inStr, 2);
-    int b = atoi(inStr->token);
-    updateValue("sub_test", a - b);
   } else if (strcmp(inStr->token, "lift") == 0) {
     getToken(inStr, 1);
     int lift = atoi(inStr->token);
