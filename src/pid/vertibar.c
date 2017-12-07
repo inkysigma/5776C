@@ -35,7 +35,7 @@ void startVertibarPid() {
     taskResume(vertibarHandle);
     return;
   }
-  vertibarHandle = taskCreate(vertibarTarget, TASK_DEFAULT_STACK_SIZE, NULL,
+  vertibarHandle = taskCreate(vertibarTarget, 400, NULL,
                            TASK_PRIORITY_DEFAULT);
 }
 void stopVertibarPid() {

@@ -7,7 +7,6 @@
 #include "pid/pidlib.h"
 #include "pid/lift.h"
 
-bool liftCreated = false;
 bool liftRunning = true;
 TaskHandle liftPid;
 
@@ -41,7 +40,7 @@ void setLiftTarget(int target) {
 // target the right side
 void holdLift(void *arguments) {
   float total = 0;
-  while (liftRunning) {
+  while (true) {
     total = pidStep(&liftConfig, false);
     moveLift(total);
     waitPid(&liftConfig);
@@ -49,12 +48,12 @@ void holdLift(void *arguments) {
 }
 
 void startLiftPid() {
-  if (taskGetState(liftPid) == TASK_SUSPENDED) {
+  if (taskGetState(liftPid) != TASK_DEAD && taskGetState(liftPid) == TASK_SUSPENDED) {
     resetPid(&liftConfig);
     taskResume(liftPid);
     return;
   }
-  liftPid = taskCreate(holdLift, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
+  liftPid = taskCreate(holdLift, 300, NULL, TASK_PRIORITY_DEFAULT);
 }
 
 void incrementLift() {

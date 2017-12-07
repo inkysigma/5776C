@@ -1,4 +1,5 @@
-/** @file init.c
+/**
+ * @file init.c
  * @brief File for initialization code
  *
  * This file should contain the user initialize() function and any functions
@@ -67,7 +68,5 @@ void initialize() {
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));
-  debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL,
-                     TASK_PRIORITY_DEFAULT);
 #endif
 }
