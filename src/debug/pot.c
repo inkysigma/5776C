@@ -1,11 +1,10 @@
 #include "core/robot.h"
 #if DEBUG
+#include "API.h"
 #include "debug/pot.h"
 #include "util/jinx.h"
 #include "configuration/sensors.h"
-#include "configuration/motors.h"
 #include "pid/pidlib.h"
-#include "main.h"
 
 void writePots(void *args) {
   while (true) {

@@ -2,7 +2,7 @@
 #define AUTO_BUILD_H
 
 #include "main.h"
-
+extern bool getConfirmed;
 void buildStack(int cone_level);
 void buildPartialStack(int cone_level);
 int getConeCount();
@@ -12,8 +12,14 @@ void resetConeCount();
 int getAutoBuildRunning();
 void stopStack();
 
-void enableConfirm();
-void disableConfirm();
-bool getConfirm();
+inline void enableConfirm() {
+  getConfirmed = true;
+}
+inline void disableConfirm() {
+  getConfirmed = false;
+}
+inline bool getConfirm() {
+  return getConfirmed;
+}
 
 #endif

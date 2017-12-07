@@ -17,7 +17,6 @@
 #include "core/sensors.h"
 
 #include "main.h"
-#include "secondop.h"
 
 #include "ops/motors.h"
 
@@ -38,6 +37,26 @@
 
 bool alreadyReset = false;
 TaskHandle secondop;
+
+void checkIncrement() {
+  if (getIncreaseStack()) {
+    if (getConeCount() < 10) {
+      incrementConeCount();
+      enableConfirm();
+    }
+    delay(500);
+  } else if (getDecreaseStack()) {
+    if (getConeCount() > 0) {
+      decrementConeCount();
+      enableConfirm();
+    }
+    delay(500);
+  } else if (getResetStack()) {
+    resetConeCount();
+    enableConfirm();
+    delay(500);
+  }
+}
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -68,7 +87,6 @@ TaskHandle secondop;
  * even if empty.
  */
 void operatorControl() {
-  secondop = taskCreate(second, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
   setLiftTarget(getLiftPot());
   startLiftPid();
   startVertibarPid();
@@ -138,25 +156,25 @@ void operatorControl() {
         delay(400);
       }
 
-
-
       if (getIncreaseStack()) {
         if (getConeCount() < 10) {
           incrementConeCount();
           enableConfirm();
+          delay(100);
         }
-        delay(300);
       } else if (getDecreaseStack()) {
         if (getConeCount() > 0) {
           decrementConeCount();
           enableConfirm();
+          delay(100);
         }
-        delay(300);
       } else if (getResetStack()) {
         resetConeCount();
         enableConfirm();
-        delay(300);
+        delay(100);
       }
+
+      checkIncrement();
 
       if (!alreadyReset) {
         sinceLastReset += 40;
@@ -169,6 +187,6 @@ void operatorControl() {
         delay(300);
       }
     }
-    delay(40);
+    delay(100);
   }
 }

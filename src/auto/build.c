@@ -99,15 +99,3 @@ void stopStack() {
 }
 
 int getAutoBuildRunning() { return autoBuildRunning; }
-
-void enableConfirm() {
-  getConfirmed = true;
-}
-
-void disableConfirm() {
-  getConfirmed = false;
-}
-
-bool getConfirm() {
-  return getConfirmed;
-}

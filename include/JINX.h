@@ -38,7 +38,10 @@ void initJINX(FILE* port);
  */
 bool setComPort(FILE* port);
 
-bool getDebugTaskRunning();
+extern bool taskRunning;
+inline bool getDebugTaskRunning() {
+  return taskRunning;
+}
 
 /**
  *message: raw string to send. Don't pass newlines.

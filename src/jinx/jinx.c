@@ -64,7 +64,7 @@ void writeJINXData(const char *name, const char *value) {
     //     return;
     // }
 
-    char message[100];
+    char message[30];
     sprintf(message, "%s%s%s", name, JINX_DELIMETER, value);
     writeJINXSerial(message);
 }
@@ -149,8 +149,6 @@ void JINXRun(void* ignore) {
   JINX inStr;
   inStr.command = NULL;
   inStr.token = NULL;
-    //setOpmode(1);
-    //Read the garbage. Assume run before serial communications open
   delay(1000);
 	while(fcount(comPort) > 0) {
       fgetc(comPort);
@@ -159,11 +157,7 @@ void JINXRun(void* ignore) {
   writeJINXSerial("finished trashing garbage\n");
 
 	while (true) {
-//#if DEBUG_JINX
       writeJINXMessage("Should wait for new string");
-//#endif
-
-      //Get message, save in inStr, then parse.
       readLine(&inStr);
       parseMessage(&inStr);
 	    delay(del);

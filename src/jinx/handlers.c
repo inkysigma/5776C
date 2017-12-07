@@ -10,8 +10,6 @@
 
 bool taskRunning = false;
 
-bool getDebugTaskRunning() { return taskRunning; }
-
 void parseMessage(JINX *inStr) {
   taskRunning = true;
   getToken(inStr, 0);
