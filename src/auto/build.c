@@ -17,13 +17,13 @@ const int lift[12] = {1660, 1700, 1824, 1530, 1580,
 const int vertbarHigh[12] = {-655, -665, -732, -560, -502,
                              -650, -595, -550, -605, -615};
 
-const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1100, 1200};
+const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1000, 1100};
 
 typedef struct {
   int lift;
   int vert;
   int delay;
-  int returnHeight;
+  bool partial;
 } StackConfig;
 
 StackConfig stackConfig;
@@ -34,8 +34,10 @@ bool autoBuildRunning = false;
 
 void buildStackHelper(void *config) {
   autoBuildRunning = true;
-  resetClaw();
-  delay(200);
+  if (!stackConfig.partial) {
+    resetClaw();
+    delay(200);
+  }
   setLiftTarget(stackConfig.lift);
   delay(stackConfig.delay);
   raiseClaw(stackConfig.vert);
@@ -44,7 +46,12 @@ void buildStackHelper(void *config) {
   delay(300);
   incrementVertibar();
   autoBuildRunning = false;
-  resetClaw();
+  if (!stackConfig.partial) {
+    resetClaw();
+  } else {
+    setLiftTarget(1530);
+    setVertibarTarget(-42);
+  }
   stopClaw();
   resetClawState();
   taskDelete(NULL);
@@ -59,14 +66,22 @@ void buildStack(int cone_level) {
   stackConfig.lift = lift[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
   stackConfig.delay = intraDelay[cone_level];
+  stackConfig.partial = false;
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_DEFAULT);
 }
 
 void buildPartialStack(int cone_level) {
+  if (taskGetState(buildStackH) == TASK_SUSPENDED ||
+      taskGetState(buildStackH) == TASK_SLEEPING) {
+    taskSuspend(buildStackH);
+    taskDelete(buildStackH);
+  }
+  disableConfirm();
   stackConfig.lift = lift[cone_level];
   stackConfig.vert = vertbarHigh[cone_level];
   stackConfig.delay = intraDelay[cone_level];
+  stackConfig.partial = true;
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_DEFAULT);
 }

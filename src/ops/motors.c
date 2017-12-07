@@ -36,6 +36,7 @@ void resetClaw() {
   stopVertibarPid();
   raiseSwitchLift(100);
   executeUntil({}, digitalRead(3) == HIGH, 7000);
+  writeJINXMessage("finished reset");
   raiseSwitchLift(60);
   delay(300);
   raiseSwitchLift(0);
