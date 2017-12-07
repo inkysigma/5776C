@@ -36,7 +36,6 @@
 #include "util/math.h"
 
 bool alreadyReset = false;
-TaskHandle secondop;
 
 void checkIncrement() {
   if (getIncreaseStack()) {
@@ -113,9 +112,7 @@ void operatorControl() {
 
       if (digitalRead(3) == LOW) {
         if (!alreadyReset) {
-          resetChainLift();
-          resetVertibarPid();
-          setVertibarTarget(0);
+          resetClaw();
           alreadyReset = true;
         }
         if (getVertibarTarget() > 0) {
