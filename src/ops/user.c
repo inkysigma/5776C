@@ -1,3 +1,5 @@
+
+/**
 #include "ops/user.h"
 #include "core/robot.h"
 #if DEBUG
@@ -11,8 +13,9 @@
 
 TaskHandle goal;
 pid goalPid;
-bool goalRunning = true;
+bool goalRunning = false;
 bool expand = true;
+int prev = 0;
 
 int getMobileGoal() { return getMobileGoalPot(); }
 
@@ -21,16 +24,22 @@ void initGoal(float kp, float ki, float kd, float dt) {
   setBounds(&goalPid, -40, 40, -50, 50, 10, -10);
 }
 
+int getSpeed(int dt) { return (getMobileGoal() - prev) / dt; }
+
 void openGoal(void *args) {
   goalRunning = true;
   expand = false;
-  setTarget(&goalPid, 1100);
+  setTarget(&goalPid, 1316);
   executeUntil(
       {
-        moveGoal(pidStep(&goalPid, true));
-        updateValue("mobile_output", pidStep(&goalPid, true));
+        float total = pidStep(&goalPid, false);
+        // moveGoal(total);
+        updateValue("mobile_output", total);
+        updateValue("mobile_target", goalPid.target);
+        updateValue("mobile_current", getMobileGoalPot());
       },
-      !withinf(getMobileGoalPot(), 1100, 10), 3000);
+      !withinf(getMobileGoalPot(), 1316, 10) || getSpeed(5) < 5, 2000);
+  goalRunning = false;
   moveGoal(0);
   taskDelete(NULL);
 }
@@ -39,17 +48,23 @@ void retractGoal(void *args) {
   goalRunning = true;
   expand = true;
   setTarget(&goalPid, 15);
-  executeUntil({ moveGoal(pidStep(&goalPid, true)); },
-               !withinf(getMobileGoalPot(), 14, 8) && getMobileGoalPot() > 11,
-               2000);
+  executeUntil(
+      {
+        float total = pidStep(&goalPid, false);
+        // moveGoal(total);
+        updateValue("mobile_output", total);
+      },
+      !withinf(getMobileGoalPot(), 14, 8) || getSpeed(5) < 5, 2000);
   moveGoal(0);
+  goalRunning = false;
   taskDelete(NULL);
 }
 
 void toggleGoal() {
   writeJINXMessage("toggling goal");
-  if (goalRunning && taskGetState(goal) == TASK_SUSPENDED &&
-      taskGetState(goal) == TASK_RUNNING) {
+  updateValue("something", taskGetCount());
+  if (goalRunning) {
+    taskSuspend(goal);
     taskDelete(goal);
   }
   if (expand) {
@@ -57,7 +72,9 @@ void toggleGoal() {
     goal = taskCreate(openGoal, TASK_DEFAULT_STACK_SIZE, NULL,
                       TASK_PRIORITY_DEFAULT);
   } else {
+    writeJINXMessage("retracting");
     goal = taskCreate(retractGoal, TASK_DEFAULT_STACK_SIZE, NULL,
                       TASK_PRIORITY_DEFAULT);
   }
 }
+**/

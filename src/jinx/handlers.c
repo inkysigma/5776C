@@ -30,9 +30,6 @@ void parseMessage(JINX *inStr) {
     getToken(inStr, 1);
     int lift = atoi(inStr->token);
     setLiftTarget(lift);
-  } else if (strcmp(inStr->token, "mobile") == 0) {
-    writeJINXMessage("starting toggle");
-    toggleGoal();
   } else if (strcmp(inStr->token, "build") == 0) {
     getToken(inStr, 1);
     buildStack(atoi(inStr->token));

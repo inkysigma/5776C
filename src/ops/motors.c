@@ -36,6 +36,9 @@ void resetClaw() {
   stopVertibarPid();
   raiseSwitchLift(100);
   executeUntil({}, digitalRead(3) == HIGH, 7000);
+  raiseSwitchLift(60);
+  delay(300);
+  raiseSwitchLift(0);
   resetChainLift();
   setVertibarTarget(0);
   resetVertibarPid();

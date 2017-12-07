@@ -4,16 +4,18 @@
 #include "JINX.h"
 #endif
 #include "ops/motors.h"
-#include "pid/vertibar.h"
 #include "pid/lift.h"
+#include "pid/vertibar.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
+
+bool getConfirmed = true;
 
 const int lift[12] = {1660, 1700, 1824, 1530, 1580,
                       1900, 2170, 2427, 2270, 2450};
 
-const int vertbarHigh[12] = {-670, -665, -732, -560, -427,
-                             -650, -609, -550, -605, -615};
+const int vertbarHigh[12] = {-655, -665, -732, -560, -502,
+                             -650, -595, -550, -605, -615};
 
 const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1100, 1200};
 
@@ -21,6 +23,7 @@ typedef struct {
   int lift;
   int vert;
   int delay;
+  int returnHeight;
 } StackConfig;
 
 StackConfig stackConfig;
@@ -36,9 +39,10 @@ void buildStackHelper(void *config) {
   setLiftTarget(stackConfig.lift);
   delay(stackConfig.delay);
   raiseClaw(stackConfig.vert);
-  incrementVertibar();
+
   openClawFully();
-  delay(200);
+  delay(300);
+  incrementVertibar();
   autoBuildRunning = false;
   resetClaw();
   stopClaw();
@@ -56,7 +60,7 @@ void buildStack(int cone_level) {
   stackConfig.vert = vertbarHigh[cone_level];
   stackConfig.delay = intraDelay[cone_level];
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
-                           TASK_PRIORITY_HIGHEST - 2);
+                           TASK_PRIORITY_DEFAULT);
 }
 
 void buildPartialStack(int cone_level) {
@@ -84,3 +88,15 @@ void stopStack() {
 }
 
 int getAutoBuildRunning() { return autoBuildRunning; }
+
+void enableConfirm() {
+  getConfirmed = true;
+}
+
+void disableConfirm() {
+  getConfirmed = false;
+}
+
+bool getConfirm() {
+  return getConfirmed;
+}

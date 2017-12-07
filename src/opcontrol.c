@@ -17,6 +17,7 @@
 #include "core/sensors.h"
 
 #include "main.h"
+#include "secondop.h"
 
 #include "ops/motors.h"
 #include "ops/user.h"
@@ -37,6 +38,7 @@
 #include "util/math.h"
 
 bool alreadyReset = false;
+TaskHandle secondop;
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -67,6 +69,7 @@ bool alreadyReset = false;
  * even if empty.
  */
 void operatorControl() {
+  secondop = taskCreate(second, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
   setLiftTarget(getLiftPot());
   startLiftPid();
   startVertibarPid();
@@ -116,27 +119,25 @@ void operatorControl() {
         }
       }
 
-      if (getToggleGoal()) {
-        toggleGoal();
+      if (getOpenGoal()) {
+        moveGoal(100);
+      } else if (getRetractGoal()) {
+        moveGoal(-100);
+      } else {
+        moveGoal(0);
       }
 
       if (getHoldClaw()) {
         resetClaw();
-        setVertibarTarget(-2);
+        setVertibarTarget(-10);
       }
 
       if (getBuildStack()) {
-        buildStack(getConeCount());
-        incrementConeCount();
-        delay(400);
-      } else if (getIncreaseStack()) {
-        if (getConeCount() < 14)
+        if (getConeCount() < 10) {
+          buildStack(getConeCount());
           incrementConeCount();
-      } else if (getDecreaseStack()) {
-        if (getConeCount() > 0)
-          decrementConeCount();
-      } else if (getResetStack()) {
-        resetConeCount();
+        }
+        delay(400);
       }
 
       if (!alreadyReset) {
@@ -144,10 +145,28 @@ void operatorControl() {
       } else {
         sinceLastReset = 0;
       }
+
+      if (getIncreaseStack()) {
+        if (getConeCount() < 10) {
+          incrementConeCount();
+          enableConfirm();
+        }
+        delay(300);
+      } else if (getDecreaseStack()) {
+        if (getConeCount() > 0) {
+          decrementConeCount();
+          enableConfirm();
+        }
+        delay(300);
+      } else if (getResetStack()) {
+        resetConeCount();
+        enableConfirm();
+        delay(300);
+      }
     } else {
-      if (getBuildStack()) {
+      if (getHoldClaw()) {
         stopStack();
-        decrementConeCount();
+        delay(300);
       }
     }
     delay(40);

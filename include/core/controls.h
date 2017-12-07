@@ -42,44 +42,37 @@ inline bool getToggleClaw() {
   return joystickGetDigital(1, 7, JOY_DOWN);
 }
 
-inline bool getToggleGoal() {
+inline bool getOpenGoal() {
   return joystickGetDigital(1, 7, JOY_UP);
+}
+
+inline bool getRetractGoal() {
+  return joystickGetDigital(1, 7, JOY_LEFT);
 }
 
 inline bool getHoldClaw() {
   return joystickGetDigital(1, 7, JOY_RIGHT);
 }
 
-inline bool getMoveGoalIn() {
-  return joystickGetDigital(1, 7, JOY_LEFT);
-}
-
 inline bool getBuildStack() {
   return joystickGetDigital(1, 8, JOY_DOWN);
 }
 
+inline bool getBuildPartial() {
+  return joystickGetDigital(2, 7, JOY_UP);
+}
+
 inline bool getDecreaseStack() {
-  return joystickGetDigital(1, 8, JOY_LEFT);
+  return joystickGetDigital(2, 8, JOY_LEFT);
 }
 
 inline bool getResetStack() {
-  return joystickGetDigital(1, 8, JOY_UP);
+  return joystickGetDigital(2, 8, JOY_UP);
 }
 
 inline bool getIncreaseStack() {
-  return joystickGetDigital(1, 8, JOY_RIGHT);
+  return joystickGetDigital(2, 8, JOY_RIGHT);
 }
 
-inline bool altGetRaiseLift() {
-  return joystickGetDigital(1, 5, JOY_UP);
-}
-
-inline bool altGetLowerLift() {
-  return joystickGetDigital(1, 5, JOY_DOWN);
-}
-
-inline bool getPidToggle() {
-  return joystickGetDigital(1, 7, JOY_DOWN);
-}
 
 #endif
