@@ -62,11 +62,12 @@ void initialize() {
   lcdInit(uart1);
   lcdClear(uart1);
 
-  chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, true);
+  chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, false);
   initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));
+  debug = taskCreate(writePots, TASK_MINIMAL_STACK_SIZE * 3, NULL, TASK_PRIORITY_DEFAULT);
 #endif
 }

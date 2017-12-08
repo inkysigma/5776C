@@ -5,18 +5,19 @@
 #include "pid/vertibar.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
+#include "JINX.h"
 
 bool getConfirmed = true;
 bool autoBuildRunning = false;
 int cone_count = 0;
 
-const int lift[12] = {1660, 1700, 1824, 1530, 1580,
-                      1900, 2170, 2427, 2270, 2450};
+const int lift[12] = {1760, 1880, 1778, 1872, 1484,
+                      1767, 2175, 2084, 2284, 2300};
 
-const int vertbarHigh[12] = {-655, -665, -732, -560, -502,
-                             -650, -595, -550, -605, -615};
+const int vertbarHigh[12] = {-1107, -1200, -1080, -1120, -912,
+                             -1018, -1043, -1042, -1060, -1020};
 
-const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1000, 1100};
+const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1000, 1000};
 
 int liftHeight;
 int vert;
@@ -34,10 +35,9 @@ void buildStackHelper(void *config) {
   setLiftTarget(liftHeight);
   delay(delayTime);
   setClaw(vert);
-
   openClawFully();
   delay(300);
-  incrementVertibar();
+  writeJINXMessage("resetting build");
   autoBuildRunning = false;
   if (!partial) {
     resetClaw();
@@ -77,6 +77,10 @@ void buildPartialStack(int cone_level) {
   partial = true;
   buildStackH = taskCreate(buildStackHelper, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_DEFAULT);
+}
+
+bool getAutoBuildRunning() {
+  return autoBuildRunning;
 }
 
 void stopStack() {

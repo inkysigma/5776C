@@ -149,7 +149,6 @@ void JINXRun(void* ignore) {
 	while (true) {
       writeJINXMessage("Should wait for new string");
       readLine(&inStr);
-      writePots();
       parseMessage(&inStr);
 	    delay(del);
 	}

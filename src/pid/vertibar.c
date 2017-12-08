@@ -3,6 +3,9 @@
 #include "core/robot.h"
 #include "core/sensors.h"
 #include "pid/pidlib.h"
+#if DEBUG
+#include "util/jinx.h"
+#endif
 
 pid vertibarPid;
 TaskHandle vertibarHandle;
@@ -12,7 +15,8 @@ int switchPot() {
 }
 
 void initVertibarPid(float kp, float ki, float kd) {
-  initPid(&vertibarPid, kp, ki, kd, 120, &switchPot);
+  initPid(&vertibarPid, kp, ki, kd, 40, &switchPot);
+  setBounds(&vertibarPid, 20, -20, 110, -110, 10, -10);
   setVertibarTarget(switchPot());
   setTarget(&vertibarPid, switchPot());
 }
@@ -25,6 +29,9 @@ void vertibarTarget(void *args) {
   float vertibarPidVal;
   while (true) {
     vertibarPidVal = pidStep(&vertibarPid, false);
+    #if DEBUG
+    updateValue("vertibar_output", vertibarPidVal);
+    #endif
     raiseSwitchLift(vertibarPidVal);
     waitPid(&vertibarPid);
   }
@@ -35,7 +42,7 @@ void startVertibarPid() {
     taskResume(vertibarHandle);
     return;
   }
-  vertibarHandle = taskCreate(vertibarTarget, 400, NULL,
+  vertibarHandle = taskCreate(vertibarTarget, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_DEFAULT);
 }
 void stopVertibarPid() {
@@ -48,11 +55,11 @@ void resetVertibarPid() {
 }
 
 void incrementVertibar() {
-  incrementTarget(&vertibarPid, 10);
+  incrementTarget(&vertibarPid, 35);
 }
 
 void decrementVertibar() {
-  incrementTarget(&vertibarPid, -10);
+  incrementTarget(&vertibarPid, -35);
 }
 
 int getVertibarTarget() {

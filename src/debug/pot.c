@@ -6,8 +6,12 @@
 #include "pid/pidlib.h"
 #include "util/jinx.h"
 
-void writePots() {
-  updateValue("lift", getLiftPot());
-  updateValue("chain", getChainLift());
+void writePots(void* args) {
+  while (true) {
+    updateValue("lift", getLiftPot());
+    updateValue("button", digitalRead(3));
+    updateValue("chain", getChainLift());
+    delay(500);
+  }
 }
 #endif

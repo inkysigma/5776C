@@ -5,6 +5,7 @@
 #include "pid/vertibar.h"
 #include "configuration/pid/lift.h"
 #include "util/math.h"
+#include "JINX.h"
 
 int claw_state = 0;
 
@@ -15,7 +16,7 @@ void setLift(int lift) {
 
 void setClaw(int pos) {
   setVertibarTarget(pos);
-  executeUntil({delay(100);}, !within(getChainLift(), pos, 17), 1500);
+  executeUntil({delay(100);}, !within(getChainLift(), pos, 30), 1300);
 }
 
 void resetClaw() {

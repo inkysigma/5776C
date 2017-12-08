@@ -8,7 +8,7 @@
 #define LiftPot 2
 #define MobileGoalPot 3
 
-#define CHAIN_ENCODER_TOP 4
-#define CHAIN_ENCODER_BOTTOM 5
+#define CHAIN_ENCODER_TOP 7
+#define CHAIN_ENCODER_BOTTOM 8
 
 #endif

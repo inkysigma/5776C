@@ -4,10 +4,10 @@
 #include "main.h"
 extern bool getConfirmed;
 extern int cone_count;
-extern bool autoBuildRunning;
 
 void buildStack(int cone_level);
 void buildPartialStack(int cone_level);
+
 inline int getConeCount() {
   return cone_count;
 }
@@ -21,9 +21,7 @@ inline void resetConeCount() {
   cone_count = 0;
 }
 
-inline bool getAutoBuildRunning() {
-  return autoBuildRunning;
-}
+bool getAutoBuildRunning();
 
 void stopStack();
 

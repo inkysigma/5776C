@@ -94,11 +94,7 @@ void operatorControl() {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
 
-    if (!getAutoBuildRunning()
-#if DEBUG
-        && !getDebugTaskRunning()
-#endif
-    ) {
+    if (!getAutoBuildRunning()) {
       if (getRaiseLift()) {
         incrementLift();
       } else if (getLowerLift()) {
@@ -120,16 +116,15 @@ void operatorControl() {
         }
       }
 
+      if (alreadyReset && sinceLastReset > 1000) {
+        alreadyReset = false;
+      }
+
       if (getRaiseClaw()) {
         incrementVertibar();
-        if (alreadyReset && sinceLastReset > 700) {
-          alreadyReset = false;
-        }
+
       } else if (getLowerClaw()) {
         decrementVertibar();
-        if (alreadyReset && sinceLastReset > 700) {
-          alreadyReset = false;
-        }
       }
 
       if (getOpenGoal()) {
@@ -185,6 +180,6 @@ void operatorControl() {
         delay(300);
       }
     }
-    delay(100);
+    delay(50);
   }
 }

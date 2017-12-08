@@ -6,6 +6,9 @@
 #include "configuration/pid/lift.h"
 #include "pid/pidlib.h"
 #include "pid/lift.h"
+#if DEBUG
+#include "util/jinx.h"
+#endif
 
 bool liftRunning = true;
 TaskHandle liftPid;
@@ -20,15 +23,14 @@ int liftPot() {
 // setConfig sets the left and right pid configuration. use initPid(kp, ki, kd,
 // dt, sensor) to create a configuration. pass the reference to config.
 void setLiftPidConfig(float kp, float ki, float kd) {
-  initPid(&liftConfig, kp, ki, kd, 80, &liftPot);
-  setBounds(&liftConfig, 7, -7, 120, -120, 5, -5);
-  setMinimumOutput(&liftConfig, 25);
+  initPid(&liftConfig, kp, ki, kd, 40, &liftPot);
+  setBounds(&liftConfig, 20, -20, 120, -120, 12, -12);
 }
 
 
 void setLiftTarget(int target) {
-  if (target > 2760) {
-    setTarget(&liftConfig, 2760);
+  if (target > 2900) {
+    setTarget(&liftConfig, 2900);
   } else if (target < LIFT_MIN) {
     setTarget(&liftConfig, LIFT_MIN);
   } else {
@@ -42,6 +44,12 @@ void holdLift(void *arguments) {
   float total = 0;
   while (true) {
     total = pidStep(&liftConfig, false);
+    if (within(liftConfig.target, liftPot(), 10))
+      liftConfig.accumulation = 0;
+    #if DEBUG
+    updateValue("lift_out", total);
+    updateValue("lift_tar", liftConfig.target);
+    #endif
     moveLift(total);
     waitPid(&liftConfig);
   }
@@ -53,22 +61,22 @@ void startLiftPid() {
     taskResume(liftPid);
     return;
   }
-  liftPid = taskCreate(holdLift, 300, NULL, TASK_PRIORITY_DEFAULT);
+  liftPid = taskCreate(holdLift, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
 }
 
 void incrementLift() {
-  if (liftConfig.target + 20 > 2760) {
-    setTarget(&liftConfig, 2760);
+  if (liftConfig.target + 100 > 2900) {
+    setTarget(&liftConfig, 2900);
   } else {
-    incrementTarget(&liftConfig, 40);
+    incrementTarget(&liftConfig, 100);
   }
 }
 
 void decrementLift() {
-  if (liftConfig.target - 20 < LIFT_MIN) {
+  if (liftConfig.target - 100 < LIFT_MIN) {
     setTarget(&liftConfig, LIFT_MIN);
   } else {
-    incrementTarget(&liftConfig, -40);
+    incrementTarget(&liftConfig, -100);
   }
 }
 
