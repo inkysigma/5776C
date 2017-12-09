@@ -25,13 +25,22 @@ inline void resetChainLift() {
   encoderReset(chainEncoder);
 }
 
-int leftIME, rightIME;
+inline int getGyro() {
+  return gyroGet(mainGyro);
+}
+
+inline void resetGyro() {
+  gyroReset(mainGyro);
+}
+
 inline int getLeftDrive() {
+  int leftIME;
   imeGet(LeftIME, &leftIME);
   return leftIME;
 }
 
 inline int getRightDrive() {
+  int rightIME;
   imeGet(RightIME, &rightIME);
   return rightIME;
 }
