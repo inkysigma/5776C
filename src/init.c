@@ -66,6 +66,7 @@ void initialize() {
   chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, false);
   initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
+  imeInitializeAll();
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));

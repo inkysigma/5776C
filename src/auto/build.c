@@ -15,7 +15,7 @@ const int lift[12] = {1760, 1880, 1778, 1872, 1484,
                       1767, 2175, 2084, 2284, 2300};
 
 const int vertbarHigh[12] = {-1107, -1200, -1080, -1120, -912,
-                             -1018, -1043, -1042, -1060, -1020};
+                             -1018, -1043, -1002, -1060, -1020};
 
 const int intraDelay[12] = {0, 0, 0, 0, 0, 0, 0, 800, 900, 1000, 1000, 1000};
 
@@ -28,6 +28,7 @@ TaskHandle buildStackH;
 
 void buildStackHelper(void *config) {
   autoBuildRunning = true;
+  writeJINXMessage("entering build stack");
   if (!partial) {
     resetClaw();
     delay(200);
@@ -51,11 +52,7 @@ void buildStackHelper(void *config) {
 }
 
 void buildStack(int cone_level) {
-  if (taskGetState(buildStackH) == TASK_SUSPENDED ||
-      taskGetState(buildStackH) == TASK_SLEEPING) {
-    taskSuspend(buildStackH);
-    taskDelete(buildStackH);
-  }
+  writeJINXMessage("build stack called");
   liftHeight = lift[cone_level];
   vert = vertbarHigh[cone_level];
   delayTime = intraDelay[cone_level];

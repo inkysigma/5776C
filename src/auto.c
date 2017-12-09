@@ -53,9 +53,9 @@ void autonomous() {
   openClawFully();
   delay(300);
   stopClaw();
-  moveDrive(0, 127);
+  moveDrive(127, 0);
   delay(600);
-  moveDrive(100, 127);
+  moveDrive(127, 100);
   delay(600);
   moveDrive(0, 0);
 }

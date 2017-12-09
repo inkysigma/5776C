@@ -11,4 +11,10 @@
 #define CHAIN_ENCODER_TOP 7
 #define CHAIN_ENCODER_BOTTOM 8
 
+/**
+* IME Configuration
+**/
+#define RightIME 0
+#define LeftIME 1
+
 #endif
