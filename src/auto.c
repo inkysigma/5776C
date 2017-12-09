@@ -14,8 +14,10 @@
 #include "core/motors.h"
 #include "main.h"
 #include "ops/motors.h"
+#include "ops/auto.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
+#include "pid/drive.h"
 #include "util/math.h"
 
 /*
@@ -40,6 +42,10 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 
+#define FIRST_STEP 1600
+#define SECOND_STEP 1600
+#define MOVE_BACK -100
+
 void stationary_goal_auton() {
   startLiftPid();
   startVertibarPid();
@@ -61,7 +67,24 @@ void stationary_goal_auton() {
 }
 
 void mogo_auton() {
-  
+  startVertibarPid();
+  startDrivePid();
+  // Create new function for openGoal
+  openGoal();
+  setDriveTarget(FIRST_STEP);
+  executeUntil({}, !within(getRightDrive(), FIRST_STEP, 10), 1000000000);
+  delay(100);
+  // Create new function for openGoal
+  retractGoal();
+  // use build stack
+  rotate(180);
+  resetDrive();
+  setDriveTarget(SECOND_STEP);
+  executeUntil({}, !within(getRightDrive(), SECOND_STEP, 10), 1000000000);
+  openGoal();
+  resetDrive();
+  setDriveTarget(MOVE_BACK);
+  executeUntil({}, !within(getRightDrive(), MOVE_BACK, 10), 1000000000);
 }
 
 void autonomous() { mogo_auton(); }
