@@ -15,6 +15,7 @@
 #include "main.h"
 #include "core/robot.h"
 #include "ops/motors.h"
+#include "ops/auto.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
 #include "pid/drive.h"
@@ -45,7 +46,7 @@ void programmingSkills() {
 
 }
 
-void stationaryGoal() {
+void stationaryGoalDisable() {
   setLiftTarget(2175);
   setVertibarTarget(300);
   moveDrive(-127, -127);
@@ -63,22 +64,23 @@ void stationaryGoal() {
   moveDrive(0, 0);
 }
 
+void defensive() {
+  moveDrive(127, 127);
+  delay(2500);
+  moveDrive(0, 0);
+}
+
 void mobileGoal() {
   setDriveTarget(1400, -1400);
 }
 
 void autonomous() {
-  startLiftPid();
-  setVertibarTarget(0);
-  startVertibarPid();
 
   if (autonomousSelect == 0) {
-    stationaryGoal();
+    defensive();
   } else if (autonomousSelect == 1) {
     mobileGoal();
   } else if (autonomousSelect == 2) {
     programmingSkills();
   }
-  stopLiftPid();
-  stopVertibarPid();
 }

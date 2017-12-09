@@ -6,8 +6,8 @@
 #include "util/concurrency.h"
 #include "API.h"
 
-#define MOGO_OUT 263
-#define MOGO_IN 256
+#define MOGO_OUT 4048
+#define MOGO_IN 1000
 
 void setClaw(int pos);
 void setLift(int pos);
@@ -17,5 +17,8 @@ void lowerLiftTo(int lift);
 void toggleClawOpen(bool stall);
 void resetClaw();
 void resetClawState();
+void openGoal();
+void retractGoal();
+void toggleGoal();
 
 #endif
