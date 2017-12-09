@@ -41,23 +41,15 @@
  * exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+void programmingSkills() {
 
-void altenativeAutonomous() {
 }
 
-void autonomous() {
-  startLiftPid();
-  startVertibarPid();
-  startDrivePid();
-  if (autonomousSelect == 1) {
-    altenativeAutonomous();
-    return;
-  }
+void stationaryGoal() {
   setLiftTarget(2175);
   setVertibarTarget(300);
-  setDriveTarget(-1100, 1100);
-  /**moveDrive(-127, -127);
-  delay(1700);
+  moveDrive(-127, -127);
+  delay(1400);
   moveDrive(0, 0);
   setVertibarTarget(150);
   executeUntil({}, !within(getChainLift(), 150, 10), 2000);
@@ -68,7 +60,25 @@ void autonomous() {
   delay(600);
   moveDrive(127, 100);
   delay(600);
-  moveDrive(0, 0); **/
+  moveDrive(0, 0);
+}
+
+void mobileGoal() {
+  setDriveTarget(1400, -1400);
+}
+
+void autonomous() {
+  startLiftPid();
+  setVertibarTarget(0);
+  startVertibarPid();
+
+  if (autonomousSelect == 0) {
+    stationaryGoal();
+  } else if (autonomousSelect == 1) {
+    mobileGoal();
+  } else if (autonomousSelect == 2) {
+    programmingSkills();
+  }
   stopLiftPid();
   stopVertibarPid();
 }
