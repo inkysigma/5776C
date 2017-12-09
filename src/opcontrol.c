@@ -133,7 +133,7 @@ void operatorControl() {
         }
 
         if (getIncreaseStack()) {
-          if (getConeCount() < 10) {
+          if (getConeCount() < 11) {
             incrementConeCount();
             enableConfirm();
             delay(300);

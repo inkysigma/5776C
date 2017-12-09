@@ -2,6 +2,7 @@
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "pid/pidlib.h"
+#include "JINX.h"
 
 pid leftPid;
 pid rightPid;
@@ -35,17 +36,13 @@ void drivePid(void *args) {
     leftTotal = pidStep(&leftPid, true);
     rightTotal = pidStep(&rightPid, true);
     moveDrive(leftTotal, rightTotal);
+    writeJINXMessage("driving pid");
     waitPid(&leftPid);
   }
 }
 
 void startDrivePid() {
-  if (taskGetState(driveHandle) == TASK_RUNNING)
-    return;
-  if (taskGetState(driveHandle) == TASK_SUSPENDED) {
-    taskResume(driveHandle);
-    return;
-  }
+  writeJINXMessage("setting pid target");
   driveHandle = taskCreate(drivePid, TASK_DEFAULT_STACK_SIZE, NULL,
                            TASK_PRIORITY_DEFAULT);
 }

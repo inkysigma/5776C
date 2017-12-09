@@ -9,8 +9,9 @@
 void writePots(void* args) {
   while (true) {
     updateValue("lift", getLiftPot());
-    updateValue("button", digitalRead(3));
     updateValue("chain", getChainLift());
+    updateValue("left_d", getLeftDrive());
+    updateValue("right_d", getRightDrive());
     delay(1000);
   }
 }

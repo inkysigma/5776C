@@ -28,6 +28,13 @@ void parseMessage(JINX *inStr) {
   } else if (strcmp(inStr->token, "auto") == 0) {
     resetChainLift();
     autonomous();
+  } else if (strcmp(inStr->token, "auto2") == 0) {
+    resetChainLift();
+    autonomousSelect = 1;
+    autonomous();
+    autonomousSelect = 0;
+  } else if (strcmp(inStr->token, "dres") == 0) {
+    resetDrive();
   }
   taskRunning = false;
 }

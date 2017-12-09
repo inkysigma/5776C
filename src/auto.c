@@ -13,9 +13,11 @@
 
 #include "core/motors.h"
 #include "main.h"
+#include "core/robot.h"
 #include "ops/motors.h"
 #include "pid/lift.h"
 #include "pid/vertibar.h"
+#include "pid/drive.h"
 #include "util/math.h"
 
 /*
@@ -40,12 +42,21 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 
+void altenativeAutonomous() {
+}
+
 void autonomous() {
   startLiftPid();
   startVertibarPid();
+  startDrivePid();
+  if (autonomousSelect == 1) {
+    altenativeAutonomous();
+    return;
+  }
   setLiftTarget(2175);
   setVertibarTarget(300);
-  moveDrive(-127, -127);
+  setDriveTarget(-1100, 1100);
+  /**moveDrive(-127, -127);
   delay(1700);
   moveDrive(0, 0);
   setVertibarTarget(150);
@@ -57,5 +68,7 @@ void autonomous() {
   delay(600);
   moveDrive(127, 100);
   delay(600);
-  moveDrive(0, 0);
+  moveDrive(0, 0); **/
+  stopLiftPid();
+  stopVertibarPid();
 }

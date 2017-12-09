@@ -44,6 +44,7 @@ void startVertibarPid() {
 }
 void stopVertibarPid() {
   taskSuspend(vertibarHandle);
+  resetPid(&vertibarPid);
 }
 
 void resetVertibarPid() {

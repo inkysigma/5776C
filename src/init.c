@@ -19,6 +19,8 @@
 #endif
 #include "configuration/pid/lift.h"
 #include "configuration/pid/vertibar.h"
+#include "configuration/pid/drive.h"
+#include "pid/drive.h"
 #include "core/sensors.h"
 #include "main.h"
 #include "ops/motors.h"
@@ -44,6 +46,8 @@ TaskHandle debug;
 Encoder chainEncoder;
 Gyro gyro;
 
+int autonomousSelect = 0;
+
 /*
  * Runs user initialization code. This function will be started in its own task
  * with the default priority and stack size once when the robot is starting up.
@@ -66,6 +70,8 @@ void initialize() {
   chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, false);
   initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
+  setLeftDrivePid(LEFT_DRIVE_KP, LEFT_DRIVE_KI, LEFT_DRIVE_KD, LEFT_DRIVE_DT);
+  setRightDrivePid(RIGHT_DRIVE_KP, RIGHT_DRIVE_KI, RIGHT_DRIVE_KD, RIGHT_DRIVE_DT);
   imeInitializeAll();
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,

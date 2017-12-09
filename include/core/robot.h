@@ -3,6 +3,8 @@
 
 #include "API.h"
 
+extern int autonomousSelect;
+
 #define DEBUG 1
 
 #endif
