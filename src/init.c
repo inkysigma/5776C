@@ -42,6 +42,7 @@ void initializeIO() {
 TaskHandle jinx;
 TaskHandle debug;
 Encoder chainEncoder;
+Gyro gyro;
 
 /*
  * Runs user initialization code. This function will be started in its own task
@@ -70,4 +71,6 @@ void initialize() {
                     (TASK_PRIORITY_DEFAULT));
   debug = taskCreate(writePots, TASK_MINIMAL_STACK_SIZE * 3, NULL, TASK_PRIORITY_DEFAULT);
 #endif
+  gyro = gyroInit(1, 0);
+  delay(2000);
 }

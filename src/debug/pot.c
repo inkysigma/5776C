@@ -11,7 +11,7 @@ void writePots(void* args) {
     updateValue("lift", getLiftPot());
     updateValue("button", digitalRead(3));
     updateValue("chain", getChainLift());
-    delay(500);
+    delay(1000);
   }
 }
 #endif

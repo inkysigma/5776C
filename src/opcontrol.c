@@ -91,93 +91,95 @@ void operatorControl() {
   startVertibarPid();
   int sinceLastReset = 0;
   while (true) {
-    int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
-    moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
+    lcdPrint(uart1, 1, "Cones: %d", getConeCount());
+    if (!getDebugTaskRunning()) {
+      int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
+      moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
 
-    if (!getAutoBuildRunning()) {
-      if (getRaiseLift()) {
-        incrementLift();
-      } else if (getLowerLift()) {
-        decrementLift();
-      }
+      if (!getAutoBuildRunning()) {
+        if (getRaiseLift()) {
+          incrementLift();
+        } else if (getLowerLift()) {
+          decrementLift();
+        }
 
-      if (getToggleClaw()) {
-        toggleClawOpen(true);
-        delay(300);
-      }
+        if (getToggleClaw()) {
+          toggleClawOpen(true);
+          delay(300);
+        }
 
-      if (digitalRead(3) == LOW) {
-        if (!alreadyReset) {
+        if (digitalRead(3) == LOW) {
+          if (!alreadyReset) {
+            resetClaw();
+            alreadyReset = true;
+          }
+          if (getVertibarTarget() > 0) {
+            setVertibarTarget(0);
+          }
+        }
+
+        if (alreadyReset && sinceLastReset > 1000) {
+          alreadyReset = false;
+        }
+
+        if (getRaiseClaw()) {
+          incrementVertibar();
+
+        } else if (getLowerClaw()) {
+          decrementVertibar();
+        }
+
+        if (getOpenGoal()) {
+          moveGoal(100);
+        } else if (getRetractGoal()) {
+          moveGoal(-100);
+        } else {
+          moveGoal(0);
+        }
+
+        if (getHoldClaw()) {
           resetClaw();
           alreadyReset = true;
+          setVertibarTarget(-10);
         }
-        if (getVertibarTarget() > 0) {
-          setVertibarTarget(0);
+
+        if (getBuildStack()) {
+          if (getConeCount() < 10) {
+            buildStack(getConeCount());
+            incrementConeCount();
+          }
+          delay(400);
         }
-      }
 
-      if (alreadyReset && sinceLastReset > 1000) {
-        alreadyReset = false;
-      }
-
-      if (getRaiseClaw()) {
-        incrementVertibar();
-
-      } else if (getLowerClaw()) {
-        decrementVertibar();
-      }
-
-      if (getOpenGoal()) {
-        moveGoal(100);
-      } else if (getRetractGoal()) {
-        moveGoal(-100);
-      } else {
-        moveGoal(0);
-      }
-
-      if (getHoldClaw()) {
-        resetClaw();
-        alreadyReset = true;
-        setVertibarTarget(-10);
-      }
-
-      if (getBuildStack()) {
-        if (getConeCount() < 10) {
-          buildStack(getConeCount());
-          incrementConeCount();
-        }
-        delay(400);
-      }
-
-      if (getIncreaseStack()) {
-        if (getConeCount() < 10) {
-          incrementConeCount();
+        if (getIncreaseStack()) {
+          if (getConeCount() < 10) {
+            incrementConeCount();
+            enableConfirm();
+            delay(100);
+          }
+        } else if (getDecreaseStack()) {
+          if (getConeCount() > 0) {
+            decrementConeCount();
+            enableConfirm();
+            delay(100);
+          }
+        } else if (getResetStack()) {
+          resetConeCount();
           enableConfirm();
           delay(100);
         }
-      } else if (getDecreaseStack()) {
-        if (getConeCount() > 0) {
-          decrementConeCount();
-          enableConfirm();
-          delay(100);
+        checkIncrement();
+
+        if (!alreadyReset) {
+          sinceLastReset += 40;
+        } else {
+          sinceLastReset = 0;
         }
-      } else if (getResetStack()) {
-        resetConeCount();
-        enableConfirm();
-        delay(100);
-      }
-
-      checkIncrement();
-
-      if (!alreadyReset) {
-        sinceLastReset += 40;
       } else {
-        sinceLastReset = 0;
-      }
-    } else {
-      if (getHoldClaw()) {
-        stopStack();
-        delay(300);
+        if (getAutoBuildRunning() && getHoldClaw()) {
+          stopStack();
+          delay(300);
+        }
       }
     }
     delay(50);

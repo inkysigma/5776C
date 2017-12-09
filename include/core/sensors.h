@@ -23,4 +23,6 @@ inline void resetChainLift() {
   encoderReset(chainEncoder);
 }
 
+extern Gyro mainGyro;
+
 #endif

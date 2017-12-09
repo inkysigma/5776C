@@ -14,6 +14,8 @@
 #include "core/motors.h"
 #include "main.h"
 #include "ops/motors.h"
+#include "pid/lift.h"
+#include "pid/vertibar.h"
 #include "util/math.h"
 
 /*
@@ -39,7 +41,21 @@
  */
 
 void autonomous() {
-    moveDrive(127, 127);
-    delay(2000);
-    moveDrive(0, 0);
+  startLiftPid();
+  startVertibarPid();
+  setLiftTarget(2175);
+  setVertibarTarget(300);
+  moveDrive(-127, -127);
+  delay(1700);
+  moveDrive(0, 0);
+  setVertibarTarget(150);
+  executeUntil({}, !within(getChainLift(), 150, 10), 2000);
+  openClawFully();
+  delay(300);
+  stopClaw();
+  moveDrive(0, 127);
+  delay(600);
+  moveDrive(100, 127);
+  delay(600);
+  moveDrive(0, 0);
 }

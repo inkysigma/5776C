@@ -25,6 +25,9 @@ void parseMessage(JINX *inStr) {
     getToken(inStr, 1);
     buildStack(atoi(inStr->token));
     executeUntil({ delay(100); }, getAutoBuildRunning(), 4000);
+  } else if (strcmp(inStr->token, "auto") == 0) {
+    resetChainLift();
+    autonomous();
   }
   taskRunning = false;
 }
