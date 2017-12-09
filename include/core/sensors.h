@@ -50,5 +50,11 @@ inline void resetDrive() {
   imeReset(RightIME);
 }
 
+inline int getLeftVelocity() {
+  int velocity;
+  imeGetVelocity(LeftIME, &velocity);
+  return velocity;
+}
+
 
 #endif
