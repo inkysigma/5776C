@@ -84,4 +84,4 @@ void mogo_auton() {
   executeUntil({}, !within(getRightDrive(), MOVE_BACK, 10), 700);
 }
 
-void autonomous() { mogo_auton(); }
+void autonomous() { stationary_goal_auton(); }
