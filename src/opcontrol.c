@@ -36,7 +36,6 @@
 #include "util/math.h"
 
 bool alreadyReset = false;
-TaskHandle secondop;
 
 void checkIncrement() {
   if (getIncreaseStack()) {
@@ -95,11 +94,7 @@ void operatorControl() {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
 
-    if (!getAutoBuildRunning()
-#if DEBUG
-        && !getDebugTaskRunning()
-#endif
-    ) {
+    if (!getAutoBuildRunning()) {
       if (getRaiseLift()) {
         incrementLift();
       } else if (getLowerLift()) {
@@ -113,9 +108,7 @@ void operatorControl() {
 
       if (digitalRead(3) == LOW) {
         if (!alreadyReset) {
-          resetChainLift();
-          resetVertibarPid();
-          setVertibarTarget(0);
+          resetClaw();
           alreadyReset = true;
         }
         if (getVertibarTarget() > 0) {
@@ -123,16 +116,15 @@ void operatorControl() {
         }
       }
 
+      if (alreadyReset && sinceLastReset > 1000) {
+        alreadyReset = false;
+      }
+
       if (getRaiseClaw()) {
         incrementVertibar();
-        if (alreadyReset && sinceLastReset > 700) {
-          alreadyReset = false;
-        }
+
       } else if (getLowerClaw()) {
         decrementVertibar();
-        if (alreadyReset && sinceLastReset > 700) {
-          alreadyReset = false;
-        }
       }
 
       if (getOpenGoal()) {
@@ -145,6 +137,7 @@ void operatorControl() {
 
       if (getHoldClaw()) {
         resetClaw();
+        alreadyReset = true;
         setVertibarTarget(-10);
       }
 
@@ -187,6 +180,6 @@ void operatorControl() {
         delay(300);
       }
     }
-    delay(100);
+    delay(50);
   }
 }

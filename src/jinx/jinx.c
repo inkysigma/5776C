@@ -13,18 +13,14 @@
 #if DEBUG
 #include "main.h"
 #include "JINX.h"
+#include "debug/pot.h"
 
 //Port over which all serial communication will occur. STDIN == STDOUT, so either can be used
 static FILE* comPort = stdout;
 
 void initJINX(FILE* port) {
-    //If the port is not a valid communications port, inform user of error
     if (!setComPort(port)) {
-        //Would print to stderr, but not set for PROS
         printf("Invalid Port specified for JINX communications\n");
-
-        //Optionally allow user to fail on error. Not recommended
-        //exit(EXIT_FAILURE);
     }
 }
 
@@ -40,10 +36,6 @@ bool setComPort(FILE* port) {
         comPort = port;
         return true;
     }
-
-    #if(DEBUG_JINX)
-            printf("Failed to open specified port for JINX (setComPort(FILE* port))\n");
-    #endif
 
     return false;
 }
@@ -152,9 +144,7 @@ void JINXRun(void* ignore) {
   delay(1000);
 	while(fcount(comPort) > 0) {
       fgetc(comPort);
-      writeJINXSerial("Trashing garbage\n");
   };
-  writeJINXSerial("finished trashing garbage\n");
 
 	while (true) {
       writeJINXMessage("Should wait for new string");

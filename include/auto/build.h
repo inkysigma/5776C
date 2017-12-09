@@ -3,13 +3,26 @@
 
 #include "main.h"
 extern bool getConfirmed;
+extern int cone_count;
+
 void buildStack(int cone_level);
 void buildPartialStack(int cone_level);
-int getConeCount();
-void incrementConeCount();
-void decrementConeCount();
-void resetConeCount();
-int getAutoBuildRunning();
+
+inline int getConeCount() {
+  return cone_count;
+}
+inline void incrementConeCount() {
+  cone_count++;
+}
+inline void decrementConeCount() {
+  cone_count--;
+}
+inline void resetConeCount() {
+  cone_count = 0;
+}
+
+bool getAutoBuildRunning();
+
 void stopStack();
 
 inline void enableConfirm() {
