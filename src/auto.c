@@ -69,22 +69,19 @@ void stationary_goal_auton() {
 void mogo_auton() {
   startVertibarPid();
   startDrivePid();
-  // Create new function for openGoal
   openGoal();
-  setDriveTarget(FIRST_STEP);
-  executeUntil({}, !within(getRightDrive(), FIRST_STEP, 10), 1000000000);
+  setDriveTarget(FIRST_STEP, FIRST_STEP);
+  executeUntil({}, !within(getRightDrive(), FIRST_STEP, 10), 5000);
   delay(100);
-  // Create new function for openGoal
   retractGoal();
-  // use build stack
   rotate(180);
   resetDrive();
-  setDriveTarget(SECOND_STEP);
-  executeUntil({}, !within(getRightDrive(), SECOND_STEP, 10), 1000000000);
+  setDriveTarget(SECOND_STEP, SECOND_STEP);
+  executeUntil({}, !within(getRightDrive(), SECOND_STEP, 10), 6000);
   openGoal();
   resetDrive();
-  setDriveTarget(MOVE_BACK);
-  executeUntil({}, !within(getRightDrive(), MOVE_BACK, 10), 1000000000);
+  setDriveTarget(MOVE_BACK, MOVE_BACK);
+  executeUntil({}, !within(getRightDrive(), MOVE_BACK, 10), 700);
 }
 
 void autonomous() { mogo_auton(); }

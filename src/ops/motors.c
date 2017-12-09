@@ -8,6 +8,7 @@
 #include "JINX.h"
 
 int claw_state = 0;
+bool mogo_out = false;
 
 void setLift(int lift) {
   setLiftTarget(lift);
@@ -62,4 +63,25 @@ void toggleClawOpen(bool stall) {
       claw_state = 0;
       break;
   }
+}
+
+void openGoal() {
+    moveGoal(127);
+    executeUntil({delay(100);}, !within(getMobileGoalPot(), MOGO_OUT, 3), 1300);
+    moveGoal(0);
+    mogo_out = true;
+}
+
+void retractGoal() {
+    moveGoal(-127);
+    executeUntil({delay(100);}, !within(getMobileGoalPot(), MOGO_IN, 3), 1300);
+    moveGoal(0);
+    mogo_out = false;
+}
+
+void toggleGoal() {
+    if (mogo_out == false)
+        openGoal();
+    else
+        retractGoal();
 }
