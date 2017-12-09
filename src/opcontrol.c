@@ -37,25 +37,6 @@
 
 bool alreadyReset = false;
 
-void checkIncrement() {
-  if (getIncreaseStack()) {
-    if (getConeCount() < 10) {
-      incrementConeCount();
-      enableConfirm();
-    }
-    delay(500);
-  } else if (getDecreaseStack()) {
-    if (getConeCount() > 0) {
-      decrementConeCount();
-      enableConfirm();
-    }
-    delay(500);
-  } else if (getResetStack()) {
-    resetConeCount();
-    enableConfirm();
-    delay(500);
-  }
-}
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -118,7 +99,7 @@ void operatorControl() {
           }
         }
 
-        if (alreadyReset && sinceLastReset > 1000) {
+        if (alreadyReset && sinceLastReset > 800) {
           alreadyReset = false;
         }
 
@@ -147,28 +128,26 @@ void operatorControl() {
           if (getConeCount() < 10) {
             buildStack(getConeCount());
             incrementConeCount();
+            delay(300);
           }
-          delay(400);
         }
 
         if (getIncreaseStack()) {
           if (getConeCount() < 10) {
             incrementConeCount();
             enableConfirm();
-            delay(100);
+            delay(300);
           }
         } else if (getDecreaseStack()) {
           if (getConeCount() > 0) {
             decrementConeCount();
             enableConfirm();
-            delay(100);
+            delay(300);
           }
         } else if (getResetStack()) {
           resetConeCount();
-          enableConfirm();
-          delay(100);
+          delay(300);
         }
-        checkIncrement();
 
         if (!alreadyReset) {
           sinceLastReset += 40;

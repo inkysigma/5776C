@@ -5,6 +5,9 @@
 #include "configuration/sensors.h"
 #include "API.h"
 
+extern Encoder chainEncoder;
+extern Gyro mainGyro;
+
 inline int getLiftPot() {
   return analogRead(LiftPot);
 }
@@ -13,7 +16,6 @@ inline int getMobileGoalPot() {
   return analogRead(MobileGoalPot);
 }
 
-extern Encoder chainEncoder;
 
 inline int getChainLift() {
   return encoderGet(chainEncoder);
@@ -23,6 +25,21 @@ inline void resetChainLift() {
   encoderReset(chainEncoder);
 }
 
-extern Gyro mainGyro;
+int leftIME, rightIME;
+inline int getLeftDrive() {
+  imeGet(LeftIME, &leftIME);
+  return leftIME;
+}
+
+inline int getRightDrive() {
+  imeGet(RightIME, &rightIME);
+  return rightIME;
+}
+
+inline void resetDrive() {
+  imeReset(LeftIME);
+  imeReset(RightIME);
+}
+
 
 #endif

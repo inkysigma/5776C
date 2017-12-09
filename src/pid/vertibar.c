@@ -29,9 +29,6 @@ void vertibarTarget(void *args) {
   float vertibarPidVal;
   while (true) {
     vertibarPidVal = pidStep(&vertibarPid, false);
-    #if DEBUG
-    updateValue("vertibar_output", vertibarPidVal);
-    #endif
     raiseSwitchLift(vertibarPidVal);
     waitPid(&vertibarPid);
   }

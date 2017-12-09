@@ -16,7 +16,7 @@ void setLift(int lift) {
 
 void setClaw(int pos) {
   setVertibarTarget(pos);
-  executeUntil({delay(100);}, !within(getChainLift(), pos, 30), 1300);
+  executeUntil({delay(100);}, !within(getChainLift(), pos, 35), 1300);
 }
 
 void resetClaw() {
@@ -25,6 +25,7 @@ void resetClaw() {
   executeUntil({}, digitalRead(3) == HIGH, 7000);
   raiseSwitchLift(0);
   resetChainLift();
+  delay(40);
   setVertibarTarget(0);
   resetVertibarPid();
   startVertibarPid();

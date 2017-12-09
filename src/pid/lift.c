@@ -46,10 +46,6 @@ void holdLift(void *arguments) {
     total = pidStep(&liftConfig, false);
     if (within(liftConfig.target, liftPot(), 10))
       liftConfig.accumulation = 0;
-    #if DEBUG
-    updateValue("lift_out", total);
-    updateValue("lift_tar", liftConfig.target);
-    #endif
     moveLift(total);
     waitPid(&liftConfig);
   }
