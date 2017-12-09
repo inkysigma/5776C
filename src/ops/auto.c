@@ -17,5 +17,5 @@ void rotate(int degrees) {
   executeUntil({
     int difference = abs(getGyro() - target);
     moveDrive(leftMul * difference, rightMul * difference);
-  }, within(getGyro(), target, 5) && getLeftVelocity() < 20, degrees * 10);
+  }, !within(getGyro(), target, 5) && getLeftVelocity() < 20, degrees * 10);
 }
