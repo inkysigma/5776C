@@ -40,7 +40,7 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 
-void autonomous() {
+void stationary_goal_auton() {
   startLiftPid();
   startVertibarPid();
   setLiftTarget(2175);
@@ -59,3 +59,9 @@ void autonomous() {
   delay(600);
   moveDrive(0, 0);
 }
+
+void mogo_auton() {
+  
+}
+
+void autonomous() { mogo_auton(); }
