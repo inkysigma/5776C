@@ -18,7 +18,8 @@ inline void rotateDrive(int speed) {
 }
 
 inline void moveLift(int power) {
-	motorSet(Lift, bound(power, 127, -127));
+	motorSet(LeftLift, -bound(power, 127, -127));
+	motorSet(RightLift, bound(power, 127, -127));
 }
 
 inline void openClaw(int power) {

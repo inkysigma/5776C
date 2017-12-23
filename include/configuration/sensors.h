@@ -4,8 +4,8 @@
 /**
 * Analog sensor configuration
 **/
-#define PrimaryGyro 1
-#define LiftPot 2
+#define LiftPot 1
+#define VertibarPot 2
 #define MobileGoalPot 3
 
 #define CHAIN_ENCODER_TOP 7

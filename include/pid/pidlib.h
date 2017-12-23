@@ -32,7 +32,10 @@ typedef struct
 
 	// the sensor the use and the target
 	int (*func)();
+
+	bool externalCurrent;
 	float target;
+	float current;
 } pid;
 
 // initialize a pid struct to the given values. the integral and total output
@@ -48,6 +51,12 @@ void setBounds(pid *ref, int max_int, int min_int, int max_total,
 // reset the accumulator and previous error of the pid struct. use this to reuse
 // a pid after it has been shut off and the target reset
 void resetPid(pid *config);
+
+void setExternalControl(pid* config, bool control);
+
+void setCurrent(pid *config, float current);
+
+void setFunction(pid *config, int (*sensor)());
 
 // set the target of a pid. may be used continuously to set the target
 void setTarget(pid *config, float target);

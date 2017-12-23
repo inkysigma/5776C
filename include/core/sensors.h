@@ -1,60 +1,32 @@
 #ifndef CORE_SENSORS_H
 #define CORE_SENSORS_H
 
-#include "util/JINX.h"
-#include "configuration/sensors.h"
 #include "API.h"
+#include "configuration/sensors.h"
 
-extern Encoder chainEncoder;
-extern Gyro mainGyro;
+inline int getVertibarPot() {
+  return analogRead(VertibarPot);
+}
 
 inline int getLiftPot() {
   return analogRead(LiftPot);
 }
 
-inline int getMobileGoalPot() {
-  return analogRead(MobileGoalPot);
-}
-
-
-inline int getChainLift() {
-  return encoderGet(chainEncoder);
-}
-
-inline void resetChainLift() {
-  encoderReset(chainEncoder);
-}
-
-inline int getGyro() {
-  return gyroGet(mainGyro);
-}
-
-inline void resetGyro() {
-  gyroReset(mainGyro);
-}
-
 inline int getLeftDrive() {
-  int leftIME;
-  imeGet(LeftIME, &leftIME);
-  return leftIME;
+  int left;
+  imeGet(0, &left);
+  return left;
 }
 
 inline int getRightDrive() {
-  int rightIME;
-  imeGet(RightIME, &rightIME);
-  return rightIME;
+  int right;
+  imeGet(0, &right);
+  return right;
 }
 
 inline void resetDrive() {
-  imeReset(LeftIME);
-  imeReset(RightIME);
+  imeReset(0);
+  imeReset(1);
 }
-
-inline int getLeftVelocity() {
-  int velocity;
-  imeGetVelocity(LeftIME, &velocity);
-  return velocity;
-}
-
 
 #endif

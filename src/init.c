@@ -13,19 +13,16 @@
  */
 
 #include "core/robot.h"
+#include "JINX.h"
+#include "debug/pot.h"
+#include "pid/lift.h"
+
+#include "configuration/pid/lift.h"
 #if DEBUG
 #include "JINX.h"
 #include "debug/pot.h"
 #endif
-#include "configuration/pid/lift.h"
-#include "configuration/pid/vertibar.h"
-#include "configuration/pid/drive.h"
-#include "pid/drive.h"
-#include "core/sensors.h"
-#include "main.h"
-#include "ops/motors.h"
-#include "pid/lift.h"
-#include "pid/vertibar.h"
+
 /*
  * Runs pre-initialization code. This function will be started in kernel mode
  * one time while the VEX Cortex is starting up. As the scheduler is still
@@ -40,13 +37,9 @@ void initializeIO() {
   pinMode(3, INPUT);
   watchdogInit();
 }
-
+int autonomousSelect = 0;
 TaskHandle jinx;
 TaskHandle debug;
-Encoder chainEncoder;
-Gyro gyro;
-
-int autonomousSelect = 0;
 
 /*
  * Runs user initialization code. This function will be started in its own task
@@ -63,21 +56,10 @@ int autonomousSelect = 0;
  */
 void initialize() {
   setTeamName("5776C");
-
-  lcdInit(uart1);
-  lcdClear(uart1);
-
-  chainEncoder = encoderInit(CHAIN_ENCODER_TOP, CHAIN_ENCODER_BOTTOM, false);
-  initVertibarPid(VERT_KP, VERT_KI, VERT_KD);
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
-  setLeftDrivePid(LEFT_DRIVE_KP, LEFT_DRIVE_KI, LEFT_DRIVE_KD, LEFT_DRIVE_DT);
-  setRightDrivePid(RIGHT_DRIVE_KP, RIGHT_DRIVE_KI, RIGHT_DRIVE_KD, RIGHT_DRIVE_DT);
-  imeInitializeAll();
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));
-  debug = taskCreate(writePots, TASK_MINIMAL_STACK_SIZE * 3, NULL, TASK_PRIORITY_DEFAULT);
+  debug = taskCreate(writePots, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
 #endif
-  gyro = gyroInit(1, 0);
-  delay(2000);
 }

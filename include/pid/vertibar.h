@@ -10,4 +10,6 @@ void incrementVertibar();
 void decrementVertibar();
 int getVertibarTarget();
 
+void printFunctionLocation();
+
 #endif

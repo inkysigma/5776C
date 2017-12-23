@@ -1,6 +1,9 @@
 #include "pid/pidlib.h"
 #include "util/math.h"
 #include "core/robot.h"
+#if DEBUG
+#include "util/JINX.h"
+#endif
 
 void initPid(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   // initialize the pid to some constants. for tSensors sensor, pass in
@@ -18,6 +21,7 @@ void initPid(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   ref->max_der = 10;
   ref->min_der = -10;
   ref->func = sensor;
+  ref->externalCurrent = false;
 }
 
 void setBounds(pid *ref, int max_int, int min_int, int max_total, int min_total,
@@ -47,14 +51,32 @@ void setTarget(pid *config, float target) {
   config->target = target;
 }
 
+void setExternalControl(pid* config, bool control) {
+  config->externalCurrent = control;
+}
+
+void setCurrent(pid *config, float current) {
+  // set the value of the pid for a given instance
+  config->current = current;
+}
+
+void setFunction(pid *config, int (*sensor)()) {
+  config->func = sensor;
+}
+
 float pidStep(pid *config, bool reversed) {
-  // calculate the value derived by a pid
-  double current_pos = config->func();
+  double current_pos;
+  if (!config->externalCurrent)
+    current_pos = config->func();
+  else
+    current_pos = config->current;
+
   double error;
   if (!reversed)
     error = config->target - current_pos;
   else
     error = current_pos - config->target;
+
   double integral = config->accumulation + error * config->dt / 1000;
   double derivative = (error - config->prev_error) / (config->dt / 1000);
 

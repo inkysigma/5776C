@@ -10,33 +10,27 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
-
-#include "core/controls.h"
-#include "core/motors.h"
-#include "core/robot.h"
-#include "core/sensors.h"
-
 #include "main.h"
-
-#include "ops/motors.h"
 
 #if DEBUG
 #include "JINX.h"
 #endif
+
+#include "core/motors.h"
+#include "core/sensors.h"
+#include "core/controls.h"
 
 #include "auto/build.h"
 #include "configuration/pid/lift.h"
 #include "configuration/pid/vertibar.h"
 
 #include "pid/lift.h"
-#include "pid/pidlib.h"
 #include "pid/vertibar.h"
 
 #include "util/jinx.h"
 #include "util/math.h"
 
 bool alreadyReset = false;
-
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -67,99 +61,35 @@ bool alreadyReset = false;
  * even if empty.
  */
 void operatorControl() {
+
   setLiftTarget(getLiftPot());
-  startLiftPid();
+  setVertibarTarget(getVertibarPot());
   startVertibarPid();
-  int sinceLastReset = 0;
+  startLiftPid();
+
   while (true) {
-    lcdPrint(uart1, 1, "Cones: %d", getConeCount());
-    if (!getDebugTaskRunning()) {
-      int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
-      moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
+    int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
+    moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
+    if (getRaiseLift()) {
+      incrementLift();
+    } else if (getLowerLift()) {
+      decrementLift();
+    } else {
+      moveLift(0);
+    }
 
-      if (!getAutoBuildRunning()) {
-        if (getRaiseLift()) {
-          incrementLift();
-        } else if (getLowerLift()) {
-          decrementLift();
-        }
+    if (getRaiseClaw()) {
+      incrementVertibar();
+    } else if (getLowerClaw()) {
+      decrementVertibar();
+    }
 
-        if (getToggleClaw()) {
-          toggleClawOpen(true);
-          delay(300);
-        }
-
-        if (digitalRead(3) == LOW) {
-          if (!alreadyReset) {
-            resetClaw();
-            alreadyReset = true;
-          }
-          if (getVertibarTarget() > 0) {
-            setVertibarTarget(0);
-          }
-        }
-
-        if (alreadyReset && sinceLastReset > 800) {
-          alreadyReset = false;
-        }
-
-        if (getRaiseClaw()) {
-          incrementVertibar();
-
-        } else if (getLowerClaw()) {
-          decrementVertibar();
-        }
-
-        if (getOpenGoal()) {
-          moveGoal(100);
-        } else if (getRetractGoal()) {
-          moveGoal(-100);
-        } else {
-          moveGoal(0);
-        }
-
-        if (getHoldClaw()) {
-          resetClaw();
-          alreadyReset = true;
-          setVertibarTarget(-10);
-        }
-
-        if (getBuildStack()) {
-          if (getConeCount() < 10) {
-            buildStack(getConeCount());
-            incrementConeCount();
-            delay(300);
-          }
-        }
-
-        if (getIncreaseStack()) {
-          if (getConeCount() < 11) {
-            incrementConeCount();
-            enableConfirm();
-            delay(300);
-          }
-        } else if (getDecreaseStack()) {
-          if (getConeCount() > 0) {
-            decrementConeCount();
-            enableConfirm();
-            delay(300);
-          }
-        } else if (getResetStack()) {
-          resetConeCount();
-          delay(300);
-        }
-
-        if (!alreadyReset) {
-          sinceLastReset += 40;
-        } else {
-          sinceLastReset = 0;
-        }
-      } else {
-        if (getAutoBuildRunning() && getHoldClaw()) {
-          stopStack();
-          delay(300);
-        }
-      }
+    if (getOpenGoal()) {
+      moveGoal(100);
+    } else if (getRetractGoal()) {
+      moveGoal(-100);
+    } else {
+      moveGoal(0);
     }
     delay(50);
   }

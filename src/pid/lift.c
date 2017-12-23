@@ -29,13 +29,7 @@ void setLiftPidConfig(float kp, float ki, float kd) {
 
 
 void setLiftTarget(int target) {
-  if (target > 2900) {
-    setTarget(&liftConfig, 2900);
-  } else if (target < LIFT_MIN) {
-    setTarget(&liftConfig, LIFT_MIN);
-  } else {
-    setTarget(&liftConfig, target);
-  }
+  setTarget(&liftConfig, target);
 }
 
 // holdLift holds the lift at a specific position using a PID loop. This should
@@ -61,10 +55,10 @@ void startLiftPid() {
 }
 
 void incrementLift() {
-  if (liftConfig.target + 100 > 2900) {
-    setTarget(&liftConfig, 2900);
+  if (liftConfig.target + 100 > 2500) {
+    setTarget(&liftConfig, 2500);
   } else {
-    incrementTarget(&liftConfig, 100);
+    incrementTarget(&liftConfig, 40);
   }
 }
 
@@ -72,7 +66,7 @@ void decrementLift() {
   if (liftConfig.target - 100 < LIFT_MIN) {
     setTarget(&liftConfig, LIFT_MIN);
   } else {
-    incrementTarget(&liftConfig, -100);
+    incrementTarget(&liftConfig, -40);
   }
 }
 
