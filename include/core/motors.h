@@ -44,11 +44,11 @@ inline void moveSwitchLift(int power) {
 
 inline void lowerSwitchLift(int power) {
 	// move the switch lift until it rotates the other way
-	moveSwitchLift(bound(power, 127, -127));
+	moveSwitchLift(power);
 }
 
 inline void raiseSwitchLift(int power) {
-	moveSwitchLift(-bound(power, 127, -127));
+	moveSwitchLift(-power);
 }
 
 inline void moveGoal(int power) {

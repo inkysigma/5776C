@@ -86,9 +86,13 @@ float pidStep(pid *config, bool reversed) {
   config->accumulation = integral;
   config->prev_error = error;
 
+
+
   double total =
       config->kp * error + config->ki * integral + config->kd * derivative;
-
+  if (config->kp == 1.1) {
+    updateValue("total", total);
+  }
   if (absf(total) < config->min_output) {
     return 0;
   }

@@ -18,6 +18,8 @@
 #include "pid/lift.h"
 
 #include "configuration/pid/lift.h"
+#include "configuration/pid/vertibar.h"
+#include "pid/vertibar.h"
 #if DEBUG
 #include "JINX.h"
 #include "debug/pot.h"
@@ -57,6 +59,7 @@ TaskHandle debug;
 void initialize() {
   setTeamName("5776C");
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
+  setVertibarConfig(VERT_KP, VERT_KI, VERT_KD);
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));

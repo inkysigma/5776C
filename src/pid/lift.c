@@ -23,7 +23,7 @@ int liftPot() {
 // setConfig sets the left and right pid configuration. use initPid(kp, ki, kd,
 // dt, sensor) to create a configuration. pass the reference to config.
 void setLiftPidConfig(float kp, float ki, float kd) {
-  initPid(&liftConfig, kp, ki, kd, 40, &liftPot);
+  initPid(&liftConfig, kp, ki, kd, 20, &liftPot);
   setBounds(&liftConfig, 20, -20, 120, -120, 12, -12);
 }
 
@@ -40,6 +40,7 @@ void holdLift(void *arguments) {
     total = pidStep(&liftConfig, false);
     if (within(liftConfig.target, liftPot(), 10))
       liftConfig.accumulation = 0;
+    updateValue("lift_out", total);
     moveLift(total);
     waitPid(&liftConfig);
   }

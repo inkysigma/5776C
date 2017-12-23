@@ -74,8 +74,6 @@ void operatorControl() {
       incrementLift();
     } else if (getLowerLift()) {
       decrementLift();
-    } else {
-      moveLift(0);
     }
 
     if (getRaiseClaw()) {

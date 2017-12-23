@@ -15,9 +15,9 @@ int readVertPot() {
   return getVertibarPot();
 }
 
-void initVertibarPid(float kp, float ki, float kd) {
-  initPid(&vertibarPid, kp, ki, kd, 50, &readVertPot);
-  setBounds(&vertibarPid, 20, -20, 110, -110, 10, -10);
+void setVertibarConfig(float kp, float ki, float kd) {
+  initPid(&vertibarPid, kp, ki, kd, 20, &readVertPot);
+  setBounds(&vertibarPid, 40, -40, 120, -120, 10, -10);
 }
 
 void setVertibarTarget(float target) {
@@ -26,21 +26,17 @@ void setVertibarTarget(float target) {
 
 void vertibarTarget(void *args) {
   float vertibarPidVal = 0;
-  setExternalControl(&vertibarPid, true);
   while (true) {
-    setCurrent(&vertibarPid, readVertPot());
-    updateValue("vert_pot_read", readVertPot());
     vertibarPidVal = pidStep(&vertibarPid, false);
-    // raiseSwitchLift(vertibarPidVal);
+    lowerSwitchLift(vertibarPidVal);
+    if (!within(vertibarPid.target, readVertPot(), 400)) {
+      vertibarPidVal = sgn(vertibarPid.target - readVertPot()) * 127;
+    }
+    if (within(vertibarPid.target, readVertPot(), 40))
+      vertibarPid.accumulation = 0;
     updateValue("vert_out", vertibarPidVal);
-    updateValue("vert_target", vertibarPid.target);
     waitPid(&vertibarPid);
-    delay(40);
   }
-}
-
-void printFunctionLocation() {
-  updateValue("mem_loc", (unsigned int) &readVertPot);
 }
 
 void startVertibarPid() {
@@ -62,11 +58,11 @@ void resetVertibarPid() {
 }
 
 void incrementVertibar() {
-  incrementTarget(&vertibarPid, 35);
+  incrementTarget(&vertibarPid, 90);
 }
 
 void decrementVertibar() {
-  incrementTarget(&vertibarPid, -35);
+  incrementTarget(&vertibarPid, -90);
 }
 
 int getVertibarTarget() {
