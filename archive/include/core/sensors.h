@@ -18,15 +18,5 @@ inline int getLeftDrive() {
   return left;
 }
 
-inline int getRightDrive() {
-  int right;
-  imeGet(0, &right);
-  return right;
-}
-
-inline void resetDrive() {
-  imeReset(0);
-  imeReset(1);
-}
 
 #endif

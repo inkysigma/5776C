@@ -11,7 +11,10 @@ void writeSensors(void* args) {
     updateValue("lift", getLiftPot());
     updateValue("vertibar", getVertibarPot());
     updateValue("motor", motorGet(5));
-    delay(1000);
+    updateValue("ldrive", getLeftDrive());
+    updateValue("rdrive", getRightDrive());
+    updateValue("rotation", getGyro());
+    delay(500);
   }
 }
 #endif

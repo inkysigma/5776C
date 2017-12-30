@@ -1,23 +1,20 @@
 #include "configuration/robot.h"
-#if TEST
+#if MODE == 1
 #include "main.h"
 #include "core/motors.h"
 #include "core/controls.h"
 
 void operatorControl() {
+  printf("WARNING-TESTING MOTOR FUNCTIONALITY\r\n");
   while (true) {
-    printf("WARNING-TESTING MOTOR FUNCTIONALITY");
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
     moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
     if (getRaiseLift()) {
       moveLift(100);
-      motorSet(9, 100);
     } else if (getLowerLift()) {
       moveLift(-100);
-      motorSet(9, -100);
     } else {
       moveLift(0);
-      motorSet(9, 0);
     }
 
     if (getRaiseClaw()) {

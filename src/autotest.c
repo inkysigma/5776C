@@ -11,7 +11,7 @@
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
 #include "configuration/robot.h"
-#if MODE == 0
+#if MODE == 2
 #include "main.h"
 
 #include "core/controls.h"
@@ -45,10 +45,13 @@ void operatorControl() {
 
   setLiftTarget(1280);
   startLiftPid();
+  startDrivePid();
 
   while (1) {
     int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
-    moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
+    incrementLeftDrive(getJoystickLeft() + turn);
+    incrementRightDrive(getJoystickRight() - turn);
+
     if (getRaiseLift()) {
       incrementLift();
     } else if (getLowerLift()) {

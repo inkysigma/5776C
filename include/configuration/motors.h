@@ -1,13 +1,13 @@
 #ifndef CONFIGURATION_MOTORS_H
 #define CONFIGURATION_MOTORS_H
 
-#define RightDrive 2
-#define RightLift 4
-#define RightMobileGoal 4
-#define Vertibar 5
+#define LeftMobileGoal 2
+#define RightMobileGoal 3
+#define RightDrive 4
+#define LeftDrive 5
 #define Claw 6
-#define LeftMobileGoal 7
-#define LeftLift 5
-#define LeftDrive 9
+#define Vertibar 7
+#define LeftLift 8
+#define RightLift 9
 
 #endif

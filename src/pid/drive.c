@@ -24,6 +24,14 @@ void setLeftDrivePid(float kp, float ki, float kd, float dt) {
   initPid(&rightPid, kp, ki, kd, dt, &left);
 }
 
+void incrementRightDrivePid(int amt) {
+  incrementTarget(&rightPid, amt);
+}
+
+void incrementLeftDrivePid(int amt) {
+  incrementTarget(&leftPid, amt);
+}
+
 void setDriveTarget(float left, float right) {
   setTarget(&leftPid, left);
   setTarget(&rightPid, right);

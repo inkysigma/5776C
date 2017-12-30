@@ -4,6 +4,6 @@
 extern int autonomousSelection;
 
 #define DEBUG 1
-#define TEST 1
+#define MODE 1
 
 #endif

@@ -9,4 +9,7 @@ void startDrivePid();
 void stopDrivePid();
 void resetDrivePid();
 
+void incrementLeftDrivePid(int amt);
+void incrementRightDrivePid(int amt);
+
 #endif

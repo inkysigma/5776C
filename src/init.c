@@ -14,8 +14,10 @@
 #include "main.h"
 
 #include "configuration/pid/lift.h"
+#include "configuration/pid/drive.h"
 #include "configuration/pid/vertibar.h"
 #include "pid/lift.h"
+#include "pid/drive.h"
 #include "pid/vertibar.h"
 #include "debug/sensors.h"
 
@@ -32,9 +34,12 @@
  void initializeIO() {
    watchdogInit();
  }
+
  int autonomousSelect = 0;
  TaskHandle jinx;
  TaskHandle debug;
+
+ Gyro mainGyro;
 
 /*
  * Runs user initialization code. This function will be started in its own task
@@ -53,6 +58,13 @@ void initialize() {
   setTeamName("5776C");
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
   setVertibarConfig(VERT_KP, VERT_KI, VERT_KD);
+  setLeftDrivePid(LEFT_DRIVE_KP, LEFT_DRIVE_KI, LEFT_DRIVE_KD, LEFT_DRIVE_DT);
+  setRightDrivePid(RIGHT_DRIVE_KP, RIGHT_DRIVE_KI, RIGHT_DRIVE_KD, RIGHT_DRIVE_DT);
+
+  imeInitializeAll();
+
+  mainGyro = gyroInit(MainGyro, 0);
+
 #if DEBUG
   jinx = taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL,
                     (TASK_PRIORITY_DEFAULT));

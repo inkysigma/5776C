@@ -5,21 +5,19 @@
 #include "API.h"
 #include "util/math.h"
 
-#define LEVEL_CHANGE 30
-
 inline void moveDrive(int left, int right) {
-	motorSet(LeftDrive, -bound(left, 127, -127));
-	motorSet(RightDrive, bound(right, 127, -127));
+	motorSet(LeftDrive, bound(left, 127, -127));
+	motorSet(RightDrive, -bound(right, 127, -127));
 }
 
 inline void rotateDrive(int speed) {
 	motorSet(LeftDrive, bound(speed, 127, -127));
-	motorSet(RightDrive, bound(speed, 127, -127));
+	motorSet(RightDrive, -bound(speed, 127, -127));
 }
 
 inline void moveLift(int power) {
-	motorSet(LeftLift, -bound(power, 127, -127));
-	motorSet(RightLift, bound(power, 127, -127));
+	motorSet(LeftLift, bound(power, 127, -127));
+	motorSet(RightLift, -bound(power, 127, -127));
 }
 
 inline void openClaw(int power) {
@@ -30,12 +28,9 @@ inline void closeClaw(int power) {
 	motorSet(Claw, -power);
 }
 
-inline void stopClaw() {
-	openClaw(0);
-}
-
 inline void moveSwitchLift(int power) {
-	motorSet(Vertibar, power);
+	// set the power on the motor of the vertibar. positive is open
+	motorSet(Vertibar, -power);
 }
 
 inline void lowerSwitchLift(int power) {
@@ -48,8 +43,8 @@ inline void raiseSwitchLift(int power) {
 }
 
 inline void moveGoal(int power) {
-	motorSet(LeftMobileGoal, -bound(power, 127, -127));
-	motorSet(RightMobileGoal, bound(power, 127, -127));
+	motorSet(LeftMobileGoal, bound(power, 127, -127));
+	motorSet(RightMobileGoal, -bound(power, 127, -127));
 }
 
 #endif
