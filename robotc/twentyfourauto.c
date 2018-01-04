@@ -26,6 +26,11 @@ void moveLift(int power) {
 	motor[port8] = power;
 }
 
+void moveVertibar(int power) {
+	motor[vertibar] = -power;
+	motor[port3] = -power;
+}
+
 void openClaw(int power) {
 	motor[claw] = power;
 }
@@ -34,7 +39,7 @@ void openClaw(int power) {
 void twenty() {
 	resetGyro();
 	openClaw(-20);
-	moveVertibar(50);
+	moveVertibar(40);
 	resetDriveIME();
 	moveLift(100);
 	waitUntil(SensorValue[lift] > 1500);
@@ -58,7 +63,31 @@ void twenty() {
 	openClaw(100);
 	delay(400);
 	openClaw(0);
+
+	// attempt to retrive the next cone
 	moveLift(100);
+	delay(400);
+	moveVertibar(-60);
+	moveLift(30);
+	delay(800);
+	moveLift(-100);
+	moveVertibar(0);
+	delay(400);
+	moveLift(-100);
+	waitUntil(within(SensorValue[lift], 1130, 40));
+	resetDriveIME();
+	moveDrive(100, 100);
+	waitUntil(within(SensorValue[LeftDrive], 150, 40));
+	moveDrive(-10, -10);
+	delay(200);
+	moveDrive(0, 0);
+
+	openClaw(-40);
+	moveLift(100);
+	delay(400);
+	moveVertibar(100);
+	delay(500);
+	openClaw(127);
 
 
 	// attempt to return to base
