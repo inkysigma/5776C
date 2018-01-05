@@ -13,7 +13,7 @@ inline int getLiftPot() {
 }
 
 inline int getMobileGoalPot() {
-  return 0;
+  return analogRead(MobileGoalPot);
 }
 
 inline int getLeftDrive() {
