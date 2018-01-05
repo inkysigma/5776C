@@ -2,15 +2,15 @@
 #define PID_VERT_C
 #include "../motors.h"
 
-#define VERT_KP 0.8
-#define VERT_KI 0
+#define VERT_KP 0.35
+#define VERT_KI 0.2
 #define VERT_KD 0
 
 float vert_target = 0;
 float vert_prev_error = 0;
 float vert_integral = 0;
 float vert_total_cap = 120;
-float vert_integral_cap = 30;
+float vert_integral_cap = 20;
 float vert_derivative_cap = 10;
 
 task vertpid()
@@ -27,6 +27,7 @@ task vertpid()
 		if (abs(total) > vert_total_cap)
 			total = sgn(total) * vert_total_cap;
 		moveVertibar(total);
+		delay(20);
 	}
 }
 

@@ -1,10 +1,11 @@
 #ifndef PID_LIFT_C
 #define PID_LIFT_C
 #include "../motors.h"
+#include "../util/math.h"
 
-#define LIFT_KP 0.8
-#define LIFT_KI 0.2
-#define LIFT_KD 0.15
+#define LIFT_KP 0.7
+#define LIFT_KI 0.4
+#define LIFT_KD 0.005
 
 float lift_target = 0;
 float lift_prev_error = 0;
@@ -27,6 +28,7 @@ task liftpid()
 		if (abs(total) > lift_total_cap)
 			total = sgn(total) * lift_total_cap;
 		moveLift(total);
+		delay(20);
 	}
 }
 
@@ -42,12 +44,24 @@ void incrementLift() {
 	lift_target += 23;
 }
 
+void incrementLiftBy(int inc) {
+	if (lift_target + inc > 2210) {
+		lift_target = 2210;
+		return;
+	}
+	lift_target += inc;
+}
+
 void decrementLift() {
 	if (lift_target -23 < 1050) {
 		lift_target = 1050;
 		return;
 	}
 	lift_target -= 23;
+}
+
+bool withinLiftTarget(float margin) {
+	return within(lift_target, SensorValue[lift], margin);
 }
 
 

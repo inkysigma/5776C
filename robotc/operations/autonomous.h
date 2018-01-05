@@ -34,7 +34,7 @@ bool setLift(int target, int timeout) {
 bool setVertibar(int target, int timeout) {
 	setVertibarTarget(target);
 	clearTimer(T1);
-	waitUntil(within(SensorValue[vertibar], target, 40) || time1[T1] > timeout);
+	waitUntil(within(SensorValue[vertibar], target, 20) || time1[T1] > timeout);
 	return time1[T1] > timeout;
 }
 
