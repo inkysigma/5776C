@@ -24,11 +24,21 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
+#ifndef PID_LIFT_C
 #include "pid/lift.c"
+#endif
+#ifndef PID_VERT_C
 #include "pid/vertibar.c"
+#endif
+#ifndef OPERATIONS_AUTOBUILD_C
 #include "operations/autobuild.c"
+#endif
+#ifndef OPERATIONS_AUTONOMOUS_H
 #include "operations/autonomous.h"
-#include "util/math.h"
+#endif
+#ifndef UTIL_MATH_H
+#include "../util/math.h"
+#endif
 
 #define AUTONOMOUS_GOAL 20
 
@@ -64,9 +74,27 @@ task autonomous() {
 #endif
 }
 
+task alternateControl() {
+	while (true) {
+		if (vexRT[Btn7R] && !getRunning()) {
+			waitUntil(!vexRT[Btn7R]);
+			startTask(liftpid);
+			setLift(1600, 800);
+			int prevPosition =  SensorValue[lift];
+			delay(200);
+			while (SensorValue[lift] - prevPosition > 20) {
+				prevPosition = SensorValue[lift];
+				delay(200);
+			}
+			delay(400);
+			stopLiftPid();
+	}}
+}
+
 task usercontrol()
 {
 	resetDriveIME();
+	startTask(alternateControl);
 	//current number of times claw has opened; used to keep track of current state
 	int clawCounter = 0;
 
@@ -81,15 +109,21 @@ task usercontrol()
 	setVertibarTarget(SensorValue[vertibar]);
 	setLiftTarget(SensorValue[lift]);
 
-
 	while(true) {
 		delay(20);
 		motor[port4] = -vexRT[Ch2];
 		motor[port5] = vexRT[Ch3];
 
 		//vertibar
-		if (!getRunning())
-			moveVertibar(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
+		if (!getRunning()) {
+			if (!getVertibarPidRunning()) {
+				moveVertibar(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
+				} else {
+				if (vexRT[Btn6U]) incrementVert();
+				else if (vexRT[Btn6D]) decrementVert();
+			}
+		}
+
 
 
 		//mobileBtn7D
@@ -97,13 +131,14 @@ task usercontrol()
 
 		if (vexRT[Btn5U]) {
 			incrementLift();
-			if (!getRunning()) moveLift(100);
+			if (!getRunning() && !getLiftPidRunning()) moveLift(100);
 		}
 		else if (vexRT[Btn5D]) {
 			decrementLift();
-			if (!getRunning()) moveLift(-100);
-			} else {
-			if (!getRunning()) moveLift(0);
+			if (!getRunning() && !getLiftPidRunning()) moveLift(-100);
+		}
+		else {
+			if (!getRunning() && !getLiftPidRunning()) moveLift(0);
 		}
 
 
@@ -118,21 +153,18 @@ task usercontrol()
 
 		if(vexRT[Btn8U]) coneCounter = 0;
 
-		if (vexRT[Btn8D] && !getRunning()) {
-			buildDriverLoads(coneCounter);
+		if (vexRT[Btn8D] && !getVertibarPidRunning()) {
+			startTask(vertpid);
+			setVertibarTarget(2900);
 			waitUntil(!vexRT[Btn8D]);
-			recount = true;
-			} else if (vexRT[Btn8D] && getRunning()) {
-			stopAutoBuild();
-			waitUntil(!vexRT[Btn8R]);
-			recount = false;
+		}
+		else if (vexRT[Btn8D] && getVertibarPidRunning()) {
+			setVertibarTarget(3600);
+			delay(500);
+			stopVertibarPid();
+			waitUntil(!vexRT[Btn8D]);
 		}
 
-		if (vexRT[Btn7R] && !getRunning()) {
-			buildMatchLoads(coneCounter);
-			waitUntil(!vexRT[Btn7R]);
-			recount = true;
-		}
 
 		if (!getRunning() && recount) {
 			coneCounter++;

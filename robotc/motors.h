@@ -13,4 +13,8 @@ void moveVertibar(int power) {
 void openClaw(int power) {
 	motor[claw] = power;
 }
+
+void moveMobileGoal(int power) {
+	motor[port2] = power;
+}
 #endif

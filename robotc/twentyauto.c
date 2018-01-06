@@ -1,10 +1,5 @@
-
 void resetGyro() {
 	SensorValue[gyro] = 0;
-}
-
-void moveMobileGoal(int power) {
-	motor[port2] = power;
 }
 
 void moveDrive(int left, int right) {
