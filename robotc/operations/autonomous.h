@@ -1,40 +1,26 @@
 #ifndef OPERATIONS_AUTONOMOUS_H
 #define OPERATIONS_AUTONOMOUS_H
+#ifndef MOTOR_H
 #include "../motors.h"
+#endif
+#ifndef PID_VERT_C
 #include "../pid/vertibar.c"
+#endif
+#ifndef UTIL_MATH_H
 #include "../util/math.h"
-
-void liftVertibarCompletely(bool pidenabled) {
-	if (pidenabled) {
-		setVertibarTarget(1165);
-		return;
-	}
-	moveVertibar(100);
-	delay(1300);
-	moveVertibar(20);
-}
-
-void lowerVertibarCompletely(bool pidenabled) {
-	if (pidenabled) {
-		setVertibarTarget(3677);
-		return;
-	}
-	moveVertibar(-100);
-	delay(1300);
-	moveVertibar(-10);
-}
+#endif
 
 bool setLift(int target, int timeout) {
 	setLiftTarget(target);
 	clearTimer(T1);
-	waitUntil(within(SensorValue[lift], target, 40) || time1[T1] > timeout);
+	waitUntil(within(SensorValue[lift], target, 70) || time1[T1] > timeout);
 	return time1[T1] > timeout;
 }
 
 bool setVertibar(int target, int timeout) {
 	setVertibarTarget(target);
 	clearTimer(T1);
-	waitUntil(within(SensorValue[vertibar], target, 40) || time1[T1] > timeout);
+	waitUntil(within(SensorValue[vertibar], target, 50) || time1[T1] > timeout);
 	return time1[T1] > timeout;
 }
 

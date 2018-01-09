@@ -1,14 +1,5 @@
-
 void resetGyro() {
 	SensorValue[gyro] = 0;
-}
-
-bool within(float a, float b, float margin) {
-	return abs(a - b) < margin;
-}
-
-void moveMobileGoal(int power) {
-	motor[port2] = power;
 }
 
 void moveDrive(int left, int right) {
@@ -20,16 +11,6 @@ void resetDriveIME() {
 	SensorValue[LeftDrive] = 0;
 	SensorValue[RightDrive] = 0;
 }
-
-void moveLift(int power) {
-	motor[port9] = -power;
-	motor[port8] = power;
-}
-
-void openClaw(int power) {
-	motor[claw] = power;
-}
-
 
 void twenty() {
 	resetGyro();

@@ -28,14 +28,33 @@
 #include "lift.h"
 #include "lift.c"
 
-#define AUTONOMOUS_GOAL 20
+#define AUTONOMOUS_GOAL 10
+#define BLUE 1
 
-#if AUTONOMOUS_GOAL==20
+#if !BLUE
+
+#if AUTONOMOUS_GOAL==0
+#include "defensiveauto.c"
+#elif AUTONOMOUS_GOAL==20
 #include "twentyauto.c"
 #elif AUTONOMOUS_GOAL==10
 #include "tenauto.c"
 #elif AUTONOMOUS_GOAL==27
 #include "supportauto.c"
+#endif
+
+#elif BLUE
+
+#if AUTONOMOUS_GOAL==0
+#include "defensiveauto.c"
+#elif AUTONOMOUS_GOAL==20
+#include "bluetwenty.c"
+#elif AUTONOMOUS_GOAL==10
+#include "blueten.c"
+#elif AUTONOMOUS_GOAL==27
+#include "bluesupport.c"
+#endif
+
 #endif
 
 
@@ -54,13 +73,9 @@ task autonomous() {
 	twenty();
 #elif AUTONOMOUS_GOAL==27
 	twentyseven();
+#elif AUTONOMOUS_GOAL==0
+	defensive();
 #endif
-}
-
-task autostackControl() {
-	while (true) {
-
-	}
 }
 
 task usercontrol()
@@ -80,8 +95,8 @@ task usercontrol()
 		motor[port5] = vexRT[Ch3];
 
 		//lift
-		motor[port9] = -(100 * vexRT[Btn5U] + -100 * vexRT[Btn5D]);
-		motor[port8] = 100 * vexRT[Btn5U] + -100 * vexRT[Btn5D];
+		motor[port9] = -(100 * vexRT[Btn5U] + -100 * vexRT[Btn5D] + 20);
+		motor[port8] = 100 * vexRT[Btn5U] + -100 * vexRT[Btn5D] + 20;
 
 		//vertibar
 		motor[port7] = -(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
