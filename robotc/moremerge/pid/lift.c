@@ -5,16 +5,16 @@
 #endif
 #include "../util/math.h"
 
-#define LIFT_KP 0.8
+#define LIFT_KP 0.65
 #define LIFT_KI 0.4
-#define LIFT_KD 0.012
+#define LIFT_KD 0.001
 
 float lift_target = 0;
 float lift_prev_error = 0;
 float lift_integral = 0;
 float lift_total_cap = 120;
 float lift_integral_cap = 60;
-float lift_derivative_cap = 10;
+float lift_derivative_cap = 12;
 
 bool lift_pid_running = false;
 
@@ -32,6 +32,10 @@ task liftpid()
 		int total = error * LIFT_KP + lift_integral * LIFT_KI + LIFT_KD * derivative;
 		if (abs(total) > lift_total_cap)
 			total = sgn(total) * lift_total_cap;
+		datalogAddValue(0, total);
+		datalogAddValue(1, inte * LIFT_KI);
+		datalogAddValue(2, error * LIFT_KP);
+		datalogAddValue(3, derivative * LIFT_KD);
 		moveLift(total);
 		delay(20);
 	}

@@ -22,47 +22,53 @@ bool isRunning = false;
 bool driver = false;
 
 task buildDriver() {
+
 	resetLiftPid();
+
 	// set the lift to the initial height
 	if (drive_loads.matchLoads)
 		incrementLiftBy(200);
 
 	openClaw(-30);
-	if (drive_loads.matchLoads) openClaw(-40);
-
-	setVertibar(2950, 200);
 
 	// move to the correct height and begin moving the vertibar when appropiate or
 	// the timer reachers 2.5 seconds.
-	setLiftTarget(drive_loads.height);
+
+
 	clearTimer(T1);
+	setLiftTarget(drive_loads.height);
+
+
+	waitUntil(SensorValue[lift] > drive_loads.height || within(SensorValue[lift], drive_loads.height, 200) || time1[T1] > 2500);
+
+
+	writeDebugStreamLine("starting the vertibar ascent");
+	// raise the vertibar
+	setVertibar(1000, 1400);
 	if (drive_loads.liftMobileGoal) {
 		moveMobileGoal(120);
 		delay(1000);
 		moveMobileGoal(0);
 	}
 
-	waitUntil(SensorValue[lift] > drive_loads.height || within(SensorValue[lift], drive_loads.height, 200) || time1[T1] > 2500);
-
-	// raise the vertibar
-	setVertibar(1230, 1700);
-	delay(200);
-
 	clearTimer(T1);
-	waitUntil(within(SensorValue[lift], drive_loads.height, 70) || time1[T1] > 1800);
+	waitUntil(within(SensorValue[lift], drive_loads.height, 100) || time1[T1] > 1800);
+	writeDebugStreamLine("lift height");
+
 	if (drive_loads.lowerLift) {
 		incrementLiftBy(-90);
 		clearTimer(T1);
 		waitUntil(withinLiftTarget(20) || time1[T1] > 700);
 		delay(400);
-		} else {
+		}
+	else {
 		incrementLiftBy(-50);
-		delay(600);
+		delay(200);
 	}
 
 	openClaw(100);
 	delay(200);
-	openClaw(0);
+	openClaw(5);
 
 	resetLiftPid();
 	incrementLiftBy(300);
@@ -78,15 +84,22 @@ task buildDriver() {
 
 	// reset the lift the the height of the driver loads
 	if (drive_loads.matchLoads) {
+		openClaw(100);
 		setVertibar(2900, 800);
-		setLiftCap(80);
-		setLiftTarget(1660);
+		setLiftCap(90);
+		setLiftTarget(1630);
 		delay(400);
+		openClaw(15);
 		setVertibar(3400, 1600);
 
 		clearTimer(T1);
-		waitUntil((within(SensorValue[lift], 1660, 50) && within(SensorValue[vertibar], 3400, 50)) || time1[T1] > 2500);
+		int prev = SensorValue[lift];
+		while (!(within(SensorValue[lift], 1640, 50) && within(SensorValue[vertibar], 3400, 50) && abs(prev - SensorValue[lift]) < 40) && time1[T1] < 2500) {
+			if (SensorValue[lift] < 1750)
+				setLiftCap(40);
+		}
 		setLiftCap(120);
+
 		} else {
 		// lower the vertibar
 		setVertibar(2900, 800);
@@ -109,41 +122,41 @@ bool setLiftBuildHeight(int cone_stack) {
 
 	switch(cone_stack) {
 	case 0:
-		drive_loads.height = 1150;
+		drive_loads.height = 1170;
 		break;
 	case 1:
 		drive_loads.height = 1320;
 		break;
 	case 2:
-		drive_loads.height = 1440;
+		drive_loads.height = 1520;
 		break;
 	case 3:
-		drive_loads.height = 1530;
+		drive_loads.height = 1610;
 		break;
 	case 4:
-		drive_loads.height = 1590;
+		drive_loads.height = 1700;
 		break;
 	case 5:
-		drive_loads.height = 1675;
+		drive_loads.height = 1790;
 		break;
 	case 6:
-		drive_loads.height = 1820;
+		drive_loads.height = 1890;
 		drive_loads.lowerLift = true;
 		break;
 	case 7:
-		drive_loads.height = 1930;
-		drive_loads.lowerLift = true;
-		break;
-	case 8:
 		drive_loads.height = 2030;
 		drive_loads.lowerLift = true;
 		break;
+	case 8:
+		drive_loads.height = 2180;
+		drive_loads.lowerLift = true;
+		break;
 	case 9:
-		drive_loads.height = 2110;
+		drive_loads.height = 2290;
 		drive_loads.lowerLift = true;
 		break;
 	case 10:
-		drive_loads.height = 2200;
+		drive_loads.height = 2270;
 		drive_loads.lowerLift = true;
 		drive_loads.maxheight = true;
 		break;
@@ -158,16 +171,11 @@ bool setLiftBuildHeight(int cone_stack) {
 
 bool buildMatchLoads(int cone_stack) {
 	resetLiftPid();
-	writeDebugStreamLine("building match loads");
+	writeDebugStreamLine("building match loads: %i", cone_stack);
 	setVertibarTarget(SensorValue[vertibar]);
 	setLiftTarget(SensorValue[lift]);
 	startTask(liftpid);
 	startTask(vertpid);
-
-	if (cone_stack == 0) {
-		setLift(1600, 1000);
-		setVertibar(3400, 1000);
-	}
 
 	isRunning = true;
 	driver = true;
@@ -216,6 +224,7 @@ void stopAutoBuild() {
 
 	stopLiftPid();
 	stopVertibarPid();
+	suspendTask(buildDriver);
 	stopTask(buildDriver);
 	moveLift(0);
 	moveVertibar(0);

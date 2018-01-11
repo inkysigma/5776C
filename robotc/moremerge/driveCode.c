@@ -27,6 +27,10 @@
 
 #include "configuration.h"
 
+#ifndef MOTOR_H
+#include "motors.h"
+#endif
+
 #ifndef PID_LIFT_C
 #include "pid/lift.c"
 #endif
@@ -60,7 +64,7 @@
 #endif
 
 void pre_auton() {
-
+	datalogClear();
 	clearDebugStream();
 	writeDebugStreamLine("blue: %d", BLUE);
 	SensorType[gyro] = sensorNone;
@@ -89,15 +93,27 @@ bool recount = false;
 
 task alternateControl() {
 
-
 	while (true) {
-		if (vexRT[Btn7R] && !getRunning()) {
+		if (vexRT[Btn7R] && !getRunning() && !recount) {
 			buildMatchLoads(coneCounter);
+			waitUntil(!vexRT[Btn7R]);
 			recount = true;
-		} else if (vexRT[Btn7R] && getRunning()) {
+			} else if (vexRT[Btn7R] && getRunning()) {
 			recount = false;
+			waitUntil(!vexRT[Btn7R]);
 			stopAutoBuild();
 		}
+
+		// counter control
+		if (vexRT[Btn8L] && coneCounter > 0) {
+			waitUntil(!vexRT[Btn8L]);
+			--coneCounter;
+			} else if (vexRT[Btn8R]) {
+			waitUntil(!vexRT[Btn8R]);
+			++coneCounter;
+		}
+
+		if(vexRT[Btn8U]) coneCounter = 0;
 	}
 }
 
@@ -125,12 +141,12 @@ task usercontrol()
 		if (!getRunning()) {
 			if (!getVertibarPidRunning()) {
 				moveVertibar(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
-				} else {
+			}
+			else {
 				if (vexRT[Btn6U]) incrementVert();
 				else if (vexRT[Btn6D]) decrementVert();
 			}
 		}
-
 
 
 		//mobileBtn7D
@@ -149,54 +165,37 @@ task usercontrol()
 		}
 
 
-		// counter control
-		if (vexRT[Btn8L] && coneCounter > 0) {
-			waitUntil(!vexRT[Btn8L]);
-			--coneCounter;
-			} else if (vexRT[Btn8R]) {
-			waitUntil(!vexRT[Btn8R]);
-			++coneCounter;
-		}
 
-		if(vexRT[Btn8U]) coneCounter = 0;
-
-		if (vexRT[Btn8D] && !getVertibarPidRunning()) {
+		if (vexRT[Btn8D] && !getRunning()) {
 			startTask(vertpid);
-			setVertibarTarget(2900);
+			startTask(liftpid);
+			setVertibarTarget(3400);
+			setLiftTarget(1680);
 			waitUntil(!vexRT[Btn8D]);
-		}
-		else if (vexRT[Btn8D] && getVertibarPidRunning()) {
-			setVertibarTarget(3600);
-			delay(500);
 			stopVertibarPid();
-			waitUntil(!vexRT[Btn8D]);
+			stopLiftPid();
 		}
-
 
 		if (!getRunning() && recount) {
+			stopVertibarPid();
+			stopLiftPid();
 			coneCounter++;
 			recount = false;
 		}
 
 		if(vexRT[Btn7D]) {
-			if(!isClaw) {
-				++clawCounter;
-				isClaw = true;
-				if(clawCounter % 2 == 0) {
-					motor[port6] = -100;
-					wait1Msec(200);
-					motor[port6] = -20;
-				}
-				else if(clawCounter % 2 == 1) {
-					motor[port6] = 100;
-					wait1Msec(200);
-					motor[port6] = 30;
-				}
-
+			++clawCounter;
+			isClaw = true;
+			if(clawCounter % 2 == 0) {
+				motor[port6] = -100;
+				wait1Msec(200);
+				motor[port6] = -20;
 			}
-		}
-		else {
-			isClaw = false;
+			else if(clawCounter % 2 == 1) {
+				motor[port6] = 100;
+				wait1Msec(200);
+				motor[port6] = 30;
+			}
 		}
 	}
 }
