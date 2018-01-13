@@ -38,3 +38,53 @@ cameron h: notebook
 
 #### scouting
 jitesh m: builder
+
+
+
+# The Bot
+## {made for reliability}
+
+- consistent > faster + inconsistent
+- better outcome
+
+
+
+# The Lift
+## {gear-linked, reverse double four bar}
+
+- easier tuning
+- faster fixes
+
+
+- faster than mechanically linked
+- triangle band for support
+
+
+
+# The Intake
+## {sideways four-bar}
+
+- Better than a chain bar
+ - physical connection = no desync
+- Centralizes center of mass
+
+
+- Takes up vertical space: bracing
+ - increased spacing
+ - increased height capability
+
+
+
+# The Code
+## {Made with PROS}
+- PID to stabilize lift and offset four-bar
+- Autostack function quickly stacks cones
+
+
+# Advantages over  ROBOTC
+- cross-platform
+- computationally efficient
+- easier to debug syntax
+- better support for version control
+- extension libraries
+- GCC optimization
