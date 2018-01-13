@@ -2,7 +2,7 @@
 #define AUTO_TEN_C
 
 #ifndef MOTOR_H
-#include "motors.h"
+#include "../motors.h"
 #endif
 
 void ten() {

@@ -6,7 +6,10 @@
 #ifndef PID_LIFT_C
 #include "../pid/lift.c"
 #endif
+#ifndef AUTONOMOUS_H
 #include "autonomous.h"
+#endif
+
 
 typedef struct {
 	int height;
@@ -27,7 +30,7 @@ task buildDriver() {
 
 	// set the lift to the initial height
 	if (drive_loads.matchLoads)
-		incrementLiftBy(200);
+		incrementLiftBy(400);
 
 	openClaw(-30);
 
@@ -41,27 +44,27 @@ task buildDriver() {
 
 	waitUntil(SensorValue[lift] > drive_loads.height || within(SensorValue[lift], drive_loads.height, 200) || time1[T1] > 2500);
 
-
-	writeDebugStreamLine("starting the vertibar ascent");
 	// raise the vertibar
-	setVertibar(1000, 1400);
+	setVertibar(1000, 1200);
 	if (drive_loads.liftMobileGoal) {
+		writeDebugStreamLine("trying to lift mobile goal");
 		moveMobileGoal(120);
 		delay(1000);
 		moveMobileGoal(0);
 	}
 
 	clearTimer(T1);
-	waitUntil(within(SensorValue[lift], drive_loads.height, 100) || time1[T1] > 1800);
-	writeDebugStreamLine("lift height");
+	waitUntil(within(SensorValue[lift], drive_loads.height, 100) || SensorValue[lift] > drive_loads.height|| time1[T1] > 1800);
 
 	if (drive_loads.lowerLift) {
+		writeDebugStreamLine("lowering lift with extra");
 		incrementLiftBy(-90);
 		clearTimer(T1);
 		waitUntil(withinLiftTarget(20) || time1[T1] > 700);
 		delay(400);
 		}
 	else {
+		writeDebugStreamLine("lowering lift");
 		incrementLiftBy(-50);
 		delay(200);
 	}
@@ -125,7 +128,7 @@ bool setLiftBuildHeight(int cone_stack) {
 		drive_loads.height = 1170;
 		break;
 	case 1:
-		drive_loads.height = 1320;
+		drive_loads.height = 1420;
 		break;
 	case 2:
 		drive_loads.height = 1520;
@@ -134,29 +137,29 @@ bool setLiftBuildHeight(int cone_stack) {
 		drive_loads.height = 1610;
 		break;
 	case 4:
-		drive_loads.height = 1700;
+		drive_loads.height = 1670;
 		break;
 	case 5:
-		drive_loads.height = 1790;
+		drive_loads.height = 1760;
 		break;
 	case 6:
-		drive_loads.height = 1890;
+		drive_loads.height = 1860;
 		drive_loads.lowerLift = true;
 		break;
 	case 7:
-		drive_loads.height = 2030;
+		drive_loads.height = 2000;
 		drive_loads.lowerLift = true;
 		break;
 	case 8:
-		drive_loads.height = 2180;
+		drive_loads.height = 2150;
 		drive_loads.lowerLift = true;
 		break;
 	case 9:
-		drive_loads.height = 2290;
+		drive_loads.height = 2260;
 		drive_loads.lowerLift = true;
 		break;
 	case 10:
-		drive_loads.height = 2270;
+		drive_loads.height = 2240;
 		drive_loads.lowerLift = true;
 		drive_loads.maxheight = true;
 		break;
