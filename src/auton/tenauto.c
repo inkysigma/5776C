@@ -1,85 +1,133 @@
-
-void resetGyro() {
-	SensorValue[gyro] = 0;
-}
-
-bool within(float a, float b, float margin) {
-	return abs(a - b) < margin;
-}
-
-void moveMobileGoal(int power) {
-	motor[port2] = power;
-	motor[port3] = -power;
-}
-
-void moveDrive(int left, int right) {
-	motor[port5] = left;
-	motor[port4] = -right;
-}
-
-void resetDriveIME() {
-	SensorValue[LeftDrive] = 0;
-	SensorValue[RightDrive] = 0;
-}
-
-void moveLift(int power) {
-	motor[port9] = -power;
-	motor[port8] = power;
-}
-
-void moveVertibar(int power) {
-	motor[vertibar] = -power;
-}
-
-void openClaw(int power) {
-	motor[claw] = power;
-}
+#include "core/motors.h"
+#include "core/sensors.h"
+#include "configuration/robot.h"
+#include "util/concurrency.h"
 
 void ten() {
-	resetDriveIME();
+	// initialization tasks
+	resetGyro();
+	resetDrive();
+	openClaw(-20);
+	moveSwitchLift(20);
 	moveLift(100);
-	waitUntil(SensorValue[lift] > 1500);
-	moveMobileGoal(127);
-	waitUntil(SensorValue[mobogo] > 1433);
-	moveMobileGoal(0);
-	moveLift(60);
+	waitUntil(getLiftPot() > 1500, 3000);
+
+	// begin moving the mobile goal after the lift is sufficiently high
+	moveGoal(127);
+	moveLift(30);
 	delay(900);
-	moveDrive(127, 127);
-	moveLift(0);
-	waitUntil(within(SensorValue[LeftDrive], 1460, 40));
+	moveDrive(115, 127);
+	waitUntil(getMobileGoalPot() > 2840, 3000);
+	moveGoal(0);
+	waitUntil(within(getLeftDrive(), 1000, 40) || getLeftDrive() > 1180, 6000);
+	moveGoal(127);
+	moveDrive(60, 60);
+	while (getMobileGoalPot() < 2990) moveGoal(1.5 * (3000 - getMobileGoalPot()));
+	moveGoal(-10);
+	delay(50);
+	moveGoal(0);
+	waitUntil(within(getLeftDrive(), 1600, 40) || getLeftDrive() > 1620, 6000);
 	moveDrive(0, 0);
 	delay(500);
-	moveMobileGoal(-100);
-	waitUntil(within(SensorValue[mobogo], 0, 20));
-	moveMobileGoal(0);
+	moveGoal(-100);
+	waitUntil(within(getMobileGoalPot(), 1300, 20), 2000);
+	moveGoal(0);
+
+	// drop the first cone into its place
+	moveLift(-75);
+	waitUntil(within(getLiftPot(), 1200, 40), 2000);
+	moveLift(10);
+	openClaw(100);
+	delay(400);
+	openClaw(10);
+	moveLift(100);
+
+	// collect cone behind, raise lift up
+	resetDrive();
+	waitUntil(within(getLiftPot(), 1300, 20) || getLiftPot() > 1350, 3000);
+	moveLift(30);
+	moveSwitchLift(-100);
+	waitUntil(within(getVertibarPot(), 3380, 20) || getVertibarPot() > 3400, 1600);
+	moveSwitchLift(10);
+	moveLift(-100);
+	waitUntil(within(getLiftPot(), 1100, 20), 3000);
+	moveLift(10);
+
+	// drive forward to collect second cone
+	moveDrive(70, 70);
+	waitUntil(within(getLeftDrive(), 370, 40), 3000);
+	moveDrive(-10, -10);
+	delay(200);
+	moveDrive(0, 0);
+
+	openClaw(-127);
+	delay(250);
+	openClaw(-30);
+
+	//attempt to score second cone
+	moveSwitchLift(100);
+	moveLift(120);
+
+
+	resetDrive();
+#if BLUE
+	moveDrive(-65, -75);
+#else
+	moveDrive(-70, -70);
+#endif
+	bool vertibarPassed = false;
+	bool liftPassed = false;
+	executeUntil ({
+		if (within(getVertibarPot(), 1060, 60)) {
+			moveSwitchLift(5);
+			vertibarPassed = true;
+		}
+
+		if (within(getLiftPot(), 1450, 20)) {
+			moveLift(20);
+			liftPassed = true;
+		}
+	}, !vertibarPassed && !liftPassed, 2500)
+	moveLift(-100);
+	waitUntil(getLiftPot() < 1150, 1000);
+	moveLift(-10);
+	openClaw(127);
+	delay(700);
+	moveLift(127);
+	openClaw(10);
 
 
 	// attempt to return to base
-	moveDrive(-90, -90);
-	waitUntil(within(SensorValue[LeftDrive], 170, 80));
+#if BLUE
+	moveDrive(-85, -100);
+#else
+	moveDrive(-100, -100);
+#endif
+	waitUntil(getLiftPot() > 1400, 1500);
+
+	moveLift(30);
+	waitUntil(within(getLeftDrive(), -1470, 40) || getLeftDrive() < -1470, 6000);
 	moveDrive(0, 0);
 	delay(400);
 	resetGyro();
-	moveDrive(-127, 127);
-	while (!within(SensorValue[gyro], 1800, 30)) { moveDrive(-(1800 + SensorValue[gyro]), (SensorValue[gyro] + 1800)); }
-	moveDrive(0, 0);
+	while (!within(getGyro(), -1900, 30)) { moveDrive(0.6 * (1900 + getGyro()), -0.6 * (getGyro() + 1900)); }
+	moveDrive(-20, 20);
 	delay(400);
-	moveDrive(30, 50);
-	clearTimer(T1);
-	waitUntil(within(SensorValue[LeftDrive], 20, 40) || time1[T1] > 1500);
-	moveDrive(-10, -10);
+	moveDrive(0, 0);
 
 	// attempt to score in ten point zone
-	moveMobileGoal(100);
-	waitUntil(within(SensorValue[mobogo], 1443, 20));
-	moveMobileGoal(-20);
+	moveLift(100);
+	waitUntil(within(getLiftPot(), 1700, 40), 3000);
+	moveLift(0);
+	moveGoal(100);
+	waitUntil(within(getMobileGoalPot(), 3110, 40), 3000);
+	moveGoal(-20);
 
 	moveDrive(-120, -120);
-	moveMobileGoal(-100);
+	moveGoal(-100);
 	delay(500);
-	moveMobileGoal(0);
-	clearTimer(T1);
-	waitUntil(within(SensorValue[LeftDrive], 0, 30) || time1[T1] > 200);
+	moveGoal(0);
+	waitUntil(within(getLeftDrive(), 0, 30), 200);
 	delay(300);
 	moveDrive(10, 10);
 	delay(400);

@@ -102,7 +102,7 @@ void ten() {
 	moveDrive(-100, -100);
 #endif
 	clearTimer(T1);
-	waitUntil(SensorValue[lift] > 1500 || time1[T1] > 1500);
+	waitUntil(SensorValue[lift] > 1400 || time1[T1] > 1500);
 
 	moveLift(30);
 	waitUntil(within(SensorValue[LeftDrive], -1470, 40) || SensorValue[LeftDrive] < -1470);
