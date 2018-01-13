@@ -90,8 +90,8 @@ void twenty() {
 
 	// attempt to return to base
 	moveDrive(-127, -127);
-	waitUntil(SensorValue[lift] > 1500);
-	moveLift(20);
+	waitUntil(SensorValue[lift] > 1400);
+	moveLift(30);
 	waitUntil(within(SensorValue[LeftDrive], -1700, 80));
 	moveDrive(20, 20);
 	delay(100);
