@@ -30,7 +30,8 @@ inline void closeClaw(int power) {
 
 inline void moveSwitchLift(int power) {
 	// set the power on the motor of the vertibar. positive is open
-	motorSet(Vertibar, -power);
+	motorSet(LeftVertibar, -power);
+	motorSet(RightVertibar, -power);
 }
 
 inline void lowerSwitchLift(int power) {
@@ -43,7 +44,6 @@ inline void raiseSwitchLift(int power) {
 }
 
 inline void moveGoal(int power) {
-	motorSet(LeftMobileGoal, bound(power, 127, -127));
 	motorSet(RightMobileGoal, -bound(power, 127, -127));
 }
 
