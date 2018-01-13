@@ -47,9 +47,8 @@ task buildDriver() {
 	// raise the vertibar
 	setVertibar(1000, 1200);
 	if (drive_loads.liftMobileGoal) {
-		writeDebugStreamLine("trying to lift mobile goal");
 		moveMobileGoal(120);
-		delay(1000);
+		delay(1200);
 		moveMobileGoal(0);
 	}
 
@@ -125,7 +124,7 @@ bool setLiftBuildHeight(int cone_stack) {
 
 	switch(cone_stack) {
 	case 0:
-		drive_loads.height = 1170;
+		drive_loads.height = 1420;
 		break;
 	case 1:
 		drive_loads.height = 1420;
@@ -143,7 +142,7 @@ bool setLiftBuildHeight(int cone_stack) {
 		drive_loads.height = 1760;
 		break;
 	case 6:
-		drive_loads.height = 1860;
+		drive_loads.height = 1920;
 		drive_loads.lowerLift = true;
 		break;
 	case 7:

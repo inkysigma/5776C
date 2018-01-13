@@ -28,7 +28,7 @@ void ten() {
 	moveMobileGoal(-10);
 	delay(50);
 	moveMobileGoal(0);
-	waitUntil(within(SensorValue[LeftDrive], 1580, 40) || SensorValue[LeftDrive] > 1620);
+	waitUntil(within(SensorValue[LeftDrive], 1600, 40) || SensorValue[LeftDrive] > 1620);
 	moveDrive(0, 0);
 	delay(500);
 	moveMobileGoal(-100);
@@ -87,15 +87,16 @@ void ten() {
 			vertibarPassed = true;
 		}
 
-		if (within(SensorValue[lift], 1364, 20)) {
+		if (within(SensorValue[lift], 1450, 20)) {
 			writeDebugStreamLine("Lift has reached appropiate height");
 			moveLift(20);
 			liftPassed = true;
 		}
 	}
-	moveLift(-80);
+	moveLift(-100);
 	clearTimer(T1);
-	waitUntil(SensorValue[lift] < 1200 && time1[T1] < 1000);
+	waitUntil(SensorValue[lift] < 1150 && time1[T1] < 1000);
+	moveLift(-10);
 	openClaw(127);
 	delay(700);
 	writeDebugStreamLine("We've probably deposited the second goal");
