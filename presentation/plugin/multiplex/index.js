@@ -25,7 +25,7 @@ io.on( 'connection', function( socket ) {
 	});
 });
 
-[ 'css', 'js', 'plugin', 'lib' ].forEach(function(dir) {
+[ 'css', 'js', 'plugin', 'lib', 'slides' ].forEach(function(dir) {
 	app.use('/' + dir, staticDir(opts.baseDir + dir));
 });
 

@@ -1,19 +1,21 @@
 <html>
-	<head>
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/white.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section data-markdown>
-					<textarea data-template>
+
+<head>
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/white.css">
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section data-markdown>
+				<textarea data-template>
 						# team 5776C
 						#### { dougherty valley high school }
 					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template data-separator-vertical="^\n\n">
+			</section>
+			<section data-markdown>
+				<textarea data-template data-separator-vertical="^\n\n">
 						# Meet the team
 
 
@@ -55,9 +57,9 @@
 						#### scouting
 						jitesh m: builder
 					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
 						# horizontal claw
 
 						## { optimized for cones }
@@ -67,18 +69,18 @@
 						* any orientation
 						* easier access to perimeter
 					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
 						# The Bot
 						## {made for reliability}
 						
 						- consistent > faster + inconsistent
 						- better outcome
 					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template data-separator-vertical="^\n\n">
+			</section>
+			<section data-markdown>
+				<textarea data-template data-separator-vertical="^\n\n">
 						# The Lift
 						## {gear-linked, reverse double four bar}
 						
@@ -88,10 +90,10 @@
 						
 						- faster than mechanically linked
 						- triangle band for support
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template>
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
 						# The Lift
 						## { offset four-bar }
 						- increases height
@@ -99,10 +101,10 @@
 						- linear movement
 						- rubber band assist
 							- faster movement
-					</textarea>
-				</section>
-				<section data-markdown>
-					<textarea data-template data-separator-vertical="^\n\n">
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template data-separator-vertical="^\n\n">
 						# The Intake
 						## {sideways four-bar}
 						
@@ -115,8 +117,12 @@
 							- increased spacing
 							- increased height capability
 					</textarea>
+			</section>
+			<section data-markdown>
+				<section data-background-image="images/prosbackground.png">
+					<h1 style="color: white;">The Code</h1>
 				</section>
-				<section data-markdown>
+				<section>
 					<textarea data-template data-separator-vertical="^\n\n">
 						# The Code
 						### {Made with PROS}
@@ -130,16 +136,31 @@
 						- easier to debug syntax
 						- better support for version control
 						- extension libraries
-						- GCC optimization
+						- GCC optimization		
 					</textarea>
 				</section>
-			</div>
+
+			</section>
 		</div>
-		<script src="js/reveal.js"></script>
-		<script src="plugin/markdown/marked.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script>
-			Reveal.initialize();
-		</script>
-	</body>
+	</div>
+	<script src="js/reveal.js"></script>
+	<script src="plugin/markdown/marked.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script>
+		Reveal.initialize({
+			controls: false,
+			math: {
+				mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+				config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+			},
+			dependencies: [
+				{ src: 'plugin/math/math.js', async: true },
+				{ src: '//cdn.socket.io/socket.io-1.3.5.js', async: true },
+				{ src: 'plugin/multiplex/master.js', async: true },
+				{ src: 'plugin/notes-server/client.js', async: true }.
+			]
+		});
+	</script>
+</body>
+
 </html>
