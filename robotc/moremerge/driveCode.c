@@ -47,7 +47,7 @@
 #include "../util/math.h"
 #endif
 
-#define AUTONOMOUS_GOAL 10
+#define AUTONOMOUS_GOAL 20
 
 #if AUTONOMOUS_GOAL==20
 #include "autonomous/twentyauto.c"
@@ -121,7 +121,6 @@ task alternateControl() {
 task usercontrol()
 {
 	resetDriveIME();
-	startTask(liftpid);
 	startTask(alternateControl);
 	//current number of times claw has opened; used to keep track of current state
 	int clawCounter = 0;
@@ -172,7 +171,7 @@ task usercontrol()
 			startTask(vertpid);
 			startTask(liftpid);
 			setVertibarTarget(3400);
-			setLiftTarget(1680);
+			setLiftTarget(1630);
 			waitUntil(!vexRT[Btn8D]);
 			stopVertibarPid();
 			stopLiftPid();
