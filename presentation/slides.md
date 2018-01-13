@@ -41,6 +41,17 @@ jitesh m: builder
 
 
 
+# horizontal claw
+
+## { optimized for cones }
+* can be stacked higher
+	* gripped from bottom
+	* greater margin for error
+* any orientation
+* easier access to perimeter
+
+
+
 # The Bot
 ## {made for reliability}
 
@@ -58,6 +69,16 @@ jitesh m: builder
 
 - faster than mechanically linked
 - triangle band for support
+
+
+
+# The Lift
+## { offset four-bar }
+- increases height
+- faster than mini chain-bar
+- linear movement
+- rubber band assist
+	- faster movement
 
 
 
