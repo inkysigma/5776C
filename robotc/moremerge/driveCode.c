@@ -47,7 +47,7 @@
 #include "../util/math.h"
 #endif
 
-#define AUTONOMOUS_GOAL 20
+#define AUTONOMOUS_GOAL 10
 
 #if AUTONOMOUS_GOAL==20
 #include "autonomous/twentyauto.c"

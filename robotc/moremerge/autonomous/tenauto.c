@@ -6,32 +6,28 @@
 #endif
 
 void ten() {
-	// initialization tasks
-	resetGyro();
+		// initialization tasks
+	moveLift(127);
 	resetDriveIME();
 	openClaw(-20);
-	moveVertibar(20);
-	moveLift(100);
-	waitUntil(SensorValue[lift] > 1500);
+	moveVertibar(5);
+	delay(200);
+	moveMobileGoal(127);
+	waitUntil(SensorValue[lift] > 1400);
 
 	// begin moving the mobile goal after the lift is sufficiently high
-	moveMobileGoal(127);
 	moveLift(30);
-	delay(900);
+	moveDrive(65, 77);
+	waitUntil(SensorValue[lift] > 1500);
+	while (SensorValue[mobogo] < 3035) moveMobileGoal(1.1 * (3100 - SensorValue[mobogo]));
 	moveDrive(115, 127);
-	waitUntil(SensorValue[mobogo] > 2840);
-	moveMobileGoal(0);
-	waitUntil(within(SensorValue[LeftDrive], 1000, 40) || SensorValue[LeftDrive] > 1180);
-	moveMobileGoal(127);
-	moveDrive(60, 60);
-	while (SensorValue[mobogo] < 2990) moveMobileGoal(1.5 * (3000 - SensorValue[mobogo]));
-	moveMobileGoal(-10);
-	delay(50);
-	moveMobileGoal(0);
-	waitUntil(within(SensorValue[LeftDrive], 1600, 40) || SensorValue[LeftDrive] > 1620);
+	moveMobileGoal(10);
+
+	waitUntil(within(SensorValue[LeftDrive], 1620, 20) || SensorValue[LeftDrive] > 1660);
+	moveDrive(-10, -10);
+	delay(300);
 	moveDrive(0, 0);
-	delay(500);
-	moveMobileGoal(-100);
+	moveMobileGoal(-127);
 	waitUntil(within(SensorValue[mobogo], 1300, 20));
 	moveMobileGoal(0);
 
@@ -46,38 +42,27 @@ void ten() {
 
 	// collect cone behind, raise lift up
 	resetDriveIME();
-	waitUntil(within(SensorValue[lift], 1300, 20) || SensorValue[lift] > 1350);
+	waitUntil(within(SensorValue[lift], 1350, 20) || SensorValue[lift] > 1350);
 	moveLift(30);
 	moveVertibar(-100);
-	clearTimer(T1);
-	waitUntil(within(SensorValue[vertibar], 3380, 20) || SensorValue[vertibar] > 3400 || time1[T1] > 1600);
-	moveVertibar(10);
+	waitUntil(within(SensorValue[vertibar], 3380, 20) || SensorValue[vertibar] > 3390);
+	moveVertibar(-10);
 	moveLift(-100);
-	waitUntil(within(SensorValue[lift], 1100, 20));
-	moveLift(10);
+	waitUntil(within(SensorValue[lift], 1100, 20) || SensorValue[lift] < 1090);
+	moveLift(-10);
 
-	// drive forward to collect second cone
-	moveDrive(70, 70);
-	waitUntil(within(SensorValue[LeftDrive], 370, 40));
-	moveDrive(-10, -10);
-	delay(200);
+	moveDrive(85, 85);
+	waitUntil(within(SensorValue[LeftDrive], 390, 40));
 	moveDrive(0, 0);
 
 	openClaw(-127);
-	delay(250);
-	openClaw(-30);
+	delay(300);
+	openClaw(-40);
 
 	//attempt to score second cone
-	moveVertibar(100);
-	moveLift(120);
-
-
-	resetDriveIME();
-#if BLUE
-	moveDrive(-65, -75);
-#else
-	moveDrive(-70, -70);
-#endif
+	moveVertibar(70);
+	moveDrive(-127, -127);
+	moveLift(127);
 	bool vertibarPassed = false;
 	bool liftPassed = false;
 	clearTimer(T1);
@@ -87,22 +72,28 @@ void ten() {
 			vertibarPassed = true;
 		}
 
-		if (within(SensorValue[lift], 1450, 20)) {
-			writeDebugStreamLine("Lift has reached appropiate height");
+		if (within(SensorValue[lift], 1606, 20)) {
 			moveLift(20);
+			if (!vertibarPassed) moveVertibar(100);
 			liftPassed = true;
 		}
 	}
-	moveLift(-100);
+	moveLift(-80);
 	clearTimer(T1);
-	waitUntil(SensorValue[lift] < 1150 && time1[T1] < 1000);
-	moveLift(-10);
+	waitUntil(SensorValue[lift] < 1200 && time1[T1] < 1000);
 	openClaw(127);
-	delay(700);
-	writeDebugStreamLine("We've probably deposited the second goal");
 	moveLift(127);
 	openClaw(10);
 
+	// attempt to return to base
+	moveDrive(-127, -127);
+	waitUntil(SensorValue[lift] > 1500);
+	moveLift(20);
+	waitUntil(within(SensorValue[LeftDrive], -1700, 80));
+	moveDrive(20, 20);
+	delay(100);
+	moveDrive(0, 0);
+	resetGyro();
 
 	// attempt to return to base
 #if BLUE
@@ -124,9 +115,6 @@ void ten() {
 	moveDrive(0, 0);
 
 	// attempt to score in ten point zone
-	moveLift(100);
-	waitUntil(within(SensorValue[lift], 1700, 40));
-	moveLift(0);
 	moveMobileGoal(100);
 	waitUntil(within(SensorValue[mobogo], 3110, 40));
 	moveMobileGoal(-20);
