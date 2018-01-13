@@ -1,5 +1,0 @@
-{
-    "terminal.integrated.env.linux": {
-        "PATH": "/home/chaitu/.platformio/penv/bin:/home/chaitu/bin:/home/chaitu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/chaitu/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin"
-    }
-}
