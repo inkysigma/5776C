@@ -3,9 +3,9 @@
 
 // Analog sensors
 #define LiftPot 1
-#define VertibarPot 2
 #define MainGyro 3
 #define MobileGoalPot 4
+#define VertibarPot 5
 
 // Digital sensors
 

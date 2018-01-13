@@ -56,6 +56,7 @@
  */
 void initialize() {
   setTeamName("5776C");
+  
   setLiftPidConfig(LIFT_KP, LIFT_KI, LIFT_KD);
   setVertibarConfig(VERT_KP, VERT_KI, VERT_KD);
   setLeftDrivePid(LEFT_DRIVE_KP, LEFT_DRIVE_KI, LEFT_DRIVE_KD, LEFT_DRIVE_DT);
