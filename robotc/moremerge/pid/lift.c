@@ -5,16 +5,16 @@
 #endif
 #include "../util/math.h"
 
-#define LIFT_KP 0.65
+#define LIFT_KP 0.82
 #define LIFT_KI 0.4
-#define LIFT_KD 0.001
+#define LIFT_KD 0.14
 
 float lift_target = 0;
 float lift_prev_error = 0;
 float lift_integral = 0;
 float lift_total_cap = 120;
-float lift_integral_cap = 60;
-float lift_derivative_cap = 12;
+float lift_integral_cap = 40;
+float lift_derivative_cap = 120;
 
 bool lift_pid_running = false;
 
@@ -27,6 +27,7 @@ task liftpid()
 		if (abs(inte) > lift_integral_cap)
 			lift_integral = sgn(inte) * lift_integral_cap;
 		float derivative = error - lift_prev_error;
+		lift_prev_error = error;
 		if (abs(derivative) > lift_derivative_cap)
 			derivative = sgn(derivative) * lift_derivative_cap;
 		int total = error * LIFT_KP + lift_integral * LIFT_KI + LIFT_KD * derivative;
@@ -46,11 +47,11 @@ void setLiftTarget(float t) {
 }
 
 void incrementLift() {
-	if (lift_target + 23 > 2210) {
+	if (lift_target + 30 > 2210) {
 		lift_target = 2210;
 		return;
 	}
-	lift_target += 23;
+	lift_target += 30;
 }
 
 void incrementLiftBy(int inc) {
@@ -67,11 +68,11 @@ void resetLiftPid() {
 }
 
 void decrementLift() {
-	if (lift_target -23 < 1050) {
+	if (lift_target - 30 < 1050) {
 		lift_target = 1050;
 		return;
 	}
-	lift_target -= 23;
+	lift_target -= 30;
 }
 
 bool withinLiftTarget(float margin) {

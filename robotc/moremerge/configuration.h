@@ -1,6 +1,6 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#define BLUE 0
+#define BLUE 1
 
 #endif

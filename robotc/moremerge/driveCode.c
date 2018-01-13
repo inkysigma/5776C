@@ -47,7 +47,7 @@
 #include "../util/math.h"
 #endif
 
-#define AUTONOMOUS_GOAL 20
+#define AUTONOMOUS_GOAL 10
 
 #if AUTONOMOUS_GOAL==20
 #include "autonomous/twentyauto.c"
@@ -67,6 +67,7 @@ void pre_auton() {
 	datalogClear();
 	clearDebugStream();
 	writeDebugStreamLine("blue: %d", BLUE);
+	resetDriveIME();
 	SensorType[gyro] = sensorNone;
 	wait1Msec(1000);
 	SensorType[gyro] = sensorGyro;
@@ -120,6 +121,7 @@ task alternateControl() {
 task usercontrol()
 {
 	resetDriveIME();
+	startTask(liftpid);
 	startTask(alternateControl);
 	//current number of times claw has opened; used to keep track of current state
 	int clawCounter = 0;
