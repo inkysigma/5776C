@@ -30,6 +30,9 @@ typedef struct
 	float accumulation;
 	float prev_error;
 
+	float integral_unit_factor;
+	float derivative_unit_factor;
+
 	// the sensor the use and the target
 	int (*func)();
 

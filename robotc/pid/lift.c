@@ -13,7 +13,7 @@ float lift_target = 0;
 float lift_prev_error = 0;
 float lift_integral = 0;
 float lift_total_cap = 120;
-float lift_integral_cap = 60;
+float lift_integral_cap = 30;
 float lift_derivative_cap = 10;
 
 bool lift_pid_running = false;

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/white.css">
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section data-markdown data-background-image="images/logo.png"></section>
+			<section id="meetteam">
+				<section>
+					<h1>Meet the team</h1>
+				</section>
+				<section>
+					<h2>{ newly created }</h2>
+					<h3>...but with</h3>
+					<ul id="butwith">
+						<li>experienced members</li>
+						<li>
+							<ul id="worlds">
+								<li>worlds (top 40/500)</li>
+							</ul>
+						</li>
+					</ul>
+					<ul id="grades">
+						<li>4 seniors</li>
+						<li>2 sophomores</li>
+						<li>1 freshman</li>
+					</ul>
+				</section>
+				<section>
+					<div style="float: left">
+						<h4>builders</h4>
+						nithesh p: captain, lead builder
+						<br> jitesh m: builder
+						<br> shasta s: builder
+						<br> akhil k: builder
+					</div>
+					<div style="float: right">
+						<h4>programmers</h4>
+						justin l: lead programmer
+						<br> chaitu n: programmer
+						<br> nithesh p: programmer
+						<br> akhil k: programmer
+					</div>
+				</section>
+				<section>
+					<div style="float: left">
+						<h4>notebook</h4>
+						cameron h: notebook
+					</div>
+					<div style="float: right">
+						<h4>scouting</h4>
+						jitesh m: scout
+					</div>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h4 style="color:white">The Bot</h4>
+				</section>
+				<section data-markdown>
+					<textarea data-template>
+						## {made for reliability}
+						
+						- consistent > faster + inconsistent
+						- better outcome
+					</textarea>
+				</section>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						# horizontal claw
+
+						## { optimized for cones }
+						* can be stacked higher
+							* gripped from bottom
+							* greater margin for error
+						* any orientation
+						* easier access to perimeter
+					</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template data-separator-vertical="^\n\n">
+						# The Lift
+						## {gear-linked, reverse double four bar}
+						
+						- easier tuning
+						- faster fixes
+						
+						
+						- faster than mechanically linked
+						- triangle band for support
+				</textarea>
+			</section>
+			<section data-markdown>
+				<textarea data-template>
+						# The Lift
+						## { offset four-bar }
+						- increases height
+						- faster than mini chain-bar
+						- linear movement
+						- rubber band assist
+							- faster movement
+				</textarea>
+			</section>
+			<section data-markdown>
+				<script type="text/template">
+						# The Intake
+						## {sideways four-bar}
+						
+						- Better than a chain bar
+							- physical connection = no desync
+						- Centralizes center of mass
+						
+						
+						- Takes up vertical space: bracing
+							- increased spacing
+							- increased height capability
+				</script>
+			</section>
+
+			<section>
+				<section data-background-image="images/prosbackground.png">
+					<h1 style="color: white;">The Code</h1>
+				</section>
+				<section data-markdown>
+					<script type="text/template">	
+						### {Made with PROS}
+						- PID to stabilize lift and offset four-bar
+						- Autostack function quickly stacks cones	
+					</script>
+				</section>
+				<section>
+					<h4>Advantages over ROBOTC</h4>
+					<ul>
+						<li>cross-platform</li>
+						<li>computationally efficient</li>
+						<li>cleaner syntax and C compliant code</li>
+						<li>better support for version control</li>
+						<li>extension libraries</li>
+						<li>GCC optimization</li>
+						<li>easier to use for our members</li>
+					</ul>
+				</section>
+				<section>
+					<pre><code data-trim data-noescape class="cpp">
+					bool setLiftBuildHeight(int cone_stack) {
+						switch(cone_stack) {
+							case 0:
+								drive_loads.height = 1420;
+								break;
+							case 1:
+								drive_loads.height = 1420;
+								break;
+							case 2:
+								drive_loads.height = 1520;
+								break;
+							// with cases up to 10!
+						}
+					}
+					</code></pre>
+				</section>
+				<section>
+					<pre><code data-trim data-noescape class="cpp">
+					int[] heights = {1420, 1420, 1520 ... };
+					// some time later
+					buildStack(heights[0]);
+					</code></pre>
+				</section>
+			</section>
+
+			<section>
+				<section data-background-video="images/twenty-four.mp4" data-background-video-muted="true">
+					<h4 style="color:white">Autonomous</h4>
+				</section>
+				<section>
+					<h4>Various Strategies</h4>
+					<p>We have several different autonomous stragies:</p>
+					<ol>
+						<li class="fragment">A twenty four point</li>
+						<li class="fragment">A support autonomous</li>
+						<li class="fragment">A defensive autonomous</li>
+						<li class="fragment">A ten point autonomous</li>
+					</ol>
+				</section>
+			</section>
+		</div>
+	</div>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+	<script>
+		Reveal.initialize({
+			multiplex: {
+				// Example values. To generate your own, see the socket.io server instructions.
+				secret: '1515830931820140625', // Obtained from the socket.io server. Gives this (the master) control of the presentation
+				id: 'e4591cccd774b2f2', // Obtained from socket.io server
+				url: 'https://reveal-js-multiplex-ccjbegmaii.now.sh' // Location of socket.io server
+			},
+
+			controls: false,
+			math: {
+				mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+				config: 'TeX-AMS_HTML-full'
+			},
+			dependencies: [
+				// { src: 'plugin/math/math.js', async: true },
+				{ src: '//cdn.socket.io/socket.io-1.3.5.js', async: true },
+				{ src: 'plugin/multiplex/master.js', async: true },
+				{ src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+				{ src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+			]
+		});
+	</script>
+</body>
+
+</html>

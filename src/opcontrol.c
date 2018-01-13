@@ -43,38 +43,86 @@
  */
 void operatorControl() {
 
-  setLiftTarget(1280);
-  startLiftPid();
-
   while (1) {
-    int turn = (getJoystickLeftTurn() + getJoystickRightTurn()) / 2.5;
-    moveDrive(getJoystickLeft() + turn, getJoystickRight() - turn);
-    if (getRaiseLift()) {
-      incrementLift();
-    } else if (getLowerLift()) {
-      decrementLift();
-    }
+    resetDriveIME();
+    	startTask(liftpid);
+    	startTask(alternateControl);
+    	//current number of times claw has opened; used to keep track of current state
+    	int clawCounter = 0;
 
-    if (getRaiseClaw()) {
-      raiseSwitchLift(100);
-    } else if (getLowerClaw()) {
-      lowerSwitchLift(100);
-    } else {
-      raiseSwitchLift(0);
-    }
+    	//number of cones on mogo, referenced in autostack functions
 
-    if (getToggleClaw()) {
-      toggleClaw();
-    }
+    	// are we going to increment when it switches
 
-    if (getOpenGoal()) {
-      moveGoal(100);
-    } else if (getRetractGoal()) {
-      moveGoal(-100);
-    } else {
-      moveGoal(0);
-    }
-    delay(40);
-  }
+    	//used to detect change of state of claw input button
+    	bool isClaw = false;
+    	setVertibarTarget(SensorValue[vertibar]);
+    	setLiftTarget(SensorValue[lift]);
+
+    	while(true) {
+    		delay(20);
+    		moveDrive(vexRT[Ch3], vexRT[Ch2]);
+
+    		//vertibar
+    		if (!getRunning()) {
+    			if (!getVertibarPidRunning()) {
+    				moveVertibar(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
+    			}
+    			else {
+    				if (vexRT[Btn6U]) incrementVert();
+    				else if (vexRT[Btn6D]) decrementVert();
+    			}
+    		}
+
+
+    		//mobileBtn7D
+    		motor[port2] = 100 * vexRT[Btn7U] + -90 * vexRT[Btn7L];
+
+    		if (vexRT[Btn5U]) {
+    			incrementLift();
+    			if (!getRunning() && !getLiftPidRunning()) moveLift(100);
+    		}
+    		else if (vexRT[Btn5D]) {
+    			decrementLift();
+    			if (!getRunning() && !getLiftPidRunning()) moveLift(-100);
+    		}
+    		else {
+    			if (!getRunning() && !getLiftPidRunning()) moveLift(0);
+    		}
+
+
+
+    		if (vexRT[Btn8D] && !getRunning()) {
+    			startTask(vertpid);
+    			startTask(liftpid);
+    			setVertibarTarget(3400);
+    			setLiftTarget(1680);
+    			waitUntil(!vexRT[Btn8D]);
+    			stopVertibarPid();
+    			stopLiftPid();
+    		}
+
+    		if (!getRunning() && recount) {
+    			stopVertibarPid();
+    			stopLiftPid();
+    			coneCounter++;
+    			recount = false;
+    		}
+
+    		if(vexRT[Btn7D]) {
+    			++clawCounter;
+    			isClaw = true;
+    			if(clawCounter % 2 == 0) {
+    				motor[port6] = -100;
+    				wait1Msec(200);
+    				motor[port6] = -20;
+    			}
+    			else if(clawCounter % 2 == 1) {
+    				motor[port6] = 100;
+    				wait1Msec(200);
+    				motor[port6] = 30;
+    			}
+    		}
+    	}
 }
 #endif
