@@ -61,6 +61,7 @@
 #elif AUTONOMOUS_GOAL==13
 #include "autonomous/thirteenauto.c"
 #elif AUTONOMOUS_GOAL==0
+#include "autonomous/defensive.c"
 #endif
 
 void pre_auton() {
@@ -86,6 +87,8 @@ task autonomous() {
 	twenty();
 #elif AUTONOMOUS_GOAL==13
 	thirteen();
+#elif AUTONOMOUS_GOAL==0
+	defensive();
 #endif
 }
 
@@ -121,7 +124,6 @@ task alternateControl() {
 task usercontrol()
 {
 	resetDriveIME();
-	startTask(liftpid);
 	startTask(alternateControl);
 	//current number of times claw has opened; used to keep track of current state
 	int clawCounter = 0;
@@ -172,7 +174,7 @@ task usercontrol()
 			startTask(vertpid);
 			startTask(liftpid);
 			setVertibarTarget(3400);
-			setLiftTarget(1680);
+			setLiftTarget(1630);
 			waitUntil(!vexRT[Btn8D]);
 			stopVertibarPid();
 			stopLiftPid();

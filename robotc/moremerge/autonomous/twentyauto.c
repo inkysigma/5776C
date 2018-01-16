@@ -51,7 +51,7 @@ void twenty() {
 	waitUntil(within(SensorValue[vertibar], 3380, 20) || SensorValue[vertibar] > 3390);
 	moveVertibar(-10);
 	moveLift(-100);
-	waitUntil(within(SensorValue[lift], 1140, 20) || SensorValue[lift] < 1100);
+	waitUntil(within(SensorValue[lift], 1100, 20) || SensorValue[lift] < 1090);
 	moveLift(-10);
 
 	moveDrive(85, 85);
@@ -75,7 +75,7 @@ void twenty() {
 			vertibarPassed = true;
 		}
 
-		if (within(SensorValue[lift], 1506, 20)) {
+		if (within(SensorValue[lift], 1606, 20)) {
 			moveLift(20);
 			if (!vertibarPassed) moveVertibar(100);
 			liftPassed = true;
@@ -90,8 +90,8 @@ void twenty() {
 
 	// attempt to return to base
 	moveDrive(-127, -127);
-	waitUntil(SensorValue[lift] > 1500);
-	moveLift(20);
+	waitUntil(SensorValue[lift] > 1400);
+	moveLift(30);
 	waitUntil(within(SensorValue[LeftDrive], -1700, 80));
 	moveDrive(20, 20);
 	delay(100);
@@ -108,7 +108,7 @@ void twenty() {
 	delay(30);
 	moveDrive(-100, -100);
 	resetDriveIME();
-	waitUntil(within(SensorValue[LeftDrive], -270, 40));
+	waitUntil(within(SensorValue[LeftDrive], -380, 40));
 	moveDrive(10, 10);
 	delay(100);
 	moveDrive(0, 0);
