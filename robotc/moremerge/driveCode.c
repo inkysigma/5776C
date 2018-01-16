@@ -61,6 +61,7 @@
 #elif AUTONOMOUS_GOAL==13
 #include "autonomous/thirteenauto.c"
 #elif AUTONOMOUS_GOAL==0
+#include "autonomous/defensive.c"
 #endif
 
 void pre_auton() {
@@ -86,6 +87,8 @@ task autonomous() {
 	twenty();
 #elif AUTONOMOUS_GOAL==13
 	thirteen();
+#elif AUTONOMOUS_GOAL==0
+	defensive();
 #endif
 }
 

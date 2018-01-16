@@ -43,6 +43,7 @@ task liftpid()
 }
 
 void setLiftTarget(float t) {
+	writeDebugStreamLine("Setting lift target to %f", t);
 	lift_target = t;
 }
 
