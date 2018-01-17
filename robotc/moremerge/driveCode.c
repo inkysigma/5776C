@@ -1,11 +1,11 @@
 #pragma config(UART_Usage, UART2, uartNotUsed, baudRate4800, IOPins, None, None)
-#pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    lift,           sensorPotentiometer)
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
 #pragma config(Sensor, in4,    mobogo,         sensorPotentiometer)
 #pragma config(Sensor, in5,    vertibar,       sensorPotentiometer)
-#pragma config(Sensor, I2C_1,  LeftDrive,      sensorQuadEncoderOnI2CPort,    , AutoAssign )
-#pragma config(Sensor, I2C_2,  RightDrive,     sensorQuadEncoderOnI2CPort,    , AutoAssign )
+#pragma config(Sensor, dgtl10, matchloads,     sensorDigitalIn)
+#pragma config(Sensor, I2C_1,  LeftDrive,      sensorNone)
+#pragma config(Sensor, I2C_2,  RightDrive,     sensorNone)
 #pragma config(Motor,  port2,           rGoal,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           lVertibar,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           lDrive,        tmotorVex393_MC29, openLoop)
@@ -99,6 +99,10 @@ task alternateControl() {
 
 	while (true) {
 		if (vexRT[Btn7R] && !getRunning() && !recount) {
+			startTask(liftpid);
+			startTask(vertpid);
+			setLiftTarget(1630);
+			setVertibarTarget(3630);
 			buildMatchLoads(coneCounter);
 			waitUntil(!vexRT[Btn7R]);
 			recount = true;
@@ -169,15 +173,9 @@ task usercontrol()
 		}
 
 
-
 		if (vexRT[Btn8D] && !getRunning()) {
-			startTask(vertpid);
-			startTask(liftpid);
-			setVertibarTarget(3400);
-			setLiftTarget(1630);
-			waitUntil(!vexRT[Btn8D]);
-			stopVertibarPid();
-			stopLiftPid();
+			buildDriverLoads(coneCounter);
+			recount = true;
 		}
 
 		if (!getRunning() && recount) {

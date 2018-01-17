@@ -10,80 +10,79 @@
 #include "autonomous.h"
 #endif
 
-int vert;
 typedef struct {
-	int height;
+	int liftHeight;
+	int vertTarget;
 	bool matchLoads;
 	bool lowerLift;
-	bool maxheight;
+	bool maxHeight;
 	bool liftMobileGoal;
 } buildConfiguration;
 buildConfiguration drive_loads;
 
 bool isRunning = false;
 bool driver = false;
-
-task buildDriver() {
-	writeDebugStreamLine("buildDriver is being run");
+/**
+task buildStack() {
+	// build the autostack
 	resetLiftPid();
 
 	// set the lift to the initial height
+
+	// if the operation requested is a match load, then we need to increase height a bit
+	// this avoids slamming the cone for the first few stacks and has no effect on later ones
 	if (drive_loads.matchLoads)
 		incrementLiftBy(400);
 
-	openClaw(30);
+	openClaw(-30);
 
 	// move to the correct height and begin moving the vertibar when appropiate or
-	// the timer reachers 2.5 seconds.
-
-
+	// the timer reachers 2.5 seconds. We don't use the setLift function here because
+	// for matchloads on lower cones, we want to start even if the lift target is higher
+	setLiftTarget(drive_loads.liftHeight);
 	clearTimer(T1);
-	setLiftTarget(drive_loads.height);
-
-
-	writeDebugStreamLine("waitUntil lift is at %i", drive_loads.height);
-	waitUntil(SensorValue[lift] > drive_loads.height || within(SensorValue[lift], drive_loads.height, 100) || time1[T1] > 2500);
-	if (time1[T1] > 2500)
-		writeDebugStreamLine("timeout");
+	waitUntil(SensorValue[lift] > drive_loads.liftHeight
+	|| within(SensorValue[lift], drive_loads.liftHeight, 100)
+	|| time1[T1] > 2500);
 
 	// raise the vertibar
-	setVertibar(1000, 1200);
+	setVertibar(drive_loads.vertTarget, 1200);
+
+	// this operation should only be done for higher cones.
 	if (drive_loads.liftMobileGoal) {
 		moveMobileGoal(120);
-		delay(1200);
+		delay(700);
 		moveMobileGoal(0);
 	}
 
-	writeDebugStreamLine("waitUntil lift is at %i", drive_loads.height);
 	clearTimer(T1);
-	waitUntil(within(SensorValue[lift], drive_loads.height, 100) || SensorValue[lift] > drive_loads.height|| time1[T1] > 1800);
-	if (time1[T1] > 2500)
-		writeDebugStreamLine("timeout");
+	// wait until the lift is much close to its target and also the case for match loads where
+	// SensorValue[lift] > drive_loads.height
+	waitUntil(within(SensorValue[lift], drive_loads.liftHeight, 50) || time1[T1] > 1800);
+	delay(200);
 
-	if (drive_loads.lowerLift) {
-		writeDebugStreamLine("lowering lift with extra");
-		incrementLiftBy(-90);
-		clearTimer(T1);
-		writeDebugStreamLine("waitUntil lift is at 700");
-		waitUntil(withinLiftTarget(20) || time1[T1] > 700);
-		if (time1[T1] > 700)
-			writeDebugStreamLine("timeout");
-		delay(400);
-		}
-	else {
-		writeDebugStreamLine("lowering lift");
-		incrementLiftBy(-50);
-		delay(200);
-	}
+	// do we need to lower the lift at the top extra?
+	stopTask(liftpid);
+	stopTask(vertpid);
+	incrementLiftBy(-75);
+	startTask(liftpid);
+	startTask(vertpid);
 
+
+
+	// deposit the cone
 	openClaw(100);
 	delay(200);
 	openClaw(5);
 
+	// reset the lift pid and raise it past the cone height so that we can
+	// lower the vertibar
 	resetLiftPid();
-	incrementLiftBy(300);
-	waitUntil(withinLiftTarget(50));
-	if (drive_loads.maxheight) {
+	incrementLiftBy(330);
+	waitUntil(withinLiftTarget(40));
+
+
+	if (drive_loads.maxHeight) {
 		stopTask(liftpid);
 		stopTask(vertpid);
 		moveLift(30);
@@ -92,95 +91,132 @@ task buildDriver() {
 		return;
 	}
 
-	// reset the lift the the height of the driver loads
+	// reset the lift the the height of the driver loads or match loads
 	if (drive_loads.matchLoads) {
+		// reopen the claw
 		openClaw(100);
-		setLiftCap(90);
-		setLiftTarget(1630);
-		waitUntil(SensorValue[lift] = drive_loads.height);
-		setVertibar(vert, 800);
 		delay(400);
 		openClaw(15);
-		setVertibar(3400, 1600);
 
-		clearTimer(T1);
-		int prev = SensorValue[lift];
-		writeDebugStreamLine("waitUntil lift is at 1640 and vertibar is at 3400");
-		while (!(within(SensorValue[lift], 1640, 50) && within(SensorValue[vertibar], 3400, 50) && abs(prev - SensorValue[lift]) < 40) && time1[T1] < 2500) {
-			if (time1[T1] > 2500)
-				writeDebugStreamLine("timeout");
-			if (SensorValue[lift] < 1750)
-				setLiftCap(40);
-		}
-		setLiftCap(120);
+		// set the vertibar back to the lower height
 
-		} else {
-		// lower the vertibar
-		setVertibar(2900, 800);
-		setLift(924, 800);
-		delay(400);
-		setVertibar(3630, 1600);
-
-		clearTimer(T1);
-		writeDebugStreamLine("waitUntil lift is at 924 and vertibar is at 3630");
-		waitUntil((within(SensorValue[lift], 924, 50) && within(SensorValue[vertibar], 3630, 50)) || time1[T1] > 2500);
-		if (time1[T1] > 2500)
-			writeDebugStreamLine("timeout at 124");
+		setVertibar(2712, 1600);
+		// set the lift target
+		setLift(1630, 2500);
+	}
+	else {
+		// lower the vertibar and reset the lift
+		setVertibar(2400, 800);
+		setLift(1055, 800);
+		setVertibar(2712, 1600);
 	}
 
+	// stop the pids so driver control can return
 	stopLiftPid();
 	stopVertibarPid();
 	isRunning = false;
-	moveLift(10);
+	moveLift(20);
+}**/
+
+bool withinOrGreater(float a, float b, float margin) {
+	return a > b || within(a, b, margin);
+}
+
+bool withinOrLess(float a, float b, float margin) {
+	return a < b || within(a, b, margin);
+}
+
+task buildStackWithoutPid() {
+	isRunning = true;
+	openClaw(-40);
+	moveLift(127);
+	waitUntil(within(drive_loads.liftHeight - 300, SensorValue[lift], 40) || SensorValue[lift] > drive_loads.liftHeight);
+	moveLift(100);
+	moveVertibar(127);
+	while (!withinOrGreater(SensorValue[lift], drive_loads.liftHeight, 10) || !withinOrLess(SensorValue[vertibar], drive_loads.vertTarget, 10)) {
+		moveLift(drive_loads.liftHeight - SensorValue[lift]);\
+		if (within(SensorValue[vertibar], drive_loads.vertTarget, 20))
+			moveVertibar(20);
+	}
+
+	moveVertibar(20);
+	moveLift(-50);
+	delay(500);
+	moveLift(20);
+
+	openClaw(127);
+	delay(400);
+	openClaw(10);
+
+	moveLift(100);
+	waitUntil(SensorValue[lift] > drive_loads.liftHeight + 100);
+	moveLift(30);
+	moveVertibar(-127);
+	while (SensorValue[vertibar] < 2750) {
+		moveVertibar(SensorValue[vertibar] - 2750);
+	}
+	writeDebugStreamLine("vertibar at %f", SensorValue[vertibar]);
+
+	moveVertibar(10);
+	moveLift(-100);
+	waitUntil(SensorValue[lift] < 1105);
+	moveLift(30);
+
+	isRunning = false;
 }
 
 bool setLiftBuildHeight(int cone_stack) {
 
 	switch(cone_stack) {
 	case 0:
-		drive_loads.height = 1261;
-	  vert = 1502;
+		drive_loads.liftHeight = 1400;
+		drive_loads.vertTarget = 560;
 		break;
 	case 1:
-		drive_loads.height = 1337;
-		vert = 1504;
+		drive_loads.liftHeight = 1520;
+		drive_loads.vertTarget = 560;
 		break;
 	case 2:
-		drive_loads.height = 1473;
-		vert = 1504;
+		drive_loads.liftHeight = 1620;
+		drive_loads.vertTarget = 560;
 		break;
 	case 3:
-		drive_loads.height = 1600;
-		vert = 1477;
+		drive_loads.liftHeight = 1720;
+		drive_loads.vertTarget = 560;
 		break;
 	case 4:
-		drive_loads.height = 1719;
-		vert = 1477;
+		drive_loads.liftHeight = 1820;
+		drive_loads.vertTarget = 560;
 		break;
 	case 5:
-		drive_loads.height = 1855;
-		vert = 1420;
+		drive_loads.liftHeight = 1880;
+		drive_loads.vertTarget = 560;
 		break;
 	case 6:
-		drive_loads.height = 1920;
+		drive_loads.liftHeight = 2020;
+		drive_loads.vertTarget = 560;
 		drive_loads.lowerLift = true;
 		break;
 	case 7:
-		drive_loads.height = 2000;
+		drive_loads.liftHeight = 2120;
+		drive_loads.vertTarget = 560;
 		drive_loads.lowerLift = true;
 		break;
 	case 8:
-		drive_loads.height = 2150;
+		drive_loads.liftHeight = 2320;
+		drive_loads.vertTarget = 560;
 		drive_loads.lowerLift = true;
 		break;
 	case 9:
-		drive_loads.height = 2260;
+		drive_loads.liftHeight = 2420;
+		drive_loads.vertTarget = 560;
 		drive_loads.lowerLift = true;
 		break;
 	case 10:
-		drive_loads.height = 2240;
+		drive_loads.liftHeight = 2540;
+		drive_loads.vertTarget = 560;
 		drive_loads.lowerLift = true;
-		drive_loads.maxheight = true;
+		drive_loads.maxHeight = true;
 		break;
 	default:
 		return false;
@@ -203,23 +239,18 @@ bool buildMatchLoads(int cone_stack) {
 	driver = true;
 
 	drive_loads.lowerLift = false;
-	drive_loads.maxheight = false;
+	drive_loads.maxHeight = false;
 
 	if (!setLiftBuildHeight(cone_stack)) return false;
 
 	drive_loads.matchLoads = false;
 
-	startTask(buildDriver);
+	// startTask(buildStack);
 	return true;
 }
 
 bool buildDriverLoads(int cone_stack) {
 	resetLiftPid();
-	writeDebugStreamLine("building driver loads");
-	setVertibarTarget(SensorValue[vertibar]);
-	setLiftTarget(SensorValue[lift]);
-	startTask(liftpid);
-	startTask(vertpid);
 	isRunning = true;
 	driver = true;
 
@@ -229,7 +260,7 @@ bool buildDriverLoads(int cone_stack) {
 
 	drive_loads.matchLoads = false;
 
-	startTask(buildDriver);
+	startTask(buildStackWithoutPid);
 	return true;
 }
 
@@ -246,8 +277,8 @@ void stopAutoBuild() {
 
 	stopLiftPid();
 	stopVertibarPid();
-	suspendTask(buildDriver);
-	stopTask(buildDriver);
+	// suspendTask(buildStack);
+	// stopTask(buildStack);
 	moveLift(0);
 	moveVertibar(0);
 }

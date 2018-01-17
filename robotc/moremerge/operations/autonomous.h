@@ -10,7 +10,11 @@
 #include "../util/math.h"
 #endif
 
+
 bool setLift(int target, int timeout) {
+	// set the lift pid to a specific value within 70 ticks.
+	// or return if the timeout has been reached.
+	// returns whether the timeout was reached.
 	setLiftTarget(target);
 	clearTimer(T1);
 	waitUntil(within(SensorValue[lift], target, 70) || time1[T1] > timeout);
@@ -18,6 +22,7 @@ bool setLift(int target, int timeout) {
 }
 
 bool setVertibar(int target, int timeout) {
+	// same as setLift but for Vertibar rather than lift and within 80 ticks
 	setVertibarTarget(target);
 	clearTimer(T1);
 	waitUntil(within(SensorValue[vertibar], target, 80) || time1[T1] > timeout);
