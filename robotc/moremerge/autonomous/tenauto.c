@@ -53,8 +53,8 @@ void ten() {
 	waitUntil(within(SensorValue[vertibar], 3380, 20) || SensorValue[vertibar] > 3400 || time1[T1] > 1600);
 	moveVertibar(10);
 	moveLift(-100);
-	waitUntil(within(SensorValue[lift], 1100, 20));
-	moveLift(10);
+	waitUntil(within(SensorValue[lift], 1050, 40));
+	moveLift(-10);
 
 	// drive forward to collect second cone
 	moveDrive(70, 70);
@@ -87,7 +87,7 @@ void ten() {
 			vertibarPassed = true;
 		}
 
-		if (within(SensorValue[lift], 1450, 20)) {
+		if (within(SensorValue[lift], 1550, 20)) {
 			writeDebugStreamLine("Lift has reached appropiate height");
 			moveLift(20);
 			liftPassed = true;

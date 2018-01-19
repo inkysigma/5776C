@@ -60,7 +60,7 @@ void twenty() {
 
 	openClaw(-127);
 	delay(300);
-	openClaw(-40);
+	openClaw(-45);
 
 	//attempt to score second cone
 	moveVertibar(70);
@@ -75,7 +75,7 @@ void twenty() {
 			vertibarPassed = true;
 		}
 
-		if (within(SensorValue[lift], 1606, 20)) {
+		if (within(SensorValue[lift], 1556, 20)) {
 			moveLift(20);
 			if (!vertibarPassed) moveVertibar(100);
 			liftPassed = true;
@@ -92,7 +92,7 @@ void twenty() {
 	moveDrive(-127, -127);
 	waitUntil(SensorValue[lift] > 1400);
 	moveLift(30);
-	waitUntil(within(SensorValue[LeftDrive], -1700, 80));
+	waitUntil(within(SensorValue[LeftDrive], -1480, 80));
 	moveDrive(20, 20);
 	delay(100);
 	moveDrive(0, 0);

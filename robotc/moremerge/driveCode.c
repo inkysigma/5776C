@@ -95,6 +95,10 @@ bool recount = false;
 task alternateControl() {
 
 	while (true) {
+
+		// match loads control. if the button is pressed during match loads,
+	  // cancel. if the second part of match loads is being done (i.e. the lift
+	  // is coming down) queue up another match load
 		if (vexRT[Btn7R] && !getRunning() && !recount) {
 			buildMatchLoads(coneCounter);
 			waitUntil(!vexRT[Btn7R]);
