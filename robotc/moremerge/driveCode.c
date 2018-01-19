@@ -172,13 +172,7 @@ task usercontrol()
 
 
 		if (vexRT[Btn8D] && !getRunning()) {
-			startTask(vertpid);
-			startTask(liftpid);
-			setVertibarTarget(3400);
-			setLiftTarget(1630);
-			waitUntil(!vexRT[Btn8D]);
-			stopVertibarPid();
-			stopLiftPid();
+			if (!SensorValue[
 		}
 
 		if (!getRunning() && recount) {
