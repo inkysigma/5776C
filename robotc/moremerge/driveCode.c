@@ -66,7 +66,7 @@
 // 20: this is a fully twenty four point autonomous that picks up two
 // 27: this is a twenty seven point autonomous that needs more work but
 //		 puts an item on the stationary goal and fetches the mogo in the twenty
-#define AUTONOMOUS_GOAL 10
+#define AUTONOMOUS_GOAL 24
 
 // the following files are included depending on the autonomous selected
 #if AUTONOMOUS_GOAL==20

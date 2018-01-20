@@ -26,7 +26,7 @@ void twentyfour() {
 	moveDrive(115, 127);
 	moveMobileGoal(10);
 
-	waitUntil(within(SensorValue[LeftDrive], 1570, 20) || SensorValue[LeftDrive] > 1620);
+	waitUntil(within(SensorValue[LeftDrive], 1600, 20) || SensorValue[LeftDrive] > 1620);
 	moveDrive(-10, -10);
 	delay(300);
 	moveDrive(0, 0);

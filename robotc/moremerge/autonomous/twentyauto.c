@@ -26,7 +26,7 @@ void twenty() {
 	moveDrive(115, 127);
 	moveMobileGoal(10);
 
-	waitUntil(within(SensorValue[LeftDrive], 1580, 20) || SensorValue[LeftDrive] > 1620);
+	waitUntil(within(SensorValue[LeftDrive], 1620, 20) || SensorValue[LeftDrive] > 1620);
 	moveDrive(-10, -10);
 	delay(300);
 	moveDrive(0, 0);
@@ -43,57 +43,9 @@ void twenty() {
 	openClaw(10);
 	moveLift(100);
 
-	// collect cone behind, raise lift up
-	resetDriveIME();
-	waitUntil(within(SensorValue[lift], 1350, 20) || SensorValue[lift] > 1350);
-	moveLift(30);
-	moveVertibar(-100);
-	waitUntil(within(SensorValue[vertibar], 3380, 20) || SensorValue[vertibar] > 3390);
-	moveVertibar(-10);
-	moveLift(-100);
-	waitUntil(within(SensorValue[lift], 1100, 20) || SensorValue[lift] < 1090);
-	moveLift(-10);
-
-	moveDrive(85, 85);
-	waitUntil(within(SensorValue[LeftDrive], 390, 40));
-	moveDrive(0, 0);
-
-	openClaw(-127);
-	delay(300);
-	openClaw(-45);
-
-	//attempt to score second cone
-	moveDrive(-127, -127);
-	moveLift(127);
-	bool vertibarPassed = false;
-	bool liftPassed = false;
-	clearTimer(T1);
-
-	while (!vertibarPassed && !liftPassed && time1[T1] < 4500) {
-
-		if (within(SensorValue[lift], 1556, 20) || SensorValue[lift] > 1600) {
-			writeDebugStreamLine("hit the lift position");
-			moveLift(20);
-			clearTimer(T2);
-			if (!vertibarPassed) moveVertibar(127);
-			wait1Msec(900);
-			moveVertibar(20);
-			liftPassed = true;
-			vertibarPassed = true;
-		}
-	}
-
-	moveVertibar(20);
-	moveLift(-80);
-	clearTimer(T1);
-	waitUntil(SensorValue[lift] < 1200 || time1[T1] > 1000);
-	openClaw(127);
-	moveLift(127);
-	openClaw(10);
-
 	// attempt to return to base
 	moveDrive(-127, -127);
-	waitUntil(SensorValue[lift] > 1400);
+	waitUntil(SensorValue[lift] > 1450);
 	moveLift(30);
 	waitUntil(within(SensorValue[LeftDrive], -1480, 80));
 	moveDrive(20, 20);
