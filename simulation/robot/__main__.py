@@ -1,10 +1,8 @@
 import pygame
 from pygame.locals import *
 from pygame.color import *
-import pymunk
-from pymunk import Vec2d
 from pygame.color import *
-from robot.models.robot import Robot
+from robot.models import Robot, Field
 import pymunk.pygame_util
 import pygame.display
 import pygame.time
@@ -17,8 +15,8 @@ class Simulation:
 
     def __init__(self):
         self.running = True
-        self.width = 600
-        self.height = 600
+        self.width = 1080
+        self.height = 720
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         self.fps = 30
@@ -29,6 +27,7 @@ class Simulation:
         self.space = pymunk.Space()
 
         self.robot = Robot(self.space)
+        self.field = Field(self.space)
 
         self.space.gravity = (0, 0)
 
@@ -49,6 +48,8 @@ class Simulation:
         self.screen.fill(THECOLORS["white"])
         self.space.step(1 / self.fps)
         self.space.debug_draw(self.draw_options)
+
+        self.robot.draw(self.screen)
         pygame.display.flip()
         self.clock.tick(self.fps)
 
