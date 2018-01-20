@@ -141,8 +141,8 @@ task buildStackWithoutPid() {
 
 	// move the lift down for better accuracy. we time this simply because
 	// it's sufficient and more work is unnecessary
-	moveLift(-100);
-	delay(100);
+	moveLift(-80);
+	delay(120);
 
 	// apply a lift stall to ensure that the lift doesn't fall down
 	moveLift(20);
