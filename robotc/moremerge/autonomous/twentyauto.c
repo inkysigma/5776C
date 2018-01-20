@@ -26,7 +26,7 @@ void twenty() {
 	moveDrive(115, 127);
 	moveMobileGoal(10);
 
-	waitUntil(within(SensorValue[LeftDrive], 1620, 20) || SensorValue[LeftDrive] > 1660);
+	waitUntil(within(SensorValue[LeftDrive], 1580, 20) || SensorValue[LeftDrive] > 1620);
 	moveDrive(-10, -10);
 	delay(300);
 	moveDrive(0, 0);
@@ -136,12 +136,12 @@ void twenty() {
 	waitUntil(SensorValue[lift] > 1800);
 	moveVertibar(0);
 	moveLift(0);
-  waitUntil(within(SensorValue[LeftDrive], 1300, 10) || time1[T1] > 1550);
-	moveDrive(0, 0);
+  waitUntil(within(SensorValue[LeftDrive], 1400, 10) || time1[T1] > 1700);
+	moveDrive(30, 30);
 
 	moveMobileGoal(100);
-	waitUntil(within(SensorValue[mobogo], 2690, 20));
-	moveMobileGoal(-20);
+	waitUntil(within(SensorValue[mobogo], 2720, 20));
+	moveMobileGoal(-50);
 
 	moveDrive(-127, -127);
 	clearTimer(T1);

@@ -73,7 +73,7 @@
 #include "autonomous/twentyauto.c"
 #elif AUTONOMOUS_GOAL==24
 // the twenty four auto is really contained by the twenty points file
-#include "autonomous/twentyauto.c"
+#include "autonomous/twentyfourauto.c"
 #elif AUTONOMOUS_GOAL==10
 #include "autonomous/tenauto.c"
 #elif AUTONOMOUS_GOAL==13
@@ -113,7 +113,7 @@ task autonomous() {
 #elif AUTONOMOUS_GOAL==20
 	twenty();
 #elif AUTONOMOUS_GOAL==24
-	twenty();
+	twentyfour();
 #elif AUTONOMOUS_GOAL==13
 	thirteen();
 #elif AUTONOMOUS_GOAL==0
@@ -135,70 +135,41 @@ bool recount = false;
 // loader height, we need to not continuously set a stall torque
 bool stallLift = true;
 
-task alternateControl() {
-
-	while (true) {
-		// counter control
-		if (vexRT[Btn8L] && coneCounter > 0) {
-			waitUntil(!vexRT[Btn8L]);
-			--coneCounter;
-			} else if (vexRT[Btn8R]) {
-			waitUntil(!vexRT[Btn8R]);
-			++coneCounter;
-		}
-
-		if(vexRT[Btn8U]) coneCounter = 0;
-
-		if (vexRT[Btn8D] && !getRunning()) {
-			if (!SensorValue[matchloads]) {
-				stallLift = false;
-				moveLift(70);
-				waitUntil(SensorValue[matchloads]);
-				moveLift(-10);
-				delay(400);
-				moveLift(30);
-				stallLift = true;
-				} else {
-				moveLift(-70);
-				waitUntil(!SensorValue[matchloads]);
-				moveLift(30);
-				stallLift = true;
-			}
-		}
-		delay(20);
-	}
-}
-
 task usercontrol()
 {
 	resetDriveIME();
-	startTask(alternateControl);
 	//current number of times claw has opened; used to keep track of current state
 	int clawCounter = 0;
 
-
-	// are we going to increment when it switches
-
-	//used to detect change of state of claw input button
-	bool isClaw = false;
+	// set vertibar target prior to setup the pid
 	setVertibarTarget(SensorValue[vertibar]);
+
+	// set the lift target prior to setup the pid
 	setLiftTarget(SensorValue[lift]);
 
-	startTask(liftpid);
-
+	// start the while loop for control
 	while(true) {
-		delay(20);
+		// create a small delay so that other tasks can run
+		delay(60);
 
 		// move the drive in a tank fasion
 		// this may change to account for turn later on
 		moveDrive(vexRT[Ch3], vexRT[Ch2]);
 
 		// vertibar control
+		// first check that the autostack is not running
 		if (!getRunning()) {
+			// ensure that the pid isn't runnng for some reason
+			// this segment enables moving the motors directly rather
+			// than setting the pid target
 			if (!getVertibarPidRunning()) {
+				// move the vertibar based on whether the up or down button
+				// is pressed. this simply compressed it to one line
 				moveVertibar(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
 			}
 			else {
+				// if the pid is running, increment and decrement the vertibar
+				// target.
 				if (vexRT[Btn6U]) incrementVert();
 				else if (vexRT[Btn6D]) decrementVert();
 			}
@@ -206,13 +177,23 @@ task usercontrol()
 
 
 		//mobileBtn7D
+		// this controls the mobile goal. positive power moves it out
+		// while the opposite moves it in.
 		motor[port2] = 100 * vexRT[Btn7U] + -90 * vexRT[Btn7L];
 
+
+		// this is lift control which behaves similarly to the vertibar control
 		if (vexRT[Btn5U]) {
+			// increment the target if we are using the pid.
+			// if we aren't, this has no effect
 			incrementLift();
+
+			// if the pid and autostack aren't running, then we can apply motor power
+			// to raise the lift
 			if (!getRunning() && !getLiftPidRunning()) moveLift(100);
 		}
 		else if (vexRT[Btn5D]) {
+			// decrement the lift
 			decrementLift();
 			if (!getRunning() && !getLiftPidRunning()) moveLift(-100);
 		}
@@ -223,38 +204,77 @@ task usercontrol()
 
 
 		if (!getRunning() && recount) {
-			startTask(liftpid);
 			coneCounter++;
 			recount = false;
 		}
+
+		// counter control
+		// decrement the counter if 8L is pressed
+		if (vexRT[Btn8L] && coneCounter > 0) {
+			// wait until release since we don't want to double click
+			waitUntil(!vexRT[Btn8L]);
+			// actually decrease the cone counter
+			--coneCounter;
+		}
+		else if (vexRT[Btn8R]) {
+			// we want to increment the cone counter
+			// we should wait until release in order to avoid double counting
+			waitUntil(!vexRT[Btn8R]);
+			// actually increase the cone counter
+			++coneCounter;
+		}
+
+		// check if the reset button was pressed
+		// we do not need to wait for release because
+		// we reset to 0 anyway
+		if(vexRT[Btn8U]) coneCounter = 0;
 
 		// match loads control. if the button is pressed during match loads,
 		// cancel. if the second part of match loads is being done (i.e. the lift
 		// is coming down) queue up another match load
 		if (vexRT[Btn7R] && !getRunning() && !recount) {
+			// stop the lift pid if it is running since our
+			// auto stack requires no pid. having a pid will interfere with
+			// functionality
 			stopLiftPid();
-			writeDebugStreamLine("building match loads");
-			buildMatchLoads(coneCounter);
+
+			// start the task of building the match load.
+			// this should return fairly quickly since it's only a function
+			// that configures and starts the buildStack
+			buildDriverLoads(coneCounter);
+
+			// reset the claw counter so that we can close the claw when coming down
+			// the autostack will automatically open the claw and apply necessary stall
 			clawCounter = 0;
+
+			// wait until we release the button since we don't want to automatically cancel
+			// the function
 			waitUntil(!vexRT[Btn7R]);
+
+			// set recount to true so that when autostack finishes, we increment
 			recount = true;
 		}
 		else if (vexRT[Btn7R] && getRunning()) {
+			// set recount to false so we don't increment
 			recount = false;
+
+			// wait until we release so we don't automatically being trying to autostack
 			waitUntil(!vexRT[Btn7R]);
+
+			// stop the autobuild
 			stopAutoBuild();
-			startTask(liftpid);
 		}
 
 
 		// claw control is mandated here
-		// first check if the toggle button is pressed
-		if(vexRT[Btn7D])
+		// first check if the toggle button is pressed and check autostack is not running
+		if(vexRT[Btn7D] && !getRunning())
 		{
 			// increment the cone counter. this can be placed after
 			// but will reverse the effects. this also enables alternation
 			++clawCounter;
-			isClaw = true;
+
+			// this modulus allows double alternation
 			if(clawCounter % 2 == 0) {
 				motor[port6] = -100;
 				wait1Msec(200);
@@ -263,7 +283,35 @@ task usercontrol()
 			else if(clawCounter % 2 == 1) {
 				motor[port6] = 100;
 				wait1Msec(200);
-				motor[port6] = 30;
+				motor[port6] = 5;
+			}
+		}
+
+
+		if (vexRT[Btn8D] && !getRunning()) {
+			delay(400);
+			if (vexRT[Btn7R]) {
+				buildMatchLoads(coneCounter);
+				recount = true;
+				waitUntil(!vexRT[Btn8D] && !vexRT[Btn7R]);
+			}
+			else {
+				if (!SensorValue[matchloads]) {
+					stallLift = false;
+					moveLift(70);
+
+					waitUntil(SensorValue[matchloads] || !vexRT[Btn8D]);
+					moveLift(-10);
+					delay(400);
+					moveLift(30);
+					stallLift = true;
+				}
+				else {
+					moveLift(-70);
+					waitUntil(!SensorValue[matchloads] || !vexRT[Btn8D]);
+					moveLift(30);
+					stallLift = true;
+				}
 			}
 		}
 	}

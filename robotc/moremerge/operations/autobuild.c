@@ -83,18 +83,18 @@ task buildStackWithoutPid() {
 
 	// apply a small stall torque to ensure that the cone remains
 	// in place throughout this operation
-	openClaw(-40);
+	openClaw(-30);
 
 	// being moving the lift up
 	moveLift(127);
 
-	if (drive_loads.liftInitial && drive_loads.matchloads) {
-		waitUntil(SensorValue[lift] > 1640);
+	if (drive_loads.liftInitial && drive_loads.matchLoads) {
+		waitUntil(SensorValue[lift] > 1600);
 	}
 
 	// wait until the driver loads are a little below target height or above target height
 	// following this we should ensure that the vertibar begins raising for concurrency
-	waitUntil(within(drive_loads.liftHeight - 300, SensorValue[lift], 40) || SensorValue[lift] > drive_loads.liftHeight);
+	waitUntil(withinOrGreater(SensorValue[lift], drive_loads.liftHeight - 300, 40));
 
 	// move the vertibar up so that we can deposit the cone later
 	moveVertibar(127);
@@ -111,36 +111,38 @@ task buildStackWithoutPid() {
 
 		// apply a small p term to the lift so it slows down as it approaches the target
 		// momentum will likely ensure it overshoots its target
-		moveLift(3 * (drive_loads.liftHeight - SensorValue[lift]));
-
-		// use a simple p term to the vertibar so it slows down to prevent excessive stalling
-		moveVertibar((SensorValue[vertibar] - drive_loads.vertTarget));
+		if (withinOrGreater(SensorValue[lift], drive_loads.liftHeight, 20)) {
+			moveLift(30);
+		}
+		else {
+			moveLift(2 * (drive_loads.liftHeight - SensorValue[lift]));
+		}
 		// if the vertbar target has been reached, simply apply a stall torque
-		if (withinOrLess(SensorValue[vertibar], drive_loads.vertTarget, 20))
+		if (withinOrLess(SensorValue[vertibar], drive_loads.vertTarget, 20)) {
 			moveVertibar(20);
+		}
+		else {
+			// use a simple p term to the vertibar so it slows down to prevent excessive stalling
+			moveVertibar((SensorValue[vertibar] - drive_loads.vertTarget));
+		}
 	}
-
 
 	// check if the vertibar has not reached the correct height.
 	// this occurs sometimes for some reason despite the while loop above
-	if (!withinOrLess(SensorValue[vertibar], drive_loads.vertTarget, 50)) {
-		// we should speed things up a bit
-		moveVertibar(90);
-	}
-
+	moveVertibar(90);
 	// clear timer T1 for setup to ensure vertibar reaches correct height
 	clearTimer(T1);
 	// wait until vertibar or timer runs out in about 1500 milliseconds
 	waitUntil(withinOrLess(SensorValue[vertibar], drive_loads.vertTarget, 50) || time1[T1] > 2000);
 
 	// we apply a stall torque to the vertibar to ensure it doesn't move too much
-	moveVertibar(20);
+	moveVertibar(2);
 	writeDebugStreamLine("vertibar at: %f", SensorValue[vertibar]);
 
 	// move the lift down for better accuracy. we time this simply because
 	// it's sufficient and more work is unnecessary
-	moveLift(-50);
-	delay(300);
+	moveLift(-80);
+	delay(200);
 
 	// apply a lift stall to ensure that the lift doesn't fall down
 	moveLift(20);
@@ -148,23 +150,39 @@ task buildStackWithoutPid() {
 	// open the claw for a small amount of time to release the cone.
 	// we should have deposited the claw by now
 	openClaw(127);
+	if (drive_loads.liftMobileGoal) {
+		moveMobileGoal(100);
+	}
 	delay(400);
+
+	moveMobileGoal(0);
 
 	// apply a small claw open stall to ensure that it remains open
 	openClaw(10);
 
 	// move the lift back up to ensure that when we lower the vertibar later,
 	// we don't get caught in the newly created stack
-	moveLift(100);
+	moveLift(127);
+
 	// wait until we are slightly above the target height so we have room to
 	// lower the vertibar
-	waitUntil(SensorValue[lift] > drive_loads.liftHeight + 100);
+
+	waitUntil(SensorValue[lift] > drive_loads.liftHeight + 50);
+
+	if (drive_loads.matchLoads && drive_loads.liftInitial) {
+		waitUntil(SensorValue[lift] > 1650);
+	}
 
 	// small stall torque to ensure that the lift does not go back down
 	moveLift(30);
 
+	openClaw(-127);
+
 	// move the vertibar down
 	moveVertibar(-127);
+
+	delay(300);
+	openClaw(0);
 
 	// ensure that the vertibar hits the "lowered" position correctly
 	while (SensorValue[vertibar] < 2750) {
@@ -172,11 +190,10 @@ task buildStackWithoutPid() {
 		moveVertibar(SensorValue[vertibar] - 2750);
 	}
 
-	// this is a debug message. i'm unsure why this is here
-	writeDebugStreamLine("vertibar at %f", SensorValue[vertibar]);
-
 	// apply a light stall torque to the vertibar
 	moveVertibar(10);
+
+	openClaw(127);
 
 	// move the lift back down to original state
 
@@ -186,6 +203,8 @@ task buildStackWithoutPid() {
 	if (!drive_loads.matchLoads) {
 		// if we are not in matchloads, simply return to ground position
 		moveLift(-80);
+		delay(300);
+		openClaw(10);
 		waitUntil(SensorValue[lift] < 1105);
 	}
 	else {
@@ -195,12 +214,16 @@ task buildStackWithoutPid() {
 			// if the sensor value reads true, that must mean that it is not pressed
 			// this means that we should go down in order to press the button
 			moveLift(-70);
-			waitUntil(!SensorValue[matchLoads]);
+			delay(200);
+			openClaw(10);
+			waitUntil(!SensorValue[matchloads]);
 		}
 		else {
 			// if the sensor value reads false, that must mean that it is pressed
 			// this means we ought to go up in order to stop pressing the button
 			moveLift(70);
+			delay(200);
+			openClaw(10);
 			waitUntil(SensorValue[matchloads]);
 		}
 	}
@@ -216,25 +239,25 @@ bool setLiftBuildHeight(int cone_stack) {
 	// configure the auto stack for a given cone height
 	switch(cone_stack) {
 	case 0:
-		drive_loads.liftHeight = 1460;
+		drive_loads.liftHeight = 1320;
 		drive_loads.vertTarget = 560;
 		drive_loads.liftInitial = true;
 		break;
 	case 1:
-		drive_loads.liftHeight = 1520;
+		drive_loads.liftHeight = 1440;
 		drive_loads.vertTarget = 560;
 		drive_loads.liftInitial = true;
 		break;
 	case 2:
-		drive_loads.liftHeight = 1620;
+		drive_loads.liftHeight = 1520;
 		drive_loads.vertTarget = 560;
 		break;
 	case 3:
-		drive_loads.liftHeight = 1720;
+		drive_loads.liftHeight = 1700;
 		drive_loads.vertTarget = 560;
 		break;
 	case 4:
-		drive_loads.liftHeight = 1820;
+		drive_loads.liftHeight = 1790;
 		drive_loads.vertTarget = 560;
 		break;
 	case 5:
@@ -305,10 +328,9 @@ bool buildDriverLoads(int cone_stack) {
 	isRunning = true;
 
 	drive_loads.maxHeight = false;
+	drive_loads.matchLoads = false;
 
 	if (!setLiftBuildHeight(cone_stack)) return false;
-
-	drive_loads.matchLoads = false;
 
 	startTask(buildStackWithoutPid);
 	return true;

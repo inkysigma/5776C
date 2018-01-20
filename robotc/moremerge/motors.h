@@ -15,7 +15,7 @@ void moveVertibar(int power) {
 
 //set claw to "power"
 void openClaw(int power) {
-	motor[claw] = -power;
+	motor[claw] = power;
 }
 
 void moveMobileGoal(int power) {
