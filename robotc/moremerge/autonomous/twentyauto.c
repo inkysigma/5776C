@@ -63,27 +63,30 @@ void twenty() {
 	openClaw(-45);
 
 	//attempt to score second cone
-	moveVertibar(70);
 	moveDrive(-127, -127);
 	moveLift(127);
 	bool vertibarPassed = false;
 	bool liftPassed = false;
 	clearTimer(T1);
-	while (!vertibarPassed && !liftPassed && time1[T1] < 2500) {
-		if (within(SensorValue[vertibar], 1060, 60)) {
-			moveVertibar(5);
+
+	while (!vertibarPassed && !liftPassed && time1[T1] < 4500) {
+
+		if (within(SensorValue[lift], 1556, 20) || SensorValue[lift] > 1600) {
+			writeDebugStreamLine("hit the lift position");
+			moveLift(20);
+			clearTimer(T2);
+			if (!vertibarPassed) moveVertibar(127);
+			wait1Msec(900);
+			moveVertibar(20);
+			liftPassed = true;
 			vertibarPassed = true;
 		}
-
-		if (within(SensorValue[lift], 1556, 20)) {
-			moveLift(20);
-			if (!vertibarPassed) moveVertibar(100);
-			liftPassed = true;
-		}
 	}
+
+	moveVertibar(20);
 	moveLift(-80);
 	clearTimer(T1);
-	waitUntil(SensorValue[lift] < 1200 && time1[T1] < 1000);
+	waitUntil(SensorValue[lift] < 1200 || time1[T1] > 1000);
 	openClaw(127);
 	moveLift(127);
 	openClaw(10);
@@ -108,7 +111,7 @@ void twenty() {
 	delay(30);
 	moveDrive(-100, -100);
 	resetDriveIME();
-	waitUntil(within(SensorValue[LeftDrive], -380, 40));
+	waitUntil(within(SensorValue[LeftDrive], -450, 40));
 	moveDrive(10, 10);
 	delay(100);
 	moveDrive(0, 0);
@@ -133,11 +136,11 @@ void twenty() {
 	waitUntil(SensorValue[lift] > 1800);
 	moveVertibar(0);
 	moveLift(0);
-  waitUntil(within(SensorValue[LeftDrive], 1200, 10) || time1[T1] > 1350);
+  waitUntil(within(SensorValue[LeftDrive], 1300, 10) || time1[T1] > 1550);
 	moveDrive(0, 0);
 
 	moveMobileGoal(100);
-	waitUntil(within(SensorValue[mobogo], 2650, 20));
+	waitUntil(within(SensorValue[mobogo], 2690, 20));
 	moveMobileGoal(-20);
 
 	moveDrive(-127, -127);

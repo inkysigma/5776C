@@ -5,15 +5,15 @@
 #endif
 #include "../util/math.h"
 
-#define LIFT_KP 1
-#define LIFT_KI 0.3
-#define LIFT_KD 2.4
+#define LIFT_KP 1.25
+#define LIFT_KI 0.4
+#define LIFT_KD 3.23
 
 float lift_target = 0;
 float lift_prev_error = 0;
 float lift_integral = 0;
 float lift_total_cap = 120;
-float lift_integral_cap = 30;
+float lift_integral_cap = 40;
 float lift_derivative_cap = 100;
 
 bool lift_pid_running = false;
@@ -43,6 +43,7 @@ task liftpid()
 }
 
 void setLiftTarget(float t) {
+	writeDebugStreamLine("Setting lift target to %f", t);
 	lift_target = t;
 }
 

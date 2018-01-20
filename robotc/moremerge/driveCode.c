@@ -4,6 +4,7 @@
 #pragma config(Sensor, in3,    gyro,           sensorGyro)
 #pragma config(Sensor, in4,    mobogo,         sensorPotentiometer)
 #pragma config(Sensor, in5,    vertibar,       sensorPotentiometer)
+#pragma config(Sensor, dgtl10, matchloads,     sensorDigitalIn)
 #pragma config(Sensor, I2C_1,  LeftDrive,      sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_2,  RightDrive,     sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port2,           rGoal,         tmotorVex393_MC29, openLoop)
@@ -25,12 +26,23 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 
+// this, for historical reasons, holds the configuration for whether
+// we are on the blue side. use the define header guard to ensure that
+// this file is only included once
 #include "configuration.h"
 
+// motors.h contains some abstraction for motor control
+// functions such as moveLift(int power) depend on this file.
+// in general, move_x_(int power), sets the motors controlling x
+// to the power given. this also ensures that polarity is really
+// only ever flipped in this file
 #ifndef MOTOR_H
 #include "motors.h"
 #endif
 
+
+// this file contains the lift pid which uses define header guards in
+// order to protect
 #ifndef PID_LIFT_C
 #include "pid/lift.c"
 #endif
@@ -47,8 +59,16 @@
 #include "../util/math.h"
 #endif
 
+// this defines the number of points you want the autonomous to score
+// most of these names are for legacy reasons.
+// the currently supported ones are:
+// 10: this is actually a 13 point autonomous that scores in the 5 point zone
+// 20: this is a fully twenty four point autonomous that picks up two
+// 27: this is a twenty seven point autonomous that needs more work but
+//		 puts an item on the stationary goal and fetches the mogo in the twenty
 #define AUTONOMOUS_GOAL 10
 
+// the following files are included depending on the autonomous selected
 #if AUTONOMOUS_GOAL==20
 #include "autonomous/twentyauto.c"
 #elif AUTONOMOUS_GOAL==24
@@ -56,59 +76,68 @@
 #include "autonomous/twentyauto.c"
 #elif AUTONOMOUS_GOAL==10
 #include "autonomous/tenauto.c"
-#elif AUTONOMOUS_GOAL==27
-#include "autonomous/supportauto.c"
 #elif AUTONOMOUS_GOAL==13
 #include "autonomous/thirteenauto.c"
 #elif AUTONOMOUS_GOAL==0
+#include "autonomous/defensive.c"
+#elif AUTONOMOUS_GOAL==27
+#include "autonomous/stagoauto.c"
 #endif
 
 void pre_auton() {
+	// clear the debug stream so that when debugging
+	// there are no records of previous run to confuse person
 	datalogClear();
 	clearDebugStream();
-	writeDebugStreamLine("blue: %d", BLUE);
+
+	// reset the drive IME to ensure calibration
 	resetDriveIME();
+
+	// calibrate the gyro
 	SensorType[gyro] = sensorNone;
+
+	// we need to wait a full second before proceeding on
 	wait1Msec(1000);
 	SensorType[gyro] = sensorGyro;
 	delay(1100);
+
+	// reset the gyro to 0 to ensure calibration
 	SensorValue[gyro] = 0;
 }
 
 task autonomous() {
+	// autonomous will run different functions in different files
+	// depending on the autonomous selection. see above for options
 #if AUTONOMOUS_GOAL==10
 	ten();
 #elif AUTONOMOUS_GOAL==20
 	twenty();
-#elif AUTONOMOUS_GOAL==27
-	twentyseven();
 #elif AUTONOMOUS_GOAL==24
 	twenty();
 #elif AUTONOMOUS_GOAL==13
 	thirteen();
+#elif AUTONOMOUS_GOAL==0
+	defensive();
+#elif AUTONOMOUS_GOAL==27
+	stago();
 #endif
 }
 
+
+// number of cones on mogo, referenced in autostack functions
 int coneCounter = 0;
+// recount checks if we should increment the cone counter upon the next cycle.
+// this is generally done because we want the ability to cancel and not increment.
+// increment is checked by checking if recount is true and checking if the autostack
+// task is no longer being done.
 bool recount = false;
+// check if we should set a stall on the lift. when using 8D in order to reach match
+// loader height, we need to not continuously set a stall torque
+bool stallLift = true;
 
 task alternateControl() {
 
 	while (true) {
-
-		// match loads control. if the button is pressed during match loads,
-	  // cancel. if the second part of match loads is being done (i.e. the lift
-	  // is coming down) queue up another match load
-		if (vexRT[Btn7R] && !getRunning() && !recount) {
-			buildMatchLoads(coneCounter);
-			waitUntil(!vexRT[Btn7R]);
-			recount = true;
-			} else if (vexRT[Btn7R] && getRunning()) {
-			recount = false;
-			waitUntil(!vexRT[Btn7R]);
-			stopAutoBuild();
-		}
-
 		// counter control
 		if (vexRT[Btn8L] && coneCounter > 0) {
 			waitUntil(!vexRT[Btn8L]);
@@ -119,6 +148,24 @@ task alternateControl() {
 		}
 
 		if(vexRT[Btn8U]) coneCounter = 0;
+
+		if (vexRT[Btn8D] && !getRunning()) {
+			if (!SensorValue[matchloads]) {
+				stallLift = false;
+				moveLift(70);
+				waitUntil(SensorValue[matchloads]);
+				moveLift(-10);
+				delay(400);
+				moveLift(30);
+				stallLift = true;
+				} else {
+				moveLift(-70);
+				waitUntil(!SensorValue[matchloads]);
+				moveLift(30);
+				stallLift = true;
+			}
+		}
+		delay(20);
 	}
 }
 
@@ -129,7 +176,6 @@ task usercontrol()
 	//current number of times claw has opened; used to keep track of current state
 	int clawCounter = 0;
 
-	//number of cones on mogo, referenced in autostack functions
 
 	// are we going to increment when it switches
 
@@ -138,11 +184,16 @@ task usercontrol()
 	setVertibarTarget(SensorValue[vertibar]);
 	setLiftTarget(SensorValue[lift]);
 
+	startTask(liftpid);
+
 	while(true) {
 		delay(20);
+
+		// move the drive in a tank fasion
+		// this may change to account for turn later on
 		moveDrive(vexRT[Ch3], vexRT[Ch2]);
 
-		//vertibar
+		// vertibar control
 		if (!getRunning()) {
 			if (!getVertibarPidRunning()) {
 				moveVertibar(100 * vexRT[Btn6U] + -100 * vexRT[Btn6D]);
@@ -166,23 +217,42 @@ task usercontrol()
 			if (!getRunning() && !getLiftPidRunning()) moveLift(-100);
 		}
 		else {
-			if (!getRunning() && !getLiftPidRunning()) moveLift(0);
+			if (!getRunning() && !getLiftPidRunning() && stallLift) moveLift(0);
 		}
 
 
-
-		if (vexRT[Btn8D] && !getRunning()) {
-			if (!SensorValue[
-		}
 
 		if (!getRunning() && recount) {
-			stopVertibarPid();
-			stopLiftPid();
+			startTask(liftpid);
 			coneCounter++;
 			recount = false;
 		}
 
-		if(vexRT[Btn7D]) {
+		// match loads control. if the button is pressed during match loads,
+		// cancel. if the second part of match loads is being done (i.e. the lift
+		// is coming down) queue up another match load
+		if (vexRT[Btn7R] && !getRunning() && !recount) {
+			stopLiftPid();
+			writeDebugStreamLine("building match loads");
+			buildMatchLoads(coneCounter);
+			clawCounter = 0;
+			waitUntil(!vexRT[Btn7R]);
+			recount = true;
+		}
+		else if (vexRT[Btn7R] && getRunning()) {
+			recount = false;
+			waitUntil(!vexRT[Btn7R]);
+			stopAutoBuild();
+			startTask(liftpid);
+		}
+
+
+		// claw control is mandated here
+		// first check if the toggle button is pressed
+		if(vexRT[Btn7D])
+		{
+			// increment the cone counter. this can be placed after
+			// but will reverse the effects. this also enables alternation
 			++clawCounter;
 			isClaw = true;
 			if(clawCounter % 2 == 0) {
