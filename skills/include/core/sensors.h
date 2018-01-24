@@ -15,17 +15,35 @@
  *
  *        TL;DR make clean
 **/
-#include "configuration/motors.h"
+#include "configuration/sensors.h"
 
 #ifndef _CORE_SENSORS_H
 #define _CORE_SENSORS_H
 
 #include "API.h"
 
-extern Gyro mainGyro;
+extern Encoder leftEncoder;
+extern Encoder rightEncoder;
 
-int readGyro() {
-  return gyroGet(mainGyro);
+inline int readGyro() {
+  return (analogReadCalibratedHR(MainGyro) + analogReadCalibratedHR(SecondaryGyro)) / 2;
+}
+
+inline int readMobileGoalPot() {
+  return analogReadCalibrated(MobileGoalPot);
+}
+
+inline int readLeftDrive() {
+  return encoderGet(leftEncoder);
+}
+
+inline int readRightDrive() {
+  return encoderGet(rightEncoder);
+}
+
+inline void resetDrive() {
+  encoderReset(leftEncoder);
+  encoderReset(rightEncoder);
 }
 
 #endif

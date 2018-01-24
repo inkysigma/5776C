@@ -11,8 +11,8 @@
  */
 
 #include "main.h"
+#include "configuration/sensors.h"
 
-Gyro mainGyro;
 
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
@@ -23,6 +23,7 @@ Gyro mainGyro;
  * configure a UART port (usartOpen()) but cannot set up an LCD (lcdInit()).
  */
 void initializeIO() {
+  watchdogInit();
 }
 
 /*
@@ -39,4 +40,8 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
+  analogCalibrate(MainGyro);
+  analogCalibrate(SecondaryGyro);
+  analogCalibrate(MobileGoalPot);
+  analogCalibrate(Accelerometer);
 }
