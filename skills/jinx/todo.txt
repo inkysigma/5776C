@@ -1,0 +1,25 @@
+JINX TODO:
+HTML/JAVASCRIPT
+	Command table
+		Command to send
+		Delay
+		Start sending button
+	Download individual variables
+	handle when variable names have spaces
+	If non-numerical data send to variable expected to be numeric, then everything gets ruined.
+	terminal sometimes doesn't submit properly.
+	Refresh bug:
+		When page is already loaded, and you refresh, some scripts are removed
+		When you go to a different page and come back, it works
+
+PYTHON
+	Ask for invalid messages to be resent
+	Start/Stop server function
+	Start/Stop serial function
+	Allow receiving more than one name/value pair at a time.
+
+PROS
+	Token parser
+	Float/Double parser
+	Resending of invalid messages
+	Allow sending more than one name/value pair at a time

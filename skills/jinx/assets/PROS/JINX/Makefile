@@ -7,8 +7,6 @@ BINDIR=$(ROOT)/bin
 # Subdirectories to include in the build
 SUBDIRS=src
 
-JINX=python jinx/JINX.py
-
 # Nothing below here needs to be modified by typical users
 
 # Include common aspects of this project
@@ -23,7 +21,7 @@ CPPSRC:=$(wildcard *.$(CPPEXT))
 CPPOBJ:=$(patsubst %.o,$(BINDIR)/%.o,$(CPPSRC:.$(CPPEXT)=.o))
 OUT:=$(BINDIR)/$(OUTNAME)
 
-.PHONY: all clean flash upload upload-legacy _force_look
+.PHONY: all clean upload _force_look
 
 # By default, compile program
 all: $(BINDIR) $(OUT)
@@ -35,23 +33,6 @@ clean:
 
 # Uploads program to device
 upload: all
-	$(FLASH)
-
-# Alias to upload, more consistent with our terminology
-flash: upload
-
-jinx:
-	$(JINX)
-	echo "Opening JINX server on 9001. Head to 9001 on a browser"
-
-muj:
-	$(MAKE) clean
-	$(MAKE)
-	$(FLASH)
-	$(JINX)
-
-# Uploads program to device using legacy uniflasher JAR file
-upload-legacy: all
 	$(UPLOAD)
 
 # Phony force-look target
