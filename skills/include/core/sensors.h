@@ -17,6 +17,15 @@
 **/
 #include "configuration/motors.h"
 
-#ifndef CORE_SENSORS_H
-#define CORE_SENSORS_H
+#ifndef _CORE_SENSORS_H
+#define _CORE_SENSORS_H
+
+#include "API.h"
+
+extern Gyro mainGyro;
+
+int readGyro() {
+  return gyroGet(mainGyro);
+}
+
 #endif

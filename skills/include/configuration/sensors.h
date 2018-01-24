@@ -14,8 +14,8 @@
  *
  *        TL;DR make clean
 **/
-#ifndef CONFIGURATION_SENSORS_H
-#define CONFIGURATION_SENSORS_H
+#ifndef _CONFIGURATION_SENSORS_H
+#define _CONFIGURATION_SENSORS_H
 
 #define RightEncoder 1
 #define LeftEncoder 2

@@ -18,6 +18,53 @@
 **/
 #include "configuration/motors.h"
 
-#ifndef CORE_MOTORS_H
-#define CORE_MOTORS_H
+#ifndef _CORE_MOTORS_H
+#define _CORE_MOTORS_H
+#include "API.h"
+
+/**
+ * @brief Sets the speed of the left side of the drive.
+ * @param The speed to set the left drive to.
+ **/
+inline void moveLeftDrive(int power) {
+  motorSet(LeftDriveFront, -power);
+  motorSet(LeftDriveBack, power);
+}
+
+
+/**
+ * @brief Sets the speed of the right side of the drive.
+ * @param The speed to set the right drive to.
+ **/
+inline void moveRightDrive(int power) {
+  motorSet(RightDriveFront, power);
+  motorSet(RightDriveBack, -power);
+}
+
+/**
+ * @brief Sets the speed of the left and right side of the drive.
+ * @param The speed to set the left and right drive to.
+ **/
+inline void moveDrive(int left, int right) {
+  moveLeftDrive(left);
+  moveRightDrive(right);
+}
+
+/**
+ * @brief Sets the power to open the mobile goal.
+ * @param The power to open the mobile goal at.
+ **/
+inline void openMobileGoal(int power) {
+  motorSet(LeftMobileGoal, power);
+  motorSet(RightMobileGoal, -power);
+}
+
+/**
+ * @brief Sets the power to close the mobile goal.
+ * @param The power to close the mobile goal at.
+ **/
+inline void closeMobileGoal(int power) {
+  openMobileGoal(-power);
+}
+
 #endif

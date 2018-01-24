@@ -11,6 +11,8 @@
  */
 
 #include "main.h"
+#include "core/motors.h"
+#include "core/controls.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own task with the
@@ -31,6 +33,15 @@
  */
 void operatorControl() {
 	while (1) {
+		moveDrive(getLeftJoystick(), getRightJoystick());
+
+		if (getOpenMobileGoal()) {
+			openMobileGoal(127);
+		} else if (getCloseMobileGoal()) {
+			closeMobileGoal(127);
+		} else {
+			openMobileGoal(0);
+		}
 		delay(20);
 	}
 }

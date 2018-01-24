@@ -14,8 +14,8 @@
  *
  *        TL;DR make clean
 **/
-#ifndef MOTORS_H
-#define MOTORS_H
+#ifndef _MOTORS_H
+#define _MOTORS_H
 
 #define Claw 2
 #define LeftDriveBack 3
