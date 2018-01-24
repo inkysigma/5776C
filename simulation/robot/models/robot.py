@@ -29,3 +29,6 @@ class Robot:
         offset_pos = pos - offset
 
         screen.blit(rotated_image, offset_pos)
+
+    def apply_left_impulse(self, impulse):
+        self.body.apply_impulse_at_local_point((0, impulse), (0, 0))

@@ -63,7 +63,7 @@ void twenty() {
 	delay(30);
 	moveDrive(-100, -100);
 	resetDriveIME();
-	waitUntil(within(SensorValue[LeftDrive], -450, 40));
+	waitUntil(within(SensorValue[LeftDrive], -530, 40));
 	moveDrive(10, 10);
 	delay(100);
 	moveDrive(0, 0);

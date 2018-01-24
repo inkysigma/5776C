@@ -1,26 +1,34 @@
 import pymunk
 import pygame.image
 import pygame.transform
-import os
-from .. import ROOT_DIR
-import math
+from pygame.color import *
 
 
 class Field:
     def __init__(self, space, size=(800, 800)):
-        self.mass = math.inf
-        self.body = pymunk.Body(self.mass, pymunk.moment_for_box(self.mass, size))
-        self.box = pymunk.Poly.create_box(self.body)
-        self.body.position = (400, 400)
-        space.add(self.body)
+        self.mass = 10000000
+        segment_vertexes = [
+            ((10, 10), (10, 660)),
+            ((10, 660), (660, 660)),
+            ((660, 660), (660, 10)),
+            ((660, 10), (10, 10))
+        ]
+        self.segments = []
+        for a, b in segment_vertexes:
+            body = pymunk.Body(body_type=pymunk.Body.STATIC)
+            segment = pymunk.Segment(body, a, b, 2)
+            self.segments.append(segment)
+            space.add(segment)
         self.size = size
+        self.rectangle = pygame.Rect(10, 10, 650, 650)
 
     def __convert__(self, screen, position):
         _, y = screen.get_size()
         return position.x, y - position.y
 
     def draw(self, screen):
-        pos = self.__convert__(screen, self.box.body.position)
-        angle = math.degrees(self.body.angle) + 180
+        pygame.draw.rect(screen, THECOLORS["grey"], self.rectangle, 0)
+        for segment in self.segments:
+            pygame.draw.line(screen, THECOLORS["black"], segment.a, segment.b, 2)
 
-        screen.blit(rotated_image, offset_pos)
+
