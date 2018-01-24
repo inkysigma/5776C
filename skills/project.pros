@@ -1,0 +1,7 @@
+{
+  "py/object" : "prosconfig.ProjectConfig", "py/state" : {
+    "kernel" : "2.12.1",
+               "libraries" : {"libfbc" : "1.0.0"},
+                             "output" : "bin/output.bin"
+  }
+}
