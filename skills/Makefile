@@ -45,8 +45,8 @@ jinx:
 	echo "Opening JINX server on 9001. Head to 9001 on a browser"
 
 muj:
-	$(MAKE) clean
-	$(MAKE)
+	$(MAKE_COMMAND) clean
+	$(MAKE_COMMAND) all
 	$(FLASH)
 	$(JINX)
 
