@@ -18,6 +18,7 @@
 #include "fbc.h"
 #include "main.h"
 #include "pid/left.h"
+#include "pid/right.h"
 #include "pid/rotate.h"
 #include "util/concurrency.h"
 
@@ -45,7 +46,10 @@
 bool running = false;
 void operatorControl() {
   while (1) {
-    if (running) updateRotateDriveCompletion();
+    if (running && !isRightConfident()) {
+      writeJINXMessage("Updated right power");
+      updateRightDriveCompletion();
+    }
     if (getOpenMobileGoal()) {
       openMobileGoal(127);
     } else if (getCloseMobileGoal()) {
@@ -55,14 +59,15 @@ void operatorControl() {
     }
 
     if (getTestFeedback()) {
-      resetRotateDriveFeedback();
-      setRotateDriveGoal(90);
-      waitUntil(!getTestFeedback(), 5000);
+      resetRightDriveFeedback();
+      setRightDriveGoal(400);
 			running = true;
+      waitUntil(!getTestFeedback(), 5000);
     }
 
 		if (getStopTestFeedback()) {
 			running = false;
+      resetRightDriveFeedback();
       moveDrive(0, 0);
 		}
     delay(20);

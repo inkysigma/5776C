@@ -20,10 +20,22 @@ inline int getLeftJoystick() {
   return joystickGetAnalog(1, 3);
 }
 
+/**
+ * @method getRightJoystick()
+ * @brief Get the value returned by the right joystick in the forward and
+ *        backward direction. This will most likely be used to control the
+ *        drive on the right side.
+ **/
 inline int getRightJoystick() {
   return joystickGetAnalog(1, 2);
 }
 
+/**
+ * @method getRightJoystick()
+ * @brief Get the value returned by the right joystick in the forward and
+ *        backward direction. This will most likely be used to control the
+ *        drive on the right side.
+ **/
 inline bool getOpenMobileGoal() {
   return joystickGetDigital(1, 7, JOY_UP);
 }

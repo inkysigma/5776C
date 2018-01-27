@@ -12,7 +12,7 @@ bool rotateRunning;
 void initRotateFeedback(float kp, float ki, float kd, float min_i,
                         float max_i) {
   fbcPIDInitializeData(&rotatePid, kp, ki, kd, min_i, max_i);
-  fbcInit(&rotateControl, &setRotate, &getGyro, NULL, NULL, -127, 127, 20, 3);
+  fbcInit(&rotateControl, &setRotate, &getGyro, &resetGyro, NULL, -127, 127, 1, 3);
   fbcPIDInit(&rotateControl, &rotatePid);
 }
 
@@ -20,7 +20,7 @@ void initRotateDriveFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
   fbcPIDInitializeData(&rotatePid, kp, ki, kd, min_i, max_i);
   fbcInit(&rotateControl, &setRotate, &getGyro, &resetGyro,
-          NULL, -127, 127, 20, 3);
+          NULL, -127, 127, 10, 3);
 }
 
 void setRotateDriveGoal(float target) { fbcSetGoal(&rotateControl, target); }
@@ -29,7 +29,6 @@ void updateRotateDriveCompletion() { fbcRunContinuous(&rotateControl); }
 
 void runRotateDrive(void* args) {
   while (rotateRunning) {
-    if (isRotateConfident()) fbcReset(&rotateControl);
     fbcRunContinuous(&rotateControl);
   }
 }

@@ -13,7 +13,8 @@ void initRightDriveFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
   fbcPIDInitializeData(&rightDrivePid, kp, ki, kd, min_i, max_i);
   fbcInit(&rightDriveControl, &setRightDrive, &getRightDrive, &resetRightDrive,
-          NULL, -127, 127, 20, 3);
+          NULL, -120, 120, 5, 3);
+  fbcPIDInit(&rightDriveControl, &rightDrivePid);
 }
 
 void setRightDriveGoal(float target) { fbcSetGoal(&rightDriveControl, target); }

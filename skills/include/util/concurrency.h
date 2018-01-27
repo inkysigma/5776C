@@ -4,7 +4,7 @@
 
 /**
  *	Execute a task until a condition is met or a timeout is reached. The
- *method is a macro and a shortcut for simply waiting and looping. Please be
+ * method is a macro and a shortcut for simply waiting and looping. Please be
  * aware of a small incursion in memory space that will result from usage of
  * this method.
  **/
