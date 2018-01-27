@@ -13,7 +13,6 @@
 #if DEBUG
 #include "main.h"
 #include "JINX.h"
-#include "debug/sensors.h"
 
 //Port over which all serial communication will occur. STDIN == STDOUT, so either can be used
 static FILE* comPort = stdout;

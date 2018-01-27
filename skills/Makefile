@@ -5,7 +5,7 @@ ROOT=.
 # Binary output directory
 BINDIR=$(ROOT)/bin
 # Subdirectories to include in the build
-SUBDIRS=src
+SUBDIRS=src src/debug src/util src/core src/pid
 
 JINX=python jinx/JINX.py
 
@@ -68,8 +68,8 @@ $(BINDIR):
 
 # Compile program
 $(OUT): $(SUBDIRS) $(ASMOBJ) $(COBJ) $(CPPOBJ)
-	@echo LN $(BINDIR)/*.o $(LIBRARIES) to $@
-	@$(CC) $(LDFLAGS) $(BINDIR)/*.o $(LIBRARIES) -o $@
+	@echo LN $(BINDIR)/*.o $(BINDIR)/**/*.o $(LIBRARIES) to $@
+	@$(CC) $(LDFLAGS) $(BINDIR)/*.o $(BINDIR)/**/*.o $(LIBRARIES) -o $@
 	@$(MCUPREFIX)size $(SIZEFLAGS) $(OUT)
 	$(MCUPREPARE)
 

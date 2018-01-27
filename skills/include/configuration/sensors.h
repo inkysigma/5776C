@@ -18,12 +18,14 @@
 #define _CONFIGURATION_SENSORS_H
 
 /** Digital sensor ports **/
-#define RightEncoder 2
-#define LeftEncoder 4
+#define LEFT_ENCODER 2
+#define LEFT_ENCODER_SECONDARY 3
+#define RIGHT_ENCODER 4
+#define RIGHT_ENCODER_SECONDARY 5
 
 /** Analog sensor ports **/
-#define MobileGoalPot 1
-#define MainGyro 2
-#define SecondaryGyro 3
+#define MAIN_GYRO 1
+#define SECONDARY_GYRO 2
+#define MOBILE_GOAL_POT 3
 
 #endif

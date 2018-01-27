@@ -34,7 +34,7 @@ inline void moveLeftDrive(int power) {
 
 /**
  * @brief Sets the speed of the right side of the drive.
- * @param The speed to set the right drive to.
+ * @param power The speed to set the right drive to.
  **/
 inline void moveRightDrive(int power) {
   motorSet(RightDriveFront, power);
@@ -43,11 +43,20 @@ inline void moveRightDrive(int power) {
 
 /**
  * @brief Sets the speed of the left and right side of the drive.
- * @param The speed to set the left and right drive to.
+ * @param left The speed to set the left side to
+ * @param right The Speed to set the right drive to.
  **/
 inline void moveDrive(int left, int right) {
   moveLeftDrive(left);
   moveRightDrive(right);
+}
+
+/**
+ * @brief Sets the speed of the left and right side of the drive to rotate
+ * @param power The speed to rotate at
+ **/
+inline void moveRotate(int power) {
+  moveDrive(power, -power);
 }
 
 /**
@@ -66,5 +75,10 @@ inline void openMobileGoal(int power) {
 inline void closeMobileGoal(int power) {
   openMobileGoal(-power);
 }
+
+void setLeftDrive(int power);
+void setRightDrive(int power);
+void setMobileGoal(int power);
+void setRotate(int power);
 
 #endif

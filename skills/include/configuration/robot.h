@@ -12,16 +12,9 @@
  *
  *        TL;DR make clean
 **/
-#ifndef _CONFIGURATION_SENSORS_H
-#define _CONFIGURATION_SENSORS_H
+#ifndef _CONFIGURATION_ROBOT_H
+#define _CONFIGURATION_ROBOT_H
 
-/** Digital sensor ports **/
-#define RightEncoder 2
-#define LeftEncoder 4
-
-/** Analog sensor ports **/
-#define MobileGoalPot 1
-#define MainGyro 2
-#define SecondaryGyro 3
+#define DEBUG 1
 
 #endif
