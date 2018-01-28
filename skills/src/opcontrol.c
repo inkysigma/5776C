@@ -21,6 +21,7 @@
 #include "pid/right.h"
 #include "pid/rotate.h"
 #include "util/concurrency.h"
+#include "auto.c"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -57,6 +58,11 @@ void operatorControl() {
     } else {
       openMobileGoal(0);
     }
+
+    /*
+    if (getRunAuton())
+        autonomous();
+        */
 
     if (getTestFeedback()) {
       resetRightDriveFeedback();

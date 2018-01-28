@@ -34,12 +34,11 @@
 #define FIRST 10000
 
 void autonomous() {
-    updateValue("auton_running", true);
     startLeftDriveFeedback();
     startRightDriveFeedback();
-    startMobileGoalDriveFeedback();
-    setMobileGoalDriveGoal(1950);
+    // set mogo to 1950
     setLeftDriveGoal(FIRST);
     setRightDriveGoal(FIRST);
     waitUntil(isLeftConfident() && isRightConfident(), 10000);
+    // set mogo to 424
 }

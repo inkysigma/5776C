@@ -44,6 +44,10 @@ inline bool getCloseMobileGoal() {
   return joystickGetDigital(1, 7, JOY_LEFT);
 }
 
+inline bool getRunAuton() {
+    return joystickGetDigital(1,8, JOY_DOWN);
+}
+
 inline bool getTestFeedback() {
   return joystickGetDigital(1, 7, JOY_DOWN);
 }
