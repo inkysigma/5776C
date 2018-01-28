@@ -11,6 +11,11 @@
  */
 
 #include "main.h"
+#include "pid/left.h"
+#include "pid/right.h"
+#include "pid/mobile.h"
+#include "util/concurrency.h"
+#include "util/jinx.h"
 
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
@@ -26,5 +31,15 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+#define FIRST 10000
+
 void autonomous() {
+    updateValue("auton_running", true);
+    startLeftDriveFeedback();
+    startRightDriveFeedback();
+    startMobileGoalDriveFeedback();
+    setMobileGoalDriveGoal(1950);
+    setLeftDriveGoal(FIRST);
+    setRightDriveGoal(FIRST);
+    waitUntil(isLeftConfident() && isRightConfident(), 10000);
 }

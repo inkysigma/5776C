@@ -7,7 +7,7 @@ BINDIR=$(ROOT)/bin
 # Subdirectories to include in the build
 SUBDIRS=src src/debug src/util src/core src/pid
 
-JINX=python jinx/JINX.py
+JINX=python3 jinx/JINX.py
 
 # Nothing below here needs to be modified by typical users
 
@@ -49,6 +49,10 @@ muj:
 	$(MAKE_COMMAND) all
 	$(FLASH)
 	$(JINX)
+
+mc:
+	$(MAKE_COMMAND) clean
+	$(MAKE_COMMAND) all
 
 # Uploads program to device using legacy uniflasher JAR file
 upload-legacy: all

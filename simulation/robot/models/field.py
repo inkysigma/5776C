@@ -22,7 +22,8 @@ class Field:
         self.size = size
         self.rectangle = pygame.Rect(10, 10, 650, 650)
 
-    def __convert__(self, screen, position):
+    @staticmethod
+    def _convert(screen, position):
         _, y = screen.get_size()
         return position.x, y - position.y
 
@@ -30,5 +31,13 @@ class Field:
         pygame.draw.rect(screen, THECOLORS["grey"], self.rectangle, 0)
         for segment in self.segments:
             pygame.draw.line(screen, THECOLORS["black"], segment.a, segment.b, 2)
+
+
+class Cone:
+    pass
+
+
+class MobileGoal:
+    pass
 
 

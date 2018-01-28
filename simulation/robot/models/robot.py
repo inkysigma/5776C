@@ -32,3 +32,13 @@ class Robot:
 
     def apply_left_impulse(self, impulse):
         self.body.apply_impulse_at_local_point((0, impulse), (0, 0))
+
+    def apply_right_impulse(self, impulse):
+        self.body.apply_impulse_at_local_point((impulse, 0), (0, 0))
+
+    def stop_left_impulse(self):
+        self.body.apply_impulse_at_local_point((0, 0), (0, 0))
+
+    def stop_right_impulse(self):
+        self.body.apply_impulse_at_local_point((0, 0), (0, 0))
+

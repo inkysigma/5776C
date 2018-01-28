@@ -1,7 +1,6 @@
 #include "configuration/robot.h"
 #if DEBUG
 #include "JINX.h"
-#include "util/JINX.h"
 #include "pid/left.h"
 #include "pid/right.h"
 
