@@ -26,10 +26,19 @@ extern Encoder leftEncoder;
 extern Encoder rightEncoder;
 extern Gyro mainGyro;
 
+/**
+ * @method readGyro()
+ * @brief Read the value returned by the gyro from 0 and above where each tick
+ *        correponds with a degree change
+ **/
 inline int readGyro() {
   return -gyroGet(mainGyro);
 }
 
+/**
+ * @method resetMainGyro()
+ * @brief Reset the main gyro to 0
+ **/
 inline void resetMainGyro() {
   gyroReset(mainGyro);
 }
@@ -59,6 +68,7 @@ inline void resetDriveEncoder() {
   encoderReset(rightEncoder);
 }
 
+/** These methods are reseved for PID **/
 int getLeftDrive();
 int getRightDrive();
 int getMobileGoal();

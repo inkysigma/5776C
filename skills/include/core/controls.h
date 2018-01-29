@@ -31,23 +31,33 @@ inline int getRightJoystick() {
 }
 
 /**
- * @method getRightJoystick()
- * @brief Get the value returned by the right joystick in the forward and
- *        backward direction. This will most likely be used to control the
- *        drive on the right side.
+ * @method getOpenMobileGoal()
+ * @brief Get whether the open mobile goal button is pressed
  **/
 inline bool getOpenMobileGoal() {
   return joystickGetDigital(1, 7, JOY_UP);
 }
 
+/**
+ * @method getOpenMobileGoal()
+ * @brief Get whether the close mobile goal button is pressed
+ **/
 inline bool getCloseMobileGoal() {
   return joystickGetDigital(1, 7, JOY_LEFT);
 }
 
+/**
+ * @method getOpenMobileGoal()
+ * @brief Get whether the close mobile goal button is pressed
+ **/
 inline bool getTestFeedback() {
   return joystickGetDigital(1, 7, JOY_DOWN);
 }
 
+/**
+ * @method getStopTestFeedback()
+ * @brief Get whether the testing should stop.
+ **/
 inline bool getStopTestFeedback() {
   return joystickGetDigital(1, 7, JOY_RIGHT);
 }
