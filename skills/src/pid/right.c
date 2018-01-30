@@ -14,7 +14,7 @@ void initRightDriveFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
   fbcPIDInitializeData(&rightDrivePid, kp, ki, kd, min_i, max_i);
   fbcInit(&rightDriveControl, &setDrive, &getRightDrive, &resetRightDrive,
-          NULL, -120, 120, 10, 2);
+          NULL, -120, 120, 25, 20);
   fbcPIDInit(&rightDriveControl, &rightDrivePid);
 }
 
@@ -25,7 +25,10 @@ void updateRightDriveCompletion() { fbcRunContinuous(&rightDriveControl); }
 void runRightDrive(void* args) {
 	unsigned long now = millis();
   while (rightRunning) {
-    if (isRightConfident()) fbcReset(&rightDriveControl);
+    if (isRightConfident()) {
+      fbcReset(&rightDriveControl);
+      moveDrive(0, 0);
+    }
     fbcRunContinuous(&rightDriveControl);
     taskDelayUntil(&now, FBC_LOOP_INTERVAL);
   }

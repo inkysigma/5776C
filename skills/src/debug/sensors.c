@@ -1,6 +1,7 @@
 #include "configuration/robot.h"
 #if DEBUG
 #include "API.h"
+#include "configuration/motors.h"
 #include "configuration/sensors.h"
 #include "debug/sensors.h"
 #include "core/sensors.h"
@@ -12,6 +13,7 @@ void writeSensors(void* args) {
     updateValue("right", readRightDrive());
     updateValue("mobile_goal", readMobileGoalPot());
     updateValue("gyro", readGyro());
+    updateValue("right_power", motorGet(RightDriveFront));
     delay(500);
   }
 }

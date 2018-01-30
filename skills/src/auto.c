@@ -19,6 +19,7 @@
 #include "pid/right.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
+#include "util/math.h"
 #include "JINX.h"
 
 /*
@@ -40,29 +41,46 @@
  */
 
 void autonomous() {
+  // reset the encoder values so we have a better base to work from
   resetLeftDriveFeedback();
   resetRightDriveFeedback();
 
   // startLeftDriveFeedback();
-  startRightDriveFeedback();
+  // startRightDriveFeedback();
 
+  // begin opening the mobile goal and wait 200 milliseconds to ensure that we have enough
+  // time to reach the target value
   openMobileGoal(127);
-  delay(500);
+  delay(400);
+
+  moveDrive(127, 127);
+  executeUntil({
+    openMobileGoal(1900 - readMobileGoalPot());
+  }, !(readMobileGoalPot() > 1960), 1000);
+  closeMobileGoal(5);
+
   setRightDriveGoal(1300);
   executeUntil({
-    openMobileGoal(2000 - readMobileGoalPot());
-  }, !(readMobileGoalPot() > 2010), 1500);
-  closeMobileGoal(10);
-  waitUntil(isRightConfident(), 5000);
-
+    moveDrive(1300 - readRightDrive(), 1300 - readRightDrive());
+  }, readRightDrive() < 1300, 2000);
+  delay(100);
   closeMobileGoal(127);
-  delay(500);
-  setRightDriveGoal(0);
-  executeUntil({
-    closeMobileGoal(readMobileGoalPot() - 340);
-  }, !(readMobileGoalPot() < 340), 1000);
-  openMobileGoal(10);
-  waitUntil(isRightConfident(), 5000);
+  delay(200);
+  
+  moveDrive(0, 0);
 
-  stopRightDriveFeedback();
+  executeUntil({
+    closeMobileGoal(readMobileGoalPot() - 620);
+  }, !(readMobileGoalPot() < 620), 1000);
+  openMobileGoal(10);
+
+  executeUntil({
+    moveDrive(5 - readRightDrive(), 5 - readRightDrive());
+  }, !(within(readRightDrive(), 0, 20) || readRightDrive() < -5), 2000);
+  moveDrive(10, 10);
+  delay(200);
+  moveDrive(0, 0);
+  openMobileGoal(10);
+
+  // stopRightDriveFeedback();
 }
