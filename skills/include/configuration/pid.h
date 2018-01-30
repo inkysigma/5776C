@@ -10,9 +10,9 @@
 #define LEFT_DRIVE_MIN_I -40
 #define LEFT_DRIVE_DT 20
 
-#define RIGHT_DRIVE_KP 0.04
+#define RIGHT_DRIVE_KP 0.10
 #define RIGHT_DRIVE_KI 0
-#define RIGHT_DRIVE_KD 1.95
+#define RIGHT_DRIVE_KD 1.97
 #define RIGHT_DRIVE_MAX_I 30
 #define RIGHT_DRIVE_MIN_I -30
 #define RIGHT_DRIVE_DT 20
