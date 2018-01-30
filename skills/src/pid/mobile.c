@@ -14,6 +14,7 @@ void initMobileGoalFeedback(float kp, float ki, float kd, float min_i,
   fbcPIDInitializeData(&mobileGoalPid, kp, ki, kd, min_i, max_i);
   fbcInit(&mobileGoalControl, &setMobileGoal, &getMobileGoal, NULL, NULL, -127,
           127, 20, 3);
+  fbcPIDInit(&mobileGoalControl, &mobileGoalPid);
 }
 
 

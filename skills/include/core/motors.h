@@ -80,5 +80,6 @@ void setLeftDrive(int power);
 void setRightDrive(int power);
 void setMobileGoal(int power);
 void setRotate(int power);
+void setDrive(int power);
 
 #endif

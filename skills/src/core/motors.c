@@ -8,6 +8,10 @@ void setRightDrive(int power) {
   moveRightDrive(power);
 }
 
+void setDrive(int power) {
+  moveDrive(power, power);
+}
+
 void setMobileGoal(int power) {
   openMobileGoal(power);
 }

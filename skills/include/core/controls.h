@@ -16,9 +16,7 @@
  *        backward direction. This will most likely be used to control the
  *        drive on the left side.
  **/
-inline int getLeftJoystick() {
-  return joystickGetAnalog(1, 3);
-}
+inline int getLeftJoystick() { return joystickGetAnalog(1, 3); }
 
 /**
  * @method getRightJoystick()
@@ -26,33 +24,43 @@ inline int getLeftJoystick() {
  *        backward direction. This will most likely be used to control the
  *        drive on the right side.
  **/
-inline int getRightJoystick() {
-  return joystickGetAnalog(1, 2);
-}
+inline int getRightJoystick() { return joystickGetAnalog(1, 2); }
+
+/**
+ * @method getLeftTurn()
+ * @brief Get the turn value of the left joystick.
+ **/
+inline int getLeftTurn() { return joystickGetAnalog(1, 4); }
+
+/**
+ * @method getRightTurn()
+ * @brief Get the turn value of the right joystick.
+ **/
+inline int getRightTurn() { return joystickGetAnalog(1, 1); }
 
 /**
  * @method getOpenMobileGoal()
  * @brief Get whether the open mobile goal button is pressed
  **/
-inline bool getOpenMobileGoal() {
-  return joystickGetDigital(1, 7, JOY_UP);
-}
+inline bool getOpenMobileGoal() { return joystickGetDigital(1, 7, JOY_UP); }
 
 /**
  * @method getOpenMobileGoal()
  * @brief Get whether the close mobile goal button is pressed
  **/
-inline bool getCloseMobileGoal() {
-  return joystickGetDigital(1, 7, JOY_LEFT);
-}
+inline bool getCloseMobileGoal() { return joystickGetDigital(1, 7, JOY_LEFT); }
 
 /**
- * @method getOpenMobileGoal()
- * @brief Get whether the close mobile goal button is pressed
+ * @method getRunAuton()
+ * @brief Get whether or not to run an autonomous
  **/
-inline bool getTestFeedback() {
-  return joystickGetDigital(1, 7, JOY_DOWN);
-}
+inline bool getRunAuton() { return joystickGetDigital(1, 8, JOY_DOWN); }
+
+/**
+ * @method getTestFeedback()
+ * @brief Get whether or not test the feedback mechanism
+ **/
+inline bool getTestFeedback() { return joystickGetDigital(1, 7, JOY_DOWN); }
 
 /**
  * @method getStopTestFeedback()

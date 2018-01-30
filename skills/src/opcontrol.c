@@ -10,11 +10,11 @@
  * PROS contains FreeRTOS (http://www.freertos.org) whose source code may be
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
+#include "JINX.h"
 #include "configuration/robot.h"
 #include "configuration/sensors.h"
 #include "core/controls.h"
 #include "core/motors.h"
-#include "JINX.h"
 #include "fbc.h"
 #include "main.h"
 #include "pid/left.h"
@@ -46,8 +46,9 @@
 bool running = false;
 void operatorControl() {
   while (1) {
+    int turn = (getLeftTurn() + getRightTurn()) / 2;
+    moveDrive(getLeftJoystick() + turn, getRightJoystick() - turn);
     if (running && !isRightConfident()) {
-      writeJINXMessage("Updated right power");
       updateRightDriveCompletion();
     }
     if (getOpenMobileGoal()) {
@@ -58,18 +59,23 @@ void operatorControl() {
       openMobileGoal(0);
     }
 
-    if (getTestFeedback()) {
-      resetRightDriveFeedback();
-      setRightDriveGoal(400);
-			running = true;
-      waitUntil(!getTestFeedback(), 5000);
+    if (getRunAuton()) {
+      writeJINXMessage("tried to run autonomous");
+      autonomous();
+      waitUntil(!getRunAuton(), 3000);
     }
 
-		if (getStopTestFeedback()) {
-			running = false;
+    if (getTestFeedback()) {
+      running = true;
+      setRightDriveGoal(1000);
+      waitUntil(!getTestFeedback(), 1000);
+    }
+
+    if (getStopTestFeedback()) {
+      running = false;
       resetRightDriveFeedback();
       moveDrive(0, 0);
-		}
+    }
     delay(20);
   }
 }

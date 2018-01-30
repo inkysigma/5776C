@@ -48,15 +48,18 @@ class Simulation:
     def run(self):
         while self.running:
             self.loop()
-
         pygame.quit()
 
     def draw(self):
+        # self.screen.fill(THECOLORS["white"])
+        # self.space.step(1 / self.fps)
+        # self.field.draw(self.screen)
+        # self.robot.draw(self.screen)
+        # pygame.display.flip()
+        # self.clock.tick(self.fps)
         self.screen.fill(THECOLORS["white"])
-        self.space.step(1 / self.fps)
-        self.field.draw(self.screen)
-        self.robot.draw(self.screen)
-        pygame.display.flip()
+        draw_options = pymunk.pygame_util.DrawOptions(self.screen)
+        self.space.step(1/self.fps)
         self.clock.tick(self.fps)
 
 

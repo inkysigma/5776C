@@ -3,6 +3,7 @@
 #include "core/sensors.h"
 #include "fbc.h"
 #include "fbc_pid.h"
+#include "JINX.h"
 
 fbc_t leftDriveControl;
 fbc_pid_t leftDrivePid;
@@ -23,24 +24,18 @@ void resetLeftDriveFeedback() { fbcReset(&leftDriveControl); }
 
 void updateLeftDriveCompletion() { fbcRunContinuous(&leftDriveControl); }
 
-void runLeftDrive(void* args) {
-  while (leftRunning) {
-    if (isLeftConfident()) fbcReset(&leftDriveControl);
-    fbcRunContinuous(&leftDriveControl);
-  }
-}
-
 void startLeftDriveFeedback() {
   leftRunning = true;
+
   if (taskGetState(leftTask) == TASK_SUSPENDED) {
     taskResume(leftTask);
     return;
   }
   if (taskGetState(leftTask) == TASK_RUNNING) {
-    return;
+    taskDelete(leftTask);
   }
-  leftTask = taskCreate(&runLeftDrive, TASK_DEFAULT_STACK_SIZE,
-    NULL, TASK_PRIORITY_DEFAULT);
+  writeJINXMessage("creating left drive");
+  leftTask = fbcRunParallel(&leftDriveControl);
 }
 
 void stopLeftDriveFeedback() {

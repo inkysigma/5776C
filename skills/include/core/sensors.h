@@ -44,7 +44,7 @@ inline void resetMainGyro() {
 }
 
 inline int readMobileGoalPot() {
-  return analogReadCalibrated(MOBILE_GOAL_POT);
+  return analogRead(MOBILE_GOAL_POT);
 }
 
 inline int readLeftDrive() {

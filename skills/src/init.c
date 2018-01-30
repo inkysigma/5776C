@@ -80,6 +80,7 @@ void initialize() {
   rightEncoder = encoderInit(RIGHT_ENCODER, RIGHT_ENCODER_SECONDARY, true);
 
 #if DEBUG
+  taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
   taskCreate(writeSensors, TASK_DEFAULT_STACK_SIZE, NULL,
              TASK_PRIORITY_DEFAULT);
 #endif
