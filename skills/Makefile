@@ -5,7 +5,7 @@ ROOT=.
 # Binary output directory
 BINDIR=$(ROOT)/bin
 # Subdirectories to include in the build
-SUBDIRS=src src/debug src/util src/core src/pid
+SUBDIRS=src src/debug src/util src/core src/pid src/segments
 
 JINX=py -3 jinx/JINX.py
 

@@ -65,7 +65,9 @@ void initialize() {
 
   mainGyro = gyroInit(MAIN_GYRO, 0);
 
-  delay(1000);
+  leftEncoder = encoderInit(LEFT_ENCODER, LEFT_ENCODER_SECONDARY, false);
+  rightEncoder = encoderInit(RIGHT_ENCODER, RIGHT_ENCODER_SECONDARY, true);
+
 
   initLeftDriveFeedback(LEFT_DRIVE_KP, LEFT_DRIVE_KI, LEFT_DRIVE_KD,
                         LEFT_DRIVE_MIN_I, LEFT_DRIVE_MAX_I);
@@ -75,9 +77,8 @@ void initialize() {
                        MOBILE_GOAL_KD, MOBILE_GOAL_MIN_I, MOBILE_GOAL_MAX_I);
   initRotateFeedback(ROTATE_KP, ROTATE_KI, ROTATE_KD,
                        ROTATE_MIN_I, ROTATE_MAX_I);
-
-  leftEncoder = encoderInit(LEFT_ENCODER, LEFT_ENCODER_SECONDARY, false);
-  rightEncoder = encoderInit(RIGHT_ENCODER, RIGHT_ENCODER_SECONDARY, true);
+  
+  delay(1000);
 
 #if DEBUG
   taskCreate(JINXRun, TASK_DEFAULT_STACK_SIZE, NULL, TASK_PRIORITY_DEFAULT);
