@@ -20,7 +20,9 @@
 #include "pid/left.h"
 #include "pid/right.h"
 #include "pid/rotate.h"
+#include "pid/mobile.h"
 #include "util/concurrency.h"
+#include "util/math.h"
 
 /*
  * Runs the user operator control code. This function will be started in its own
@@ -47,34 +49,35 @@ bool running = false;
 void operatorControl() {
   while (1) {
     int turn = (getLeftTurn() + getRightTurn()) / 2;
-    moveDrive(getLeftJoystick() + turn, getRightJoystick() - turn);
-    if (running && !isRightConfident()) {
-      updateRightDriveCompletion();
+    moveDrive(lowerBound(getLeftJoystick() + turn, 10), lowerBound(getRightJoystick() - turn, 10));
+
+    if (running ) {
+      updateMobileGoalDriveCompletion();
     }
     if (getOpenMobileGoal()) {
       openMobileGoal(127);
     } else if (getCloseMobileGoal()) {
       closeMobileGoal(127);
     } else {
-      openMobileGoal(0);
+      if (!running) openMobileGoal(0);
     }
 
     if (getRunAuton()) {
-      writeJINXMessage("tried to run autonomous");
       autonomous();
-      waitUntil(!getRunAuton(), 3000);
     }
 
     if (getTestFeedback()) {
       running = true;
-      setRightDriveGoal(1000);
+      writeJINXMessage("trying to start test");
+      setMobileGoalDriveGoal(1910);
       waitUntil(!getTestFeedback(), 1000);
     }
 
     if (getStopTestFeedback()) {
+      writeJINXMessage("stopping test");
       running = false;
-      resetRightDriveFeedback();
-      moveDrive(0, 0);
+      resetMobileGoalDriveFeedback();
+      openMobileGoal(0);
     }
     delay(20);
   }

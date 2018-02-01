@@ -1,33 +1,28 @@
 #include "core/motors.h"
 #include "core/sensors.h"
-#include "fbc.h"
-#include "fbc_pid.h"
+#include "pid/pidlib.h"
 #include "pid/mobile.h"
+#include "util/math.h"
 
-fbc_t mobileGoalControl;
-fbc_pid_t mobileGoalPid;
+pid mobileGoalPid;
 TaskHandle mobileGoalTask;
 bool mobileRunning = false;
 
 void initMobileGoalFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
-  fbcPIDInitializeData(&mobileGoalPid, kp, ki, kd, min_i, max_i);
-  fbcInit(&mobileGoalControl, &setMobileGoal, &getMobileGoal, NULL, NULL, -127,
-          127, 20, 3);
-  fbcPIDInit(&mobileGoalControl, &mobileGoalPid);
+  initPid(&mobileGoalPid, kp, ki, kd, 20, &getMobileGoal);
+  setBounds(&mobileGoalPid, max_i, min_i, 120, -120, 50, -50);
 }
 
+void setMobileGoalDriveGoal(float target) { setTarget(&mobileGoalPid, target); }
 
-void setMobileGoalDriveGoal(float target) { fbcSetGoal(&mobileGoalControl, target); }
+void resetMobileGoalDriveFeedback() { resetPid(&mobileGoalPid); }
 
-void resetMobileGoalDriveFeedback() { fbcReset(&mobileGoalControl); }
-
-void updateMobileGoalDriveCompletion() { fbcRunContinuous(&mobileGoalControl); }
+void updateMobileGoalDriveCompletion() { openMobileGoal(pidStep(&mobileGoalPid, false)); }
 
 void runMobileGoalDrive(void* args) {
   while (mobileRunning) {
-    if (isMobileGoalConfident()) fbcReset(&mobileGoalControl);
-    fbcRunContinuous(&mobileGoalControl);
+    updateMobileGoalDriveCompletion();
   }
 }
 
@@ -51,7 +46,7 @@ void stopMobileGoalDriveFeedback() {
 }
 
 bool isMobileGoalConfident() {
-  return fbcIsConfident(&mobileGoalControl);
+  return within(mobileGoalPid.target, readMobileGoalPot(), 10);
 }
 
 bool isMobileGoalRunning() {

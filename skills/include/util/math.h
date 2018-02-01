@@ -51,4 +51,16 @@ inline float bound(float a, float maximum, float mininimum) {
   return max(min(a, maximum), mininimum);
 }
 
+/**
+ * @brief Bounds the lower absolute value of the value a by a minimum 
+ * 
+ **/
+inline float lowerBound(float a, float minimum) {
+  return abs(a) > minimum ? a : 0;
+}
+
+inline float upperBound(float a, float maximum) {
+  return abs(a) < maximum ? a : sgn(a) * maximum;
+}
+
 #endif

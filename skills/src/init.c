@@ -24,11 +24,6 @@
 #include "pid/mobile.h"
 #include "pid/rotate.h"
 
-fbc_t leftDriveControl;
-fbc_t rightDriveControl;
-fbc_t mobileGoalControl;
-fbc_t rotateControl;
-
 Encoder leftEncoder;
 Encoder rightEncoder;
 Gyro mainGyro;

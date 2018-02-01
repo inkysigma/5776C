@@ -11,17 +11,17 @@
  * obtained from http://sourceforge.net/projects/freertos/files/ or on request.
  */
 
+#include "JINX.h"
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "main.h"
 #include "pid/left.h"
 #include "pid/mobile.h"
 #include "pid/right.h"
+#include "segments.h"
 #include "util/concurrency.h"
 #include "util/jinx.h"
 #include "util/math.h"
-#include "JINX.h"
-#include "segments.h"
 
 /*
  * Runs the user autonomous code. This function will be started in its own task
@@ -42,7 +42,34 @@
  */
 
 void autonomous() {
+  startMobileGoalDriveFeedback();
   middle();
-  writeJINXMessage("starting rotate");
-  rotateDeposit(true);
+  resetGyro();
+  executeUntil({ moveDrive(upperBound(92 - readGyro(), 60), upperBound(-(92 - readGyro()), 60)); },
+               !within(readGyro(), 90, 5), 1500);
+  moveDrive(-30, 30);
+  delay(100);
+  moveDrive(0, 0);
+
+  resetRightDriveFeedback();
+  executeUntil({ moveDrive(100 - readRightDrive(), 100 - readRightDrive()); },
+               !within(readRightDrive(), 120, 10), 600)
+
+  resetGyro();
+  executeUntil({ moveDrive(upperBound(87 - readGyro(), 60), upperBound(-(87 - readGyro()), 60)); },
+               !within(readGyro(), 90, 5), 1500);
+
+  resetRightDriveFeedback();
+  moveDrive(60, 60);
+  waitUntil(readRightDrive() > 800, 3000);
+  openMobileGoal(100);
+  delay(600);
+  moveDrive(-60, -60);
+  closeMobileGoal(40);
+  delay(800);
+  moveDrive(-127, -127);
+  waitUntil(readRightDrive() < 20, 1000);
+  moveDrive(10, 10);
+  delay(200);
+  moveDrive(0, 0);
 }
