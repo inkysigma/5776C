@@ -13,8 +13,7 @@ void writeSensors(void* args) {
     updateValue("right", readRightDrive());
     updateValue("mobile_goal", readMobileGoalPot());
     updateValue("gyro", readGyro());
-    updateValue("right_power", motorGet(RightDriveFront));
-    delay(500);
+    delay(600);
   }
 }
 #endif

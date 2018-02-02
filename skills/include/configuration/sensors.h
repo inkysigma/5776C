@@ -28,4 +28,6 @@
 #define SECONDARY_GYRO 2
 #define MOBILE_GOAL_POT 3
 
+#define LEFT_DRIVE_IME 0
+
 #endif

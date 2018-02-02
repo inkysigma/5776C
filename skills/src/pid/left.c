@@ -1,28 +1,38 @@
 #include "pid/left.h"
+#include "JINX.h"
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "fbc.h"
 #include "fbc_pid.h"
-#include "JINX.h"
+#include "pid/pidlib.h"
 
-fbc_t leftDriveControl;
-fbc_pid_t leftDrivePid;
+pid leftDrivePid;
 bool leftRunning = false;
 TaskHandle leftTask;
 
 void initLeftDriveFeedback(float kp, float ki, float kd, float min_i,
                            float max_i) {
-  fbcPIDInitializeData(&leftDrivePid, kp, ki, kd, min_i, max_i);
-  fbcInit(&leftDriveControl, &setLeftDrive, &getLeftDrive, &resetLeftDrive,
-          &fbcStallDetect, -127, 127, 20, 3);
-  fbcPIDInit(&leftDriveControl, &leftDrivePid);
+  pidInit(&leftDrivePid, kp, ki, kd, 20, &getLeftDrive);
+  pidBound(&leftDrivePid, max_i, min_i, 120, -120, -60, 60);
 }
 
-void setLeftDriveGoal(float target) { fbcSetGoal(&leftDriveControl, target); }
+void setLeftDriveGoal(float target) { pidTarget(&leftDrivePid, target); }
 
-void resetLeftDriveFeedback() { fbcReset(&leftDriveControl); }
+void resetLeftDriveFeedback() {
+  pidReset(&leftDrivePid);
+  resetLeftDriveEncoder();
+}
 
-void updateLeftDriveCompletion() { fbcRunContinuous(&leftDriveControl); }
+void updateLeftDriveCompletion() {
+  moveLeftDrive(pidStep(&leftDrivePid, false));
+}
+
+void runLeftDrive(void *argument) {
+  while (leftRunning) {
+    updateLeftDriveCompletion();
+    pidWait(&leftDrivePid);
+  }
+}
 
 void startLeftDriveFeedback() {
   leftRunning = true;
@@ -31,11 +41,8 @@ void startLeftDriveFeedback() {
     taskResume(leftTask);
     return;
   }
-  if (taskGetState(leftTask) == TASK_RUNNING) {
-    taskDelete(leftTask);
-  }
-  writeJINXMessage("creating left drive");
-  leftTask = fbcRunParallel(&leftDriveControl);
+  leftTask = taskCreate(&runLeftDrive, TASK_DEFAULT_STACK_SIZE, NULL,
+                        TASK_PRIORITY_DEFAULT);
 }
 
 void stopLeftDriveFeedback() {
@@ -44,10 +51,6 @@ void stopLeftDriveFeedback() {
   taskDelete(leftTask);
 }
 
-bool isLeftConfident() {
-  return fbcIsConfident(&leftDriveControl);
-}
+bool isLeftConfident() { return pidConfident(&leftDrivePid, 5); }
 
-bool isLeftRunning() {
-  return leftRunning;
-}
+bool isLeftRunning() { return leftRunning; }

@@ -42,34 +42,92 @@
  */
 
 void autonomous() {
+  writeJINXMessage("Starting autonomous");
   startMobileGoalDriveFeedback();
+
+  // start the middle
   middle();
+
+  // try to deposit the cone in the twenty point zone
   resetGyro();
-  executeUntil({ moveDrive(upperBound(92 - readGyro(), 60), upperBound(-(92 - readGyro()), 60)); },
-               !within(readGyro(), 90, 5), 1500);
+  executeUntil(
+      {
+        moveDrive(upperBound(95 - readGyro(), 60),
+                  upperBound(-(95 - readGyro()), 60));
+      },
+      !within(readGyro(), 94, 5), 1500);
   moveDrive(-30, 30);
   delay(100);
   moveDrive(0, 0);
 
   resetRightDriveFeedback();
-  executeUntil({ moveDrive(100 - readRightDrive(), 100 - readRightDrive()); },
-               !within(readRightDrive(), 120, 10), 600)
-
+  executeUntil(
+      {
+        moveDrive(upperBound(240 - readRightDrive(), 80),
+                  upperBound(240 - readRightDrive(), 80));
+      },
+      !within(readRightDrive(), 250, 10), 2000);
   resetGyro();
-  executeUntil({ moveDrive(upperBound(87 - readGyro(), 60), upperBound(-(87 - readGyro()), 60)); },
-               !within(readGyro(), 90, 5), 1500);
+  executeUntil(
+      {
+        moveDrive(upperBound(95 - readGyro(), 60),
+                  upperBound(-(95 - readGyro()), 60));
+      },
+      !within(readGyro(), 95, 5), 1700);
 
   resetRightDriveFeedback();
-  moveDrive(60, 60);
-  waitUntil(readRightDrive() > 800, 3000);
+  moveDrive(90, 90);
+  waitUntil(readRightDrive() > 600, 3000);
+
+  pauseMobileGoalDriveFeedback();
   openMobileGoal(100);
-  delay(600);
-  moveDrive(-60, -60);
-  closeMobileGoal(40);
   delay(800);
+  moveDrive(-60, -60);
+  startMobileGoalDriveFeedback();
+  setMobileGoalDriveGoal(620);
   moveDrive(-127, -127);
-  waitUntil(readRightDrive() < 20, 1000);
+  waitUntil(readRightDrive() < 50, 1000);
   moveDrive(10, 10);
   delay(200);
   moveDrive(0, 0);
+
+  // begin to rotate again to get the second into the ten point zone
+  resetGyro();
+  executeUntil(
+      {
+        moveDrive(upperBound(-90 - readGyro(), 80),
+                  -upperBound(-90 - readGyro(), 80));
+      },
+      !within(readGyro(), 92, 5), 1700);
+  moveDrive(10, -10);
+  delay(200);
+  moveDrive(0, 0);
+
+  // move forward into position
+  resetRightDrive();
+  executeUntil({ moveDrive(240 - readRightDrive(), 240 - readRightDrive()); },
+               !within(readRightDrive(), 250, 10), 1500);
+  moveDrive(-10, -10);
+  delay(200);
+  moveDrive(0, 0);
+
+  // rotate
+  executeUntil(
+      {
+        moveDrive(upperBound(-90 - readGyro(), 80),
+                  -upperBound(-90 - readGyro(), 80));
+      },
+      !within(readGyro(), 95, 5), 1700);
+
+  // try to get the other middle mobile goal cone
+  middle();
+  executeUntil(
+      {
+        moveDrive(upperBound(-10 - readRightDrive(), 60),
+                  upperBound(-10 - readRightDrive(), 60));
+      },
+      !within(readRightDrive(), -5, 10), 1000);
+
+  // rotate and deposit
+  // rotateDeposit(true);
 }

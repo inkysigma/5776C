@@ -8,6 +8,7 @@ void resetMobileGoalDriveFeedback();
 void updateMobileGoalDriveCompletion();
 void startMobileGoalDriveFeedback();
 void stopMobileGoalDriveFeedback();
+void pauseMobileGoalDriveFeedback();
 
 bool isMobileGoalConfident();
 bool isMobileGoalRunning();

@@ -1,15 +1,16 @@
 #ifndef JINX_H
 #define JINX_H
 
-//INCLUDES
+// INCLUDES
 #include "main.h"
-#include <string.h>
 #include <stdarg.h>
+#include <string.h>
 
-//DEBUG
+
+// DEBUG
 #define DEBUG_JINX false
 
-//CONSTANTS
+// CONSTANTS
 #define JINX_HEADER "JINX"
 #define JINX_DELIMETER "&"
 #define JINX_TERMINATOR "\r\n"
@@ -17,31 +18,34 @@
 #define MAX_IN_SIZE 100
 
 typedef struct {
-    char *command;
-    char *token;
+  char *command;
+  char *token;
 } JINX;
+
+bool getTaskRunning();
 
 //#define MAX_MESSAGE_SIZE 100
 //#define PROTOCOL_SIZE 10
-//#define PROTOCOL_SIZE (strlen(JINX_HEADER) + strlen(JINX_DELIMETER) + strlen(JINX_TERMINATOR))
+//#define PROTOCOL_SIZE (strlen(JINX_HEADER) + strlen(JINX_DELIMETER) +
+//strlen(JINX_TERMINATOR))
 
-//Functions
+// Functions
 /**
- *port: which port to accept communications from. Should be UART1, UART2, or stdout/in
+ *port: which port to accept communications from. Should be UART1, UART2, or
+ *stdout/in
  */
-void initJINX(FILE* port);
+void initJINX(FILE *port);
 
 /**
- *port: which port to accept communications from. Should be UART1, UART2, or stdout/in
+ *port: which port to accept communications from. Should be UART1, UART2, or
+ *stdout/in
  *
  *Returns false if port is not one of above
  */
-bool setComPort(FILE* port);
+bool setComPort(FILE *port);
 
 extern bool taskRunning;
-inline bool getDebugTaskRunning() {
-  return taskRunning;
-}
+inline bool getDebugTaskRunning() { return taskRunning; }
 
 /**
  *message: raw string to send. Don't pass newlines.
@@ -50,14 +54,17 @@ inline bool getDebugTaskRunning() {
  *
  *NOTE: Because vfprintf is not implemented in PROS, I am not allowing
  *Variable length arguments/string formatting in this method.
- *Strings must be formatted with sprintf or like before being passed as the message
+ *Strings must be formatted with sprintf or like before being passed as the
+ *message
  */
 void writeJINXSerial(const char *message);
 
 /**
- *@param name: identifier in JSON sent to Front End. Should not have any whitespace
+ *@param name: identifier in JSON sent to Front End. Should not have any
+ *whitespace
  *@param value: value in JSON sent to Front End. No newline characters.
- *      Users should convert numeric data to a string beforehand, because I am too lazy to implement myself
+ *      Users should convert numeric data to a string beforehand, because I am
+ *too lazy to implement myself
  *      Recommended that users declare temp string and use sprintf
  */
 void writeJINXData(const char *name, const char *value);
@@ -92,7 +99,7 @@ void parseMessage(JINX *inStr);
  *
  *Repeatedly reads serial data, then passes of to parser to be handled.
  */
-void JINXRun(void* ignore);
+void JINXRun(void *ignore);
 
 /**
  *@param mode: Desired operator control mode

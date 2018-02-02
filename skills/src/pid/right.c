@@ -1,42 +1,47 @@
 #include "pid/right.h"
+#include "JINX.h"
+#include "core/motors.h"
+#include "core/sensors.h"
 #include "fbc.h"
 #include "fbc_pid.h"
-#include "core/sensors.h"
-#include "core/motors.h"
-#include "JINX.h"
+#include "pid/pidlib.h"
+#include "util/JINX.h"
 
-fbc_t rightDriveControl;
-fbc_pid_t rightDrivePid;
+pid rightDrivePid;
 TaskHandle rightTask;
 bool rightRunning;
+int confidence;
 
 void initRightDriveFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
-  fbcPIDInitializeData(&rightDrivePid, kp, ki, kd, min_i, max_i);
-  fbcInit(&rightDriveControl, &setDrive, &getRightDrive, &resetRightDrive,
-          NULL, -120, 120, 25, 20);
-  fbcPIDInit(&rightDriveControl, &rightDrivePid);
+  pidInit(&rightDrivePid, kp, ki, kd, 20, &getRightDrive);
+  pidBound(&rightDrivePid, max_i, min_i, 120, -120, -60, 60);
 }
 
-void setRightDriveGoal(float target) { fbcSetGoal(&rightDriveControl, target); }
-void resetRightDriveFeedback() { fbcReset(&rightDriveControl); }
-void updateRightDriveCompletion() { fbcRunContinuous(&rightDriveControl); }
+void setRightDriveGoal(float target) { pidTarget(&rightDrivePid, target); }
 
-void runRightDrive(void* args) {
-	unsigned long now = millis();
+void resetRightDriveFeedback() {
+  pidReset(&rightDrivePid);
+  resetDriveEncoder();
+}
+
+void updateRightDriveCompletion() {
+  int update = pidStep(&rightDrivePid, false);
+  updateValue("right_output", update);
+  moveRightDrive(update);
+}
+
+void runRightDrive(void *args) {
   while (rightRunning) {
-    if (isRightConfident()) {
-      fbcReset(&rightDriveControl);
-      moveDrive(0, 0);
-    }
-    fbcRunContinuous(&rightDriveControl);
-    taskDelayUntil(&now, FBC_LOOP_INTERVAL);
+    updateRightDriveCompletion();
+    pidWait(&rightDrivePid);
   }
 }
 
 void startRightDriveFeedback() {
   rightRunning = true;
-  rightTask = fbcRunParallel(&rightDriveControl);
+  rightTask = taskCreate(&runRightDrive, TASK_DEFAULT_STACK_SIZE, NULL,
+                         TASK_PRIORITY_DEFAULT);
 }
 
 void stopRightDriveFeedback() {
@@ -45,5 +50,6 @@ void stopRightDriveFeedback() {
   taskDelete(rightTask);
 }
 
-bool isRightConfident() { return fbcIsConfident(&rightDriveControl); }
+bool isRightConfident() { return pidConfident(&rightDrivePid, 5); }
+
 bool isRightRunning() { return rightRunning; }

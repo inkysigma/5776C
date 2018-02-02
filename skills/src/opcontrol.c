@@ -18,9 +18,10 @@
 #include "fbc.h"
 #include "main.h"
 #include "pid/left.h"
+#include "pid/mobile.h"
 #include "pid/right.h"
 #include "pid/rotate.h"
-#include "pid/mobile.h"
+#include "pid/drive.h"
 #include "util/concurrency.h"
 #include "util/math.h"
 
@@ -49,35 +50,35 @@ bool running = false;
 void operatorControl() {
   while (1) {
     int turn = (getLeftTurn() + getRightTurn()) / 2;
-    moveDrive(lowerBound(getLeftJoystick() + turn, 10), lowerBound(getRightJoystick() - turn, 10));
+    if (!getTaskRunning()) {
+      if (!running) {
+        moveDrive(lowerBound(getLeftJoystick() + turn, 10),
+                  lowerBound(getRightJoystick() - turn, 10));
+      }
 
-    if (running ) {
-      updateMobileGoalDriveCompletion();
-    }
-    if (getOpenMobileGoal()) {
-      openMobileGoal(127);
-    } else if (getCloseMobileGoal()) {
-      closeMobileGoal(127);
-    } else {
-      if (!running) openMobileGoal(0);
-    }
+      if (running) {
+        updateMobileGoalDriveCompletion();
+      }
+      if (getOpenMobileGoal()) {
+        openMobileGoal(127);
+      } else if (getCloseMobileGoal()) {
+        closeMobileGoal(127);
+      } else {
+        if (!running) openMobileGoal(0);
+      }
 
-    if (getRunAuton()) {
-      autonomous();
-    }
+      if (getTestFeedback()) {
+        running = true;
+        setMobileGoalDriveGoal(1910);
+        waitUntil(!getTestFeedback(), 1000);
+      }
 
-    if (getTestFeedback()) {
-      running = true;
-      writeJINXMessage("trying to start test");
-      setMobileGoalDriveGoal(1910);
-      waitUntil(!getTestFeedback(), 1000);
-    }
-
-    if (getStopTestFeedback()) {
-      writeJINXMessage("stopping test");
-      running = false;
-      resetMobileGoalDriveFeedback();
-      openMobileGoal(0);
+      if (getStopTestFeedback()) {
+        running = false;
+        resetMobileGoalDriveFeedback();
+        openMobileGoal(0);
+        moveDrive(0, 0);
+      }
     }
     delay(20);
   }

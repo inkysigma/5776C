@@ -48,7 +48,9 @@ inline int readMobileGoalPot() {
 }
 
 inline int readLeftDrive() {
-  return encoderGet(leftEncoder);
+  int left;
+  imeGet(LEFT_DRIVE_IME, &left);
+  return left;
 }
 
 inline int readRightDrive() {
@@ -56,7 +58,7 @@ inline int readRightDrive() {
 }
 
 inline void resetLeftDriveEncoder() {
-  encoderReset(leftEncoder);
+  imeReset(LEFT_DRIVE_IME);
 }
 
 inline void resetRightDriveEncoder() {
@@ -65,7 +67,7 @@ inline void resetRightDriveEncoder() {
 
 inline void resetDriveEncoder() {
   encoderReset(leftEncoder);
-  encoderReset(rightEncoder);
+  imeReset(LEFT_DRIVE_IME);
 }
 
 /** These methods are reseved for PID **/

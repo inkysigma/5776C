@@ -1,4 +1,5 @@
 #include "JINX.h"
+#include "pid/mobile.h"
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "pid/left.h"
@@ -10,38 +11,29 @@
 void middle() {
   resetLeftDriveFeedback();
   resetRightDriveFeedback();
+  resetGyro();
 
   // begin opening the mobile goal and wait 200 milliseconds to ensure that we
   // have enough
   // time to reach the target value
-  openMobileGoal(127);
-  delay(400);
+  setMobileGoalDriveGoal(1928);
+  waitUntil(isMobileGoalConfident(), 3000);
 
   moveDrive(127, 127);
-  executeUntil({ openMobileGoal(1785 - readMobileGoalPot()); },
-               !(readMobileGoalPot() > 1810), 1300);
-  closeMobileGoal(5);
-
-
   executeUntil({ moveDrive(upperBound(1360 - readRightDrive(), 80), upperBound(1360 - readRightDrive(), 80)); },
                readRightDrive() < 1380, 2700);
   delay(100);
-  closeMobileGoal(127);
-  delay(600);
+
+  setMobileGoalDriveGoal(550);
 
   moveDrive(0, 0);
 
-  executeUntil({ closeMobileGoal(readMobileGoalPot() - 520); },
-               !(readMobileGoalPot() < 520), 1000);
-  openMobileGoal(20);
+  waitUntil(isMobileGoalConfident(), 1500);
 
-  executeUntil({ moveDrive(upperBound(200 - readRightDrive(), 70), upperBound(200 - readRightDrive(), 70)); },
-               !(within(readRightDrive(), 270, 20) || readRightDrive() < 250),
+  executeUntil({ moveDrive(upperBound(120 - readRightDrive(), 70), upperBound(120 - readRightDrive(), 70)); },
+               !(within(readRightDrive(), 150, 20) || readRightDrive() < 180),
                2000);
   moveDrive(10, 10);
   delay(200);
   moveDrive(0, 0);
-  openMobileGoal(10);
-
-  writeJINXMessage("finished middle");
 }
