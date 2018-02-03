@@ -19,10 +19,10 @@
 
 #define Claw 2
 #define LeftDriveBack 3
-#define LeftDriveFront 4
+#define RightDriveBack 4
 #define LeftMobileGoal 5
 #define RightMobileGoal 6
-#define RightDriveBack 7
+#define LeftDriveFront 7
 #define RightDriveFront 8
 #define Miscellaneous 9
 

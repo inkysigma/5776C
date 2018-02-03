@@ -53,4 +53,8 @@ void stopLeftDriveFeedback() {
 
 bool isLeftConfident() { return pidConfident(&leftDrivePid, 5); }
 
+bool isLeftWithin(int distance) { return pidWithin(&leftDrivePid, distance); }
+
 bool isLeftRunning() { return leftRunning; }
+
+float stepLeftPid() { return pidStep(&leftDrivePid, false); }

@@ -57,7 +57,7 @@ void pauseMobileGoalDriveFeedback() {
 }
 
 bool isMobileGoalConfident() {
-  return pidConfident(&mobileGoalPid, 10);
+  return pidConfident(&mobileGoalPid, 6);
 }
 
 bool isMobileGoalRunning() { return mobileRunning; }

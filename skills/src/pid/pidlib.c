@@ -21,6 +21,7 @@ void pidInit(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   ref->max_der = 10;
   ref->min_der = -10;
   ref->func = sensor;
+  ref->error = 20;
   ref->externalCurrent = false;
 }
 
@@ -76,7 +77,7 @@ float pidStep(pid *config, bool reversed) {
     error = current_pos - config->target;
 
   double integral = config->accumulation + error * config->dt / 1000;
-  double derivative = (error - config->prev_error) / config -> dt;
+  double derivative = (error - config->prev_error) / config->dt;
 
   integral = bound(integral, config->max_int, config->min_int);
   derivative = bound(derivative, config->max_der, config->min_der);
@@ -94,10 +95,15 @@ float pidStep(pid *config, bool reversed) {
   if (absf(total) < config->min_output) {
     return 0;
   }
-  updateValue("total", total);
   return total;
 }
 
 void pidWait(pid *config) { delay(config->dt); }
 
 bool pidConfident(pid *config, int frames) { return config->frames >= frames; }
+
+bool pidWithin(pid *config, float distance) {
+  if (config->externalCurrent)
+    return within(config->target, config->current, distance);
+  return within(config->target, config->func(), distance);
+}

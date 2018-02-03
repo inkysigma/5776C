@@ -59,6 +59,8 @@ void initialize() {
   analogCalibrate(SECONDARY_GYRO);
   analogCalibrate(MOBILE_GOAL_POT);
 
+  imeInitializeAll();
+
   mainGyro = gyroInit(MAIN_GYRO, 0);
 
   leftEncoder = encoderInit(LEFT_ENCODER, LEFT_ENCODER_SECONDARY, false);

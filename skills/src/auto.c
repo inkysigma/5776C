@@ -42,9 +42,6 @@
  */
 
 void autonomous() {
-  writeJINXMessage("Starting autonomous");
-  startMobileGoalDriveFeedback();
-
   // start the middle
   middle();
 
@@ -52,8 +49,8 @@ void autonomous() {
   resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(95 - readGyro(), 60),
-                  upperBound(-(95 - readGyro()), 60));
+        moveDrive(upperBound(2 * (92 - readGyro()), 60),
+                  upperBound(-2 * (95 - readGyro()), 60));
       },
       !within(readGyro(), 94, 5), 1500);
   moveDrive(-30, 30);
@@ -63,25 +60,26 @@ void autonomous() {
   resetRightDriveFeedback();
   executeUntil(
       {
-        moveDrive(upperBound(240 - readRightDrive(), 80),
-                  upperBound(240 - readRightDrive(), 80));
+        moveDrive(upperBound(235 - readRightDrive(), 80),
+                  upperBound(235 - readRightDrive(), 80));
       },
-      !within(readRightDrive(), 250, 10), 2000);
+      !within(readRightDrive(), 245, 10), 2000);
   resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(95 - readGyro(), 60),
-                  upperBound(-(95 - readGyro()), 60));
+        moveDrive(upperBound(2 * (95 - readGyro()), 60),
+                  upperBound(-2 * (95 - readGyro()), 60));
       },
       !within(readGyro(), 95, 5), 1700);
+  moveDrive(-30, 30);
+  delay(100);
+  moveDrive(0, 0);
 
   resetRightDriveFeedback();
   moveDrive(90, 90);
   waitUntil(readRightDrive() > 600, 3000);
-
-  pauseMobileGoalDriveFeedback();
-  openMobileGoal(100);
-  delay(800);
+  openMobileGoal(127);
+  delay(900);
   moveDrive(-60, -60);
   startMobileGoalDriveFeedback();
   setMobileGoalDriveGoal(620);
@@ -112,12 +110,13 @@ void autonomous() {
   moveDrive(0, 0);
 
   // rotate
+  resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(-90 - readGyro(), 80),
-                  -upperBound(-90 - readGyro(), 80));
+        moveDrive(upperBound(2 * (-85 - readGyro()), 70),
+                  -upperBound(2 * (-85 - readGyro()), 70));
       },
-      !within(readGyro(), 95, 5), 1700);
+      !within(readGyro(), 90, 5), 1700);
 
   // try to get the other middle mobile goal cone
   middle();
@@ -129,5 +128,5 @@ void autonomous() {
       !within(readRightDrive(), -5, 10), 1000);
 
   // rotate and deposit
-  // rotateDeposit(true);
+  rotateDeposit(true);
 }

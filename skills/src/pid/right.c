@@ -22,12 +22,11 @@ void setRightDriveGoal(float target) { pidTarget(&rightDrivePid, target); }
 
 void resetRightDriveFeedback() {
   pidReset(&rightDrivePid);
-  resetDriveEncoder();
+  resetRightDriveEncoder();
 }
 
 void updateRightDriveCompletion() {
   int update = pidStep(&rightDrivePid, false);
-  updateValue("right_output", update);
   moveRightDrive(update);
 }
 
@@ -53,3 +52,7 @@ void stopRightDriveFeedback() {
 bool isRightConfident() { return pidConfident(&rightDrivePid, 5); }
 
 bool isRightRunning() { return rightRunning; }
+
+float stepRightPid() { return pidStep(&rightDrivePid, false); }
+
+bool isRightWithin(int distance) { return pidWithin(&rightDrivePid, distance); }

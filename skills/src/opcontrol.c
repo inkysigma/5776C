@@ -52,30 +52,30 @@ void operatorControl() {
     int turn = (getLeftTurn() + getRightTurn()) / 2;
     if (!getTaskRunning()) {
       if (!running) {
-        moveDrive(lowerBound(getLeftJoystick() + turn, 10),
-                  lowerBound(getRightJoystick() - turn, 10));
+        moveDrive(lowerBound(getLeftJoystick() + turn, 20),
+                  lowerBound(getRightJoystick() - turn, 20));
       }
 
       if (running) {
-        updateMobileGoalDriveCompletion();
+        updateDriveTargets();
       }
       if (getOpenMobileGoal()) {
-        openMobileGoal(127);
+        openMobileGoal(100);
       } else if (getCloseMobileGoal()) {
-        closeMobileGoal(127);
+        closeMobileGoal(100);
       } else {
-        if (!running) openMobileGoal(0);
+        openMobileGoal(0);
       }
 
       if (getTestFeedback()) {
         running = true;
-        setMobileGoalDriveGoal(1910);
+        setDriveTarget(300, 300);
         waitUntil(!getTestFeedback(), 1000);
       }
 
       if (getStopTestFeedback()) {
         running = false;
-        resetMobileGoalDriveFeedback();
+        resetDriveFeedback();
         openMobileGoal(0);
         moveDrive(0, 0);
       }
