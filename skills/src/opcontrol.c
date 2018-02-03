@@ -17,11 +17,11 @@
 #include "core/motors.h"
 #include "fbc.h"
 #include "main.h"
+#include "pid/drive.h"
 #include "pid/left.h"
 #include "pid/mobile.h"
 #include "pid/right.h"
 #include "pid/rotate.h"
-#include "pid/drive.h"
 #include "util/concurrency.h"
 #include "util/math.h"
 
@@ -57,25 +57,26 @@ void operatorControl() {
       }
 
       if (running) {
-        updateDriveTargets();
+        updateMobileGoalDriveCompletion();
       }
       if (getOpenMobileGoal()) {
         openMobileGoal(100);
       } else if (getCloseMobileGoal()) {
         closeMobileGoal(100);
       } else {
-        openMobileGoal(0);
+        if (!running)
+          openMobileGoal(0);
       }
 
       if (getTestFeedback()) {
         running = true;
-        setDriveTarget(300, 300);
+        setMobileGoalDriveGoal(1900);
         waitUntil(!getTestFeedback(), 1000);
       }
 
       if (getStopTestFeedback()) {
         running = false;
-        resetDriveFeedback();
+        resetMobileGoalDriveFeedback();
         openMobileGoal(0);
         moveDrive(0, 0);
       }

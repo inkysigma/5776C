@@ -17,9 +17,9 @@
 #define RIGHT_DRIVE_MIN_I -30
 #define RIGHT_DRIVE_DT 20
 
-#define MOBILE_GOAL_KP 0.5
+#define MOBILE_GOAL_KP 0.4
 #define MOBILE_GOAL_KI 0.1
-#define MOBILE_GOAL_KD 2.3
+#define MOBILE_GOAL_KD 2.1
 #define MOBILE_GOAL_MAX_I 10
 #define MOBILE_GOAL_MIN_I -10
 #define MOBILE_GOAL_DT 20
