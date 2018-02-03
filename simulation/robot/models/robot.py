@@ -9,19 +9,20 @@ import math
 class Robot:
     def __init__(self, space, size=(60, 60)):
         self.mass = 10
-        self.body = pymunk.Body(self.mass, pymunk.moment_for_box(self.mass, size))
+        self.body = pymunk.Body(self.mass, pymunk.moment_for_box(self.mass, size), pymunk.Body.DYNAMIC)
         self.box = pymunk.Poly.create_box(self.body)
         self.body.position = (150, 150)
         space.add(self.body)
         self.image = pygame.image.load(os.path.join(ROOT_DIR, "resources/robot.png"))
         self.size = size
 
-    def __convert__(self, screen, position):
+    @staticmethod
+    def _convert(screen, position):
         _, y = screen.get_size()
         return position.x, y - position.y
 
     def draw(self, screen):
-        pos = self.__convert__(screen, self.box.body.position)
+        pos = self._convert(screen, self.box.body.position)
         angle = math.degrees(self.body.angle) + 180
         rotated_image = pygame.transform.scale(pygame.transform.rotate(self.image, angle), self.size)
 

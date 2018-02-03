@@ -10,15 +10,15 @@ import pymunk
 
 
 class Simulation:
-
     def __init__(self):
-        self.apply_force = False
+        self.apply_left_impulse = False
+        self.apply_right_impulse = False
         self.running = True
         self.width = 1080
         self.height = 720
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
-        self.fps = 30
+        self.fps = 60
 
         self.draw_options = pymunk.pygame_util.DrawOptions(self.screen)
         pygame.display.set_caption("Robotics Simulation")
@@ -31,19 +31,20 @@ class Simulation:
         self.space.gravity = (0, 0)
 
     def loop(self):
-        if self.apply_force:
+        if self.apply_left_impulse:
             self.robot.apply_left_impulse(10)
-        else:
-            self.robot.apply_left_impulse(-10)
         for event in pygame.event.get():
             # handle events here
             if event.type == QUIT:
                 self.running = False
             elif event.type == KEYDOWN:
-                self.apply_force = True
+                if event.key == K_w:
+                    self.apply_left_impulse = True
             elif event.type == KEYUP:
-                self.apply_force = False
-        self.draw()
+                if event.key == K_w:
+                    self.apply_left_impulse = False
+            self.draw()
+        self.clock.tick(self.fps)
 
     def run(self):
         while self.running:
@@ -51,16 +52,11 @@ class Simulation:
         pygame.quit()
 
     def draw(self):
-        # self.screen.fill(THECOLORS["white"])
-        # self.space.step(1 / self.fps)
-        # self.field.draw(self.screen)
-        # self.robot.draw(self.screen)
-        # pygame.display.flip()
-        # self.clock.tick(self.fps)
         self.screen.fill(THECOLORS["white"])
-        draw_options = pymunk.pygame_util.DrawOptions(self.screen)
-        self.space.step(1/self.fps)
-        self.clock.tick(self.fps)
+        self.space.step(1 / self.fps)
+        self.field.draw(self.screen)
+        self.robot.draw(self.screen)
+        pygame.display.flip()
 
 
 if __name__ == "__main__":

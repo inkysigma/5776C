@@ -15,7 +15,7 @@ class Field:
         ]
         self.segments = []
         for a, b in segment_vertexes:
-            body = pymunk.Body(body_type=pymunk.Body.STATIC)
+            body = pymunk.Body()
             segment = pymunk.Segment(body, a, b, 2)
             self.segments.append(segment)
             space.add(segment)
