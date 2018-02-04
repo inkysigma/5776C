@@ -28,10 +28,10 @@ void cross() {
   startLeftDriveFeedback();
   startRightDriveFeedback();
   setDriveTarget(3083, 2250);
-  waitUntil(within(readLeftDrive(), 2000, 10) || readLeftDrive() > 2100, 5000);
+  waitUntil(within(readLeftDrive(), 2020, 10) || readLeftDrive() > 2100, 5000);
 
   // close mobile goal when crossing
-  closeMobileGoal(80);
+  closeMobileGoal(100);
   waitUntil(readMobileGoalPot() < 320, 4000);
   openMobileGoal(60);
   delay(100);

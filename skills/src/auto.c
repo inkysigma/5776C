@@ -111,7 +111,7 @@ void autonomous() {
 
   // move forward into position
   resetRightDrive();
-  executeUntil({ moveDrive(418 - readRightDrive(), 418- readRightDrive()); },
+  executeUntil({ moveDrive(418 - readRightDrive(), 418 - readRightDrive()); },
                !within(readRightDrive(), 427, 5), 1500);
   moveDrive(-10, -10);
   delay(200);
@@ -184,8 +184,8 @@ void autonomous() {
   // finish up by rotating and depositing
   executeUntil(
       {
-        moveDrive(-2 * upperBound(90 + readGyro(), 70),
-                  2 * upperBound(90 + readGyro(), 70));
+        moveDrive(-upperBound(90 + readGyro(), 70),
+                  upperBound(90 + readGyro(), 70));
       },
       within(readGyro(), -90, 5), 2000);
   moveDrive(5, -5);
@@ -227,6 +227,7 @@ void autonomous() {
   openMobileGoal(10);
 
   resetDrive();
+  resetRightDriveFeedback();
   writeJINXMessage("begin backing up");
   moveDrive(-70, -70);
   waitUntil(readRightDrive() < -500, 1000);
