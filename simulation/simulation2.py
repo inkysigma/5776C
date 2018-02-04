@@ -40,6 +40,7 @@ class Simulation:
             if event.type == K_ESCAPE:
                 self.running = False
 
+        self.screen.fill((255, 255, 255))
         self.robot.loop(events)
         self.robot.draw()
         self.field.draw()
@@ -57,11 +58,14 @@ class Field:
         self.screen = screen
         self.size = size
         self.space = space
-        self.vertices = [[0, 0], [0, size], [size, size], [size, 0]]
+        self.vertices = [[0, 0], [0, self.size[0]], size, [self.size[0], 0]]
         # Other initialization stuff (adding the segments, others)
         # Note: Segment should be with elasticity zero
-        self.segments = [pymunk.Segment(pymunk.Space.static_body, pt, self.vertices[num-1], 2)
-                         for num, pt in enumerate(self.vertices)]
+        # self.bodies = [pymunk.Body(body_type=pymunk.Body.STATIC) for i in self.vertices]
+        self.segments = []
+        for num, pt in enumerate(self.vertices):
+            self.segments.append(pymunk.Segment(self.space.static_body, pt, self.vertices[num - 1], 2))
+
         for seg in self.segments:
             seg.elasticity = 0.25
             space.add(seg)
