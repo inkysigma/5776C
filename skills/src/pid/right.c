@@ -15,12 +15,14 @@ int confidence;
 void initRightDriveFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
   pidInit(&rightDrivePid, kp, ki, kd, 20, &getRightDrive);
-  pidBound(&rightDrivePid, max_i, min_i, 120, -120, -60, 60);
+  pidBound(&rightDrivePid, max_i, min_i, 35, -35, -60, 60);
+  pidMinimumOutput(&rightDrivePid, 20);
 }
 
 void setRightDriveGoal(float target) { pidTarget(&rightDrivePid, target); }
 
 void resetRightDriveFeedback() {
+  pidTarget(&rightDrivePid, 0);
   pidReset(&rightDrivePid);
   resetRightDriveEncoder();
 }
@@ -39,6 +41,11 @@ void runRightDrive(void *args) {
 
 void startRightDriveFeedback() {
   rightRunning = true;
+  pidReset(&rightDrivePid);
+  if (taskGetState(rightTask) == TASK_SUSPENDED) {
+    taskResume(rightTask);
+    return;
+  }
   rightTask = taskCreate(&runRightDrive, TASK_DEFAULT_STACK_SIZE, NULL,
                          TASK_PRIORITY_DEFAULT);
 }
@@ -49,10 +56,15 @@ void stopRightDriveFeedback() {
   taskDelete(rightTask);
 }
 
-bool isRightConfident() { return pidConfident(&rightDrivePid, 5); }
+bool isRightConfident() { return pidConfident(&rightDrivePid, 8); }
 
 bool isRightRunning() { return rightRunning; }
 
 float stepRightPid() { return pidStep(&rightDrivePid, false); }
 
 bool isRightWithin(int distance) { return pidWithin(&rightDrivePid, distance); }
+
+void pauseRightDriveFeedback() {
+  rightRunning = false;
+  taskSuspend(rightTask);
+}

@@ -6,5 +6,6 @@
 void middle();
 void side();
 void rotateDeposit(bool clockwise);
+void cross();
 
 #endif

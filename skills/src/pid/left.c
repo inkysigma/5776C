@@ -13,12 +13,14 @@ TaskHandle leftTask;
 void initLeftDriveFeedback(float kp, float ki, float kd, float min_i,
                            float max_i) {
   pidInit(&leftDrivePid, kp, ki, kd, 20, &getLeftDrive);
-  pidBound(&leftDrivePid, max_i, min_i, 120, -120, -60, 60);
+  pidBound(&leftDrivePid, max_i, min_i, 55, -55, -60, 60);
+  pidMinimumOutput(&leftDrivePid, 20);
 }
 
 void setLeftDriveGoal(float target) { pidTarget(&leftDrivePid, target); }
 
 void resetLeftDriveFeedback() {
+  pidTarget(&leftDrivePid, 0);
   pidReset(&leftDrivePid);
   resetLeftDriveEncoder();
 }
@@ -36,7 +38,7 @@ void runLeftDrive(void *argument) {
 
 void startLeftDriveFeedback() {
   leftRunning = true;
-
+  pidReset(&leftDrivePid);
   if (taskGetState(leftTask) == TASK_SUSPENDED) {
     taskResume(leftTask);
     return;
@@ -51,10 +53,16 @@ void stopLeftDriveFeedback() {
   taskDelete(leftTask);
 }
 
-bool isLeftConfident() { return pidConfident(&leftDrivePid, 5); }
+bool isLeftConfident() { return pidConfident(&leftDrivePid, 8); }
 
 bool isLeftWithin(int distance) { return pidWithin(&leftDrivePid, distance); }
 
 bool isLeftRunning() { return leftRunning; }
 
 float stepLeftPid() { return pidStep(&leftDrivePid, false); }
+
+
+void pauseLeftDriveFeedback() {
+  leftRunning = false;
+  taskSuspend(leftTask);
+}

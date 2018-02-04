@@ -10,6 +10,7 @@ void resetRightDriveFeedback();
 void updateRightDriveCompletion();
 void startRightDriveFeedback();
 void stopRightDriveFeedback();
+void pauseRightDriveFeedback();
 
 bool isRightConfident();
 bool isRightRunning();

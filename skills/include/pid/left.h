@@ -16,6 +16,7 @@ void updateLeftDriveCompletion();
 
 void startLeftDriveFeedback();
 void stopLeftDriveFeedback();
+void pauseLeftDriveFeedback();
 bool isLeftRunning();
 
 bool isLeftConfident();

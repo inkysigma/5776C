@@ -70,4 +70,8 @@ inline bool getStopTestFeedback() {
   return joystickGetDigital(1, 7, JOY_RIGHT);
 }
 
+inline bool getSetMobileGoal() {
+  return joystickGetDigital(1, 8, JOY_DOWN);
+}
+
 #endif

@@ -11,7 +11,8 @@
   {                                                                            \
     int time_macro_keeper = 0;                                                 \
     while ((condition) && time_macro_keeper < timeout) {                       \
-      {method} delay(20);                                                      \
+      { method }                                                               \
+      delay(20);                                                               \
       time_macro_keeper += 20;                                                 \
     }                                                                          \
   }
@@ -24,10 +25,11 @@
 #define waitUntil(condition, timeout)                                          \
   {                                                                            \
     int time_macro_keeper = 0;                                                 \
-    while (!(condition) && time_macro_keeper < timeout) {                       \
+    while (!(condition) && time_macro_keeper < timeout) {                      \
       delay(20);                                                               \
       time_macro_keeper += 20;                                                 \
     }                                                                          \
+    time_macro_keeper = 0;                                                     \
   }
 
 #endif

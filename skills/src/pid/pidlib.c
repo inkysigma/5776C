@@ -23,6 +23,7 @@ void pidInit(pid *ref, float kp, float ki, float kd, int dt, int (*sensor)()) {
   ref->func = sensor;
   ref->error = 20;
   ref->externalCurrent = false;
+  ref->frames = 0;
 }
 
 void pidBound(pid *ref, int max_total, int min_total, int max_int, int min_int,
@@ -45,10 +46,12 @@ void pidReset(pid *config) {
   // reset the pid accumulator and prev_error
   config->accumulation = 0;
   config->prev_error = 0;
+  config->frames = 0;
 }
 
 void pidTarget(pid *config, float target) {
   // set the target of the pid for a given instance
+  config->frames = 0;
   config->target = target;
 }
 
@@ -61,6 +64,8 @@ void pidSetCurrent(pid *config, float current) {
   config->current = current;
 }
 
+void pidResetIntegral(pid *config) { config->accumulation = 0; }
+
 void pidSetFunction(pid *config, int (*sensor)()) { config->func = sensor; }
 
 float pidStep(pid *config, bool reversed) {
@@ -70,7 +75,7 @@ float pidStep(pid *config, bool reversed) {
   else
     current_pos = config->current;
 
-  double error;
+  float error;
   if (!reversed)
     error = config->target - current_pos;
   else
@@ -90,6 +95,8 @@ float pidStep(pid *config, bool reversed) {
 
   if (abs(error) <= config->error) {
     config->frames++;
+  } else {
+    config->frames = 0;
   }
 
   if (absf(total) < config->min_output) {
@@ -101,6 +108,8 @@ float pidStep(pid *config, bool reversed) {
 void pidWait(pid *config) { delay(config->dt); }
 
 bool pidConfident(pid *config, int frames) { return config->frames >= frames; }
+
+void resetFrames(pid *config) { config->frames = 0; }
 
 bool pidWithin(pid *config, float distance) {
   if (config->externalCurrent)

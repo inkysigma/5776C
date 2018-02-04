@@ -5,7 +5,6 @@
 #include "util/jinx.h"
 #include "util/math.h"
 
-
 pid mobileGoalPid;
 TaskHandle mobileGoalTask;
 bool mobileRunning = false;
@@ -15,6 +14,7 @@ void initMobileGoalFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
   pidInit(&mobileGoalPid, kp, ki, kd, 20, &getMobileGoal);
   pidBound(&mobileGoalPid, max_i, min_i, 120, -120, 50, -50);
+  pidMinimumOutput(&mobileGoalPid, 20);
 }
 
 void setMobileGoalDriveGoal(float target) { pidTarget(&mobileGoalPid, target); }
@@ -23,13 +23,15 @@ void resetMobileGoalDriveFeedback() { pidReset(&mobileGoalPid); }
 
 void updateMobileGoalDriveCompletion() {
   int total = pidStep(&mobileGoalPid, false);
+  if (pidWithin(&mobileGoalPid, 5)) {
+    pidResetIntegral(&mobileGoalPid);
+  }
+  updateValue("mobile_goal_power", total);
   openMobileGoal(total);
 }
 
 void runMobileGoalDrive(void *args) {
   while (mobileRunning) {
-    if (within(mobileGoalPid.target, readMobileGoalPot(), 20))
-      confidence++;
     updateMobileGoalDriveCompletion();
     pidWait(&mobileGoalPid);
   }
@@ -56,8 +58,6 @@ void pauseMobileGoalDriveFeedback() {
   taskSuspend(mobileGoalTask);
 }
 
-bool isMobileGoalConfident() {
-  return pidConfident(&mobileGoalPid, 6);
-}
+bool isMobileGoalConfident() { return pidConfident(&mobileGoalPid, 10); }
 
 bool isMobileGoalRunning() { return mobileRunning; }

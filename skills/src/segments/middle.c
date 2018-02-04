@@ -1,48 +1,59 @@
 #include "JINX.h"
 #include "core/motors.h"
 #include "core/sensors.h"
+#include "pid/drive.h"
 #include "pid/left.h"
 #include "pid/mobile.h"
 #include "pid/right.h"
 #include "segments.h"
 #include "util/concurrency.h"
+#include "util/jinx.h"
 #include "util/math.h"
 
-
 void middle() {
-  resetRightDrive();
+  resetRightDriveFeedback();
+  resetLeftDriveFeedback();
   resetGyro();
-  startMobileGoalDriveFeedback();
+  startRightDriveFeedback();
+  startLeftDriveFeedback();
 
-  // begin opening the mobile goal and wait 200 milliseconds to ensure that we
-  // have enough
-  // time to reach the target value
-  setMobileGoalDriveGoal(1890);
-  waitUntil(isMobileGoalConfident(), 4000);
+  openMobileGoal(70);
+  waitUntil(readMobileGoalPot() > 1735, 2500);
+  openMobileGoal(-10);
+  delay(300);
 
-  moveDrive(127, 127);
-  executeUntil(
-      {
-        moveDrive(upperBound(1360 - readRightDrive(), 80),
-                  upperBound(1360 - readRightDrive(), 80));
-      },
-      readRightDrive() < 1380, 2700);
+  resetRightDriveFeedback();
+  resetLeftDriveFeedback();
+  setDriveTarget(1220, 1010);
+  waitUntil(isDriveConfident(), 3000);
+  writeJINXMessage("we are within range");
+  moveDrive(0, 0);
+
+  stopLeftDriveFeedback();
+  stopRightDriveFeedback();
+  moveDrive(60, 35);
+  delay(500);
+  moveDrive(0, 0);
+  resetGyro();
+
+  // retrat the mobile goal properly
+  closeMobileGoal(127);
+  waitUntil(readMobileGoalPot() < 320, 4000);
+  writeJINXMessage("we have retracted");
+  openMobileGoal(60);
   delay(100);
+  openMobileGoal(0);
+  delay(500);
 
-  setMobileGoalDriveGoal(550);
+  startRightDriveFeedback();
+  startLeftDriveFeedback();
+  setDriveTarget(320, 80);
+  waitUntil(isDriveConfident(), 2000);
 
+  writeJINXMessage("ending the middle phase");
+  stopLeftDriveFeedback();
+  stopRightDriveFeedback();
   moveDrive(0, 0);
 
-  waitUntil(isMobileGoalConfident(), 5000);
-  pauseMobileGoalDriveFeedback();
-  openMobileGoal(10);
-  executeUntil(
-      {
-        moveDrive(upperBound(120 - readRightDrive(), 70),
-                  upperBound(120 - readRightDrive(), 70));
-      },
-      !(within(readRightDrive(), 150, 20) || readRightDrive() < 180), 2000);
-  moveDrive(10, 10);
-  delay(200);
-  moveDrive(0, 0);
+  resetGyro();
 }

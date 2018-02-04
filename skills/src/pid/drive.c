@@ -13,9 +13,17 @@ void updateDriveTargets() {
   float left = stepLeftPid();
   float right = stepRightPid();
   float maximum = max(abs(left), abs(right));
+  if (isLeftWithin(40))
+    left = 0;
+  if (isRightWithin(40))
+    right = 0;
   if (!isLeftWithin(90) && !isRightWithin(90))
     moveDrive(left / maximum * 128, right / maximum * 128);
   moveDrive(left, right);
+}
+
+bool isDriveConfident() {
+  return isRightConfident() && isLeftConfident() && isLeftWithin(20) && isRightWithin(20);
 }
 
 void resetDriveFeedback() {

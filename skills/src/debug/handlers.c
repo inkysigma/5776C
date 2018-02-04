@@ -2,43 +2,43 @@
 #if DEBUG
 #include "JINX.h"
 #include "configuration/sensors.h"
+#include "core/sensors.h"
 #include "main.h"
 #include "pid/left.h"
-#include "pid/right.h"
 #include "pid/mobile.h"
+#include "pid/right.h"
+#include "core/motors.h"
 
 bool taskRunning = false;
+bool autonomous_running = false;
+TaskHandle autonomousTask;
 
-bool autonStarted = false;
-TaskHandle autoTaskHandle;
-
-void autotask(void *args) { autonStarted = false; }
+void autonomousRun(void *args) {
+  autonomous();
+  autonomous_running = false;
+}
 
 void parseMessage(JINX *inStr) {
   taskRunning = true;
   getToken(inStr, 0);
   if (strcmp(inStr->token, "calibrate") == 0) {
     analogCalibrate(MOBILE_GOAL_POT);
+    resetLeftDriveEncoder();
+    resetRightDriveEncoder();
   } else if (strcmp(inStr->token, "auto") == 0) {
-    autonomous();
-  } else if (strcmp(inStr->token, "stop_pid") == 0) {
-    stopMobileGoalDriveFeedback();
+    autonomous_running = true;
+    autonomousTask = taskCreate(&autonomousRun, TASK_DEFAULT_STACK_SIZE, NULL,
+                               TASK_PRIORITY_DEFAULT);
   } else if (strcmp(inStr->token, "stop") == 0) {
-    autonStarted = false;
-    taskDelete(autoTaskHandle);
-  } else if (strcmp(inStr->token, "opcontrol") == 0) {
-    autonStarted = false;
-  } else if (strcmp(inStr->token, "right") == 0) {
-    getToken(inStr, 1);
-    int right = atoi(inStr->token);
-    setRightDriveGoal(right);
-    while (!isRightConfident()) {
-      updateRightDriveCompletion();
-    }
+    autonomous_running = false;
+    taskDelete(autonomousTask);
+    moveDrive(0, 0);
+    openMobileGoal(0);
   }
 
-  if (!autonStarted)
-    taskRunning = false;
+  if (autonomous_running)
+    return;
+  taskRunning = false;
 }
 
 bool getTaskRunning() { return taskRunning; }

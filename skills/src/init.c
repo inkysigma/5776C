@@ -24,7 +24,6 @@
 #include "pid/right.h"
 #include "pid/rotate.h"
 
-
 Encoder leftEncoder;
 Encoder rightEncoder;
 Gyro mainGyro;
@@ -39,7 +38,10 @@ Gyro mainGyro;
  * and solenoids. It can also safely configure a UART port (usartOpen()) but
  * cannot set up an LCD (lcdInit()).
  */
-void initializeIO() { watchdogInit(); }
+void initializeIO() {
+  watchdogInit();
+  setTeamName("5776C");
+}
 
 /*
  * Runs user initialization code. This function will be started in its own task

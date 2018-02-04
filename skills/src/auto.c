@@ -15,6 +15,7 @@
 #include "core/motors.h"
 #include "core/sensors.h"
 #include "main.h"
+#include "pid/drive.h"
 #include "pid/left.h"
 #include "pid/mobile.h"
 #include "pid/right.h"
@@ -49,43 +50,50 @@ void autonomous() {
   resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(2 * (92 - readGyro()), 60),
-                  upperBound(-2 * (95 - readGyro()), 60));
+        moveDrive(upperBound(2 * (100 - readGyro()), 60),
+                  upperBound(-2 * (100 - readGyro()), 60));
       },
-      !within(readGyro(), 94, 5), 1500);
+      !within(readGyro(), 100, 5), 1500);
   moveDrive(-30, 30);
   delay(100);
   moveDrive(0, 0);
 
+  resetLeftDriveFeedback();
   resetRightDriveFeedback();
   executeUntil(
       {
-        moveDrive(upperBound(235 - readRightDrive(), 80),
-                  upperBound(235 - readRightDrive(), 80));
+        moveDrive(upperBound(380 - readRightDrive(), 60),
+                  upperBound(380 - readRightDrive(), 50));
       },
-      !within(readRightDrive(), 245, 10), 2000);
+      !within(readRightDrive(), 385, 5), 2000);
   resetGyro();
   executeUntil(
       {
         moveDrive(upperBound(2 * (95 - readGyro()), 60),
-                  upperBound(-2 * (95 - readGyro()), 60));
+                  upperBound(-1.8 * (95 - readGyro()), 55));
       },
       !within(readGyro(), 95, 5), 1700);
   moveDrive(-30, 30);
   delay(100);
   moveDrive(0, 0);
 
+  resetLeftDriveFeedback();
   resetRightDriveFeedback();
   moveDrive(90, 90);
   waitUntil(readRightDrive() > 600, 3000);
   openMobileGoal(127);
   delay(900);
   moveDrive(-60, -60);
-  startMobileGoalDriveFeedback();
-  setMobileGoalDriveGoal(620);
-  moveDrive(-127, -127);
-  waitUntil(readRightDrive() < 50, 1000);
-  moveDrive(10, 10);
+  closeMobileGoal(127);
+  waitUntil(readMobileGoalPot() < 620, 1000);
+  openMobileGoal(30);
+  delay(200);
+  openMobileGoal(10);
+
+  writeJINXMessage("begin backing up");
+  moveDrive(-70, -70);
+  waitUntil(readRightDrive() < 200, 1000);
+  moveDrive(40, 40);
   delay(200);
   moveDrive(0, 0);
 
@@ -93,18 +101,18 @@ void autonomous() {
   resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(-90 - readGyro(), 80),
-                  -upperBound(-90 - readGyro(), 80));
+        moveDrive(upperBound(-91 - readGyro(), 80),
+                  -upperBound(-91 - readGyro(), 80));
       },
-      !within(readGyro(), 92, 5), 1700);
+      !within(readGyro(), 92, 7), 1700);
   moveDrive(10, -10);
   delay(200);
   moveDrive(0, 0);
 
   // move forward into position
   resetRightDrive();
-  executeUntil({ moveDrive(240 - readRightDrive(), 240 - readRightDrive()); },
-               !within(readRightDrive(), 250, 10), 1500);
+  executeUntil({ moveDrive(418 - readRightDrive(), 418- readRightDrive()); },
+               !within(readRightDrive(), 427, 5), 1500);
   moveDrive(-10, -10);
   delay(200);
   moveDrive(0, 0);
@@ -113,20 +121,116 @@ void autonomous() {
   resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(2 * (-85 - readGyro()), 70),
-                  -upperBound(2 * (-85 - readGyro()), 70));
+        moveDrive(upperBound((-85 - readGyro()), 60),
+                  -upperBound((-85 - readGyro()), 60));
       },
-      !within(readGyro(), 90, 5), 1700);
+      !within(readGyro(), -90, 7), 1700);
+  moveDrive(10, -10);
+  delay(500);
+  moveDrive(0, 0);
 
-  // try to get the other middle mobile goal cone
-  middle();
-  executeUntil(
-      {
-        moveDrive(upperBound(-10 - readRightDrive(), 60),
-                  upperBound(-10 - readRightDrive(), 60));
-      },
-      !within(readRightDrive(), -5, 10), 1000);
+  // begin the middle again
+  resetRightDriveFeedback();
+  resetLeftDriveFeedback();
+  resetGyro();
+  startRightDriveFeedback();
+  startLeftDriveFeedback();
+
+  openMobileGoal(70);
+  waitUntil(readMobileGoalPot() > 1735, 3000);
+  openMobileGoal(-10);
+  delay(300);
+
+  resetRightDriveFeedback();
+  resetLeftDriveFeedback();
+  setDriveTarget(880, 710);
+  waitUntil(isDriveConfident(), 3000);
+  writeJINXMessage("we are within range");
+  moveDrive(0, 0);
+
+  stopLeftDriveFeedback();
+  stopRightDriveFeedback();
+  moveDrive(50, 35);
+  delay(400);
+  moveDrive(0, 0);
+  resetGyro();
+
+  // retrat the mobile goal properly
+  closeMobileGoal(127);
+  waitUntil(readMobileGoalPot() < 320, 4000);
+  writeJINXMessage("we have retracted");
+  openMobileGoal(60);
+  delay(100);
+
+  openMobileGoal(0);
+  delay(500);
+
+  startRightDriveFeedback();
+  startLeftDriveFeedback();
+  setDriveTarget(80, -75);
+  waitUntil(isDriveConfident(), 2000);
+
+  writeJINXMessage("ending the middle phase");
+  stopLeftDriveFeedback();
+  stopRightDriveFeedback();
 
   // rotate and deposit
   rotateDeposit(true);
+
+  // we need to cross the field in order to get the mobile goal
+  cross();
+  resetGyro();
+
+  // finish up by rotating and depositing
+  executeUntil(
+      {
+        moveDrive(-2 * upperBound(90 + readGyro(), 70),
+                  2 * upperBound(90 + readGyro(), 70));
+      },
+      within(readGyro(), -90, 5), 2000);
+  moveDrive(5, -5);
+  delay(500);
+  moveDrive(0, 0);
+
+  resetLeftDriveFeedback();
+  resetRightDriveFeedback();
+  executeUntil(
+      {
+        moveDrive(upperBound(350 - readRightDrive(), 60),
+                  upperBound(350 - readRightDrive(), 60));
+      },
+      !within(readRightDrive(), 350, 7), 2000);
+
+  resetGyro();
+  // finish up by rotating and depositing
+  executeUntil(
+      {
+        moveDrive(upperBound(90 + readGyro(), 75),
+                  -upperBound(90 + readGyro(), 70));
+      },
+      within(readGyro(), 93, 5), 2000);
+  moveDrive(5, -5);
+  delay(500);
+  moveDrive(0, 0);
+
+  resetRightDriveFeedback();
+  resetLeftDriveFeedback();
+  moveDrive(90, 90);
+  waitUntil(readRightDrive() > 600, 3000);
+  openMobileGoal(127);
+  delay(900);
+  moveDrive(-60, -60);
+  closeMobileGoal(127);
+  waitUntil(readMobileGoalPot() < 620, 1000);
+  openMobileGoal(30);
+  delay(200);
+  openMobileGoal(10);
+
+  resetDrive();
+  writeJINXMessage("begin backing up");
+  moveDrive(-70, -70);
+  waitUntil(readRightDrive() < -500, 1000);
+  moveDrive(40, 40);
+  delay(200);
+  moveDrive(0, 0);
 }

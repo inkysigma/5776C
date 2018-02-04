@@ -15,6 +15,7 @@
 #include "configuration/sensors.h"
 #include "core/controls.h"
 #include "core/motors.h"
+#include "core/sensors.h"
 #include "fbc.h"
 #include "main.h"
 #include "pid/drive.h"
@@ -46,18 +47,20 @@
  * This task should never exit; it should end with some kind of infinite loop,
  * even if empty.
  */
+
 bool running = false;
 void operatorControl() {
   while (1) {
     int turn = (getLeftTurn() + getRightTurn()) / 2;
     if (!getTaskRunning()) {
-      if (!running) {
-        moveDrive(lowerBound(getLeftJoystick() + turn, 20),
-                  lowerBound(getRightJoystick() - turn, 20));
-      }
-
+      moveDrive(lowerBound(getLeftJoystick() + turn, 20),
+                lowerBound(getRightJoystick() - turn, 20));
       if (running) {
-        updateMobileGoalDriveCompletion();
+        openMobileGoal(1.5 * (1812 - readMobileGoalPot()) - 20);
+        if (within(readMobileGoalPot(), 1812, 5)) {
+          openMobileGoal(-10);
+          running = false;
+        }
       }
       if (getOpenMobileGoal()) {
         openMobileGoal(100);
@@ -68,17 +71,10 @@ void operatorControl() {
           openMobileGoal(0);
       }
 
-      if (getTestFeedback()) {
+      if (getSetMobileGoal()) {
+        openMobileGoal(70);
         running = true;
-        setMobileGoalDriveGoal(1900);
-        waitUntil(!getTestFeedback(), 1000);
-      }
-
-      if (getStopTestFeedback()) {
-        running = false;
-        resetMobileGoalDriveFeedback();
-        openMobileGoal(0);
-        moveDrive(0, 0);
+        waitUntil(!getSetMobileGoal(), 1000);
       }
     }
     delay(20);

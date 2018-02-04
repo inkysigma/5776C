@@ -72,6 +72,8 @@ float pidStep(pid *config, bool reversed);
 // wait the time required by the pid configuration
 void pidWait(pid *config);
 
+void pidResetIntegral(pid *config);
+
 /**
  * @method pidIncrementTarget(pid* ref, int inc)
  *
