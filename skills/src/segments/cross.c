@@ -13,15 +13,15 @@ void cross() {
   resetDriveFeedback();
   executeUntil(
       {
-        moveDrive(upperBound(-(180 + readGyro()), 80),
-                  upperBound((180 + readGyro()), 80));
+        moveDrive(upperBound(-(165 + readGyro()), 80),
+                  upperBound((165 + readGyro()), 80));
       },
-      !within(readGyro(), -180, 5), 5000);
+      !within(readGyro(), -170, 5), 5000);
   moveDrive(10, -10);
   delay(400);
   moveDrive(0, 0);
   openMobileGoal(70);
-  waitUntil(readMobileGoalPot() > 1740, 3000);
+  waitUntil(readMobileGoalPot() > 1745, 3000);
   openMobileGoal(-10);
   delay(300);
   resetDriveFeedback();
