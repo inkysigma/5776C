@@ -13,7 +13,7 @@ TaskHandle leftTask;
 void initLeftDriveFeedback(float kp, float ki, float kd, float min_i,
                            float max_i) {
   pidInit(&leftDrivePid, kp, ki, kd, 20, &getLeftDrive);
-  pidBound(&leftDrivePid, max_i, min_i, 55, -55, -60, 60);
+  pidBound(&leftDrivePid, max_i, min_i, 75, -75, -60, 60);
   pidMinimumOutput(&leftDrivePid, 20);
 }
 

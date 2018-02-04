@@ -24,7 +24,7 @@ void middle() {
 
   resetRightDriveFeedback();
   resetLeftDriveFeedback();
-  setDriveTarget(1220, 1010);
+  setDriveTarget(1220, 880);
   waitUntil(isDriveConfident(), 3000);
   writeJINXMessage("we are within range");
   moveDrive(0, 0);

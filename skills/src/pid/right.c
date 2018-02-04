@@ -15,7 +15,7 @@ int confidence;
 void initRightDriveFeedback(float kp, float ki, float kd, float min_i,
                             float max_i) {
   pidInit(&rightDrivePid, kp, ki, kd, 20, &getRightDrive);
-  pidBound(&rightDrivePid, max_i, min_i, 35, -35, -60, 60);
+  pidBound(&rightDrivePid, max_i, min_i, 55, -55, -60, 60);
   pidMinimumOutput(&rightDrivePid, 20);
 }
 

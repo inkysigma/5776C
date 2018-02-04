@@ -49,6 +49,8 @@
  */
 
 bool running = false;
+bool fling = false;
+bool secondFling = false;
 void operatorControl() {
   while (1) {
     int turn = (getLeftTurn() + getRightTurn()) / 2;
@@ -56,12 +58,29 @@ void operatorControl() {
       moveDrive(lowerBound(getLeftJoystick() + turn, 20),
                 lowerBound(getRightJoystick() - turn, 20));
       if (running) {
-        openMobileGoal(1.5 * (1812 - readMobileGoalPot()) - 20);
-        if (within(readMobileGoalPot(), 1812, 5)) {
-          openMobileGoal(-10);
+        closeMobileGoal(70);
+        if (readMobileGoalPot() < 426) {
+          openMobileGoal(10);
           running = false;
         }
       }
+
+      if (fling || secondFling) {
+        if (readMobileGoalPot() < 920)
+          openMobileGoal(127);
+        if (readMobileGoalPot() >= 920)
+          secondFling = true;
+        if (secondFling) {
+          if (readMobileGoalPot() < 420) {
+            openMobileGoal(0);
+            fling = false;
+            secondFling = false;
+          } else {
+            closeMobileGoal(127);
+          }
+        }
+      }
+
       if (getOpenMobileGoal()) {
         openMobileGoal(100);
       } else if (getCloseMobileGoal()) {
@@ -72,9 +91,15 @@ void operatorControl() {
       }
 
       if (getSetMobileGoal()) {
-        openMobileGoal(70);
+        openMobileGoal(-70);
         running = true;
         waitUntil(!getSetMobileGoal(), 1000);
+      }
+
+      if (getFlingGoal()) {
+        if (!running)
+          fling = true;
+        waitUntil(!getFlingGoal(), 2000);
       }
     }
     delay(20);

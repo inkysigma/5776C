@@ -62,17 +62,17 @@ void autonomous() {
   resetRightDriveFeedback();
   executeUntil(
       {
-        moveDrive(upperBound(380 - readRightDrive(), 60),
-                  upperBound(380 - readRightDrive(), 50));
+        moveDrive(upperBound(750 - readRightDrive(), 60),
+                  upperBound(670 - readRightDrive(), 50));
       },
-      !within(readRightDrive(), 385, 5), 2000);
+      !within(readRightDrive(), 440, 5), 2000);
   resetGyro();
   executeUntil(
       {
-        moveDrive(upperBound(2 * (95 - readGyro()), 60),
-                  upperBound(-1.8 * (95 - readGyro()), 55));
+        moveDrive(upperBound(2 * (90 - readGyro()), 60),
+                  upperBound(-1.8 * (90 - readGyro()), 55));
       },
-      !within(readGyro(), 95, 5), 1700);
+      !within(readGyro(), 90, 5), 1700);
   moveDrive(-30, 30);
   delay(100);
   moveDrive(0, 0);

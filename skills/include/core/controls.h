@@ -16,7 +16,9 @@
  *        backward direction. This will most likely be used to control the
  *        drive on the left side.
  **/
-inline int getLeftJoystick() { return joystickGetAnalog(1, 3); }
+inline int getLeftJoystick() {
+  return joystickGetAnalog(1, 3) + joystickGetAnalog(2, 3);
+}
 
 /**
  * @method getRightJoystick()
@@ -24,19 +26,27 @@ inline int getLeftJoystick() { return joystickGetAnalog(1, 3); }
  *        backward direction. This will most likely be used to control the
  *        drive on the right side.
  **/
-inline int getRightJoystick() { return joystickGetAnalog(1, 2); }
+inline int getRightJoystick() {
+  return joystickGetAnalog(1, 2) + joystickGetAnalog(2, 2);
+}
+
+inline bool getFlingGoal() {
+  return joystickGetDigital(1, 8, JOY_RIGHT);
+}
 
 /**
  * @method getLeftTurn()
  * @brief Get the turn value of the left joystick.
  **/
-inline int getLeftTurn() { return joystickGetAnalog(1, 4); }
+inline int getLeftTurn() {
+  return joystickGetAnalog(1, 4) + joystickGetAnalog(2, 4);
+}
 
 /**
  * @method getRightTurn()
  * @brief Get the turn value of the right joystick.
  **/
-inline int getRightTurn() { return joystickGetAnalog(1, 1); }
+inline int getRightTurn() { return joystickGetAnalog(1, 1) + joystickGetAnalog(2, 1); }
 
 /**
  * @method getOpenMobileGoal()
@@ -70,8 +80,6 @@ inline bool getStopTestFeedback() {
   return joystickGetDigital(1, 7, JOY_RIGHT);
 }
 
-inline bool getSetMobileGoal() {
-  return joystickGetDigital(1, 8, JOY_DOWN);
-}
+inline bool getSetMobileGoal() { return joystickGetDigital(1, 8, JOY_DOWN); }
 
 #endif
