@@ -16,7 +16,10 @@ SPEED_COEFFICIENT = 100
 ANG_VELOCITY_COEFFICIENT = 1.5
 CONE_RADIUS = 20
 MOGO_RADIUS = 30
-COLLISION_TYPE = 13
+ROBOT_COLLISION_TYPE = 13
+CONE_COLLISION_TYPE = 14
+RED = 0
+BLUE = 1
 
 
 class Simulation:
@@ -36,6 +39,9 @@ class Simulation:
         self.background = pygame.transform.scale(self.background, FIELD_SIZE)
         self.cones = [Cone(CONE_RADIUS, self.screen, self.space, (x * 50, 420)) for x in range(5)]
         self.mogos = [MobileGoal(MOGO_RADIUS, self.screen, self.space, (x * 50, 500)) for x in range(5)]
+        self.col_handler = self.space.add_collision_handler(ROBOT_COLLISION_TYPE, CONE_COLLISION_TYPE)
+        self.set_collision_handler(self.col_handler)
+        print(self.col_handler.begin)
         self.fps = fps
         self.space.gravity = 0, 0
         self.clock = pygame.time.Clock()
@@ -68,6 +74,26 @@ class Simulation:
         self.space.step(1/self.fps)
         self.clock.tick(self.fps)
         pygame.display.update()
+
+    @staticmethod
+    def set_collision_handler(handler):
+        def begin(arbiter, space, data):
+            print("Collision began")
+            point = arbiter.contact_point_set.points[0].point_a
+            if
+            return True
+
+        def pre_solve(arbiter, space, data):
+            print("Pre-solve is running")
+            return True
+
+        def post_solve(arbiter, space, data):
+            print("post-solve is running")
+            return True
+
+        handler.begin = begin
+        handler.post_solve = post_solve
+        handler.pre_solve = pre_solve
 
 
 class Field:
@@ -107,7 +133,7 @@ class Robot:
         self.body.position = pos
         self.translated_pos = self.body.position
         self.shape = pymunk.Poly.create_box(self.body, self.size, 0)  # Last argument is radius
-        # self.shape.friction = 100000000
+        self.shape.collision_type = ROBOT_COLLISION_TYPE
         self.img = pygame.image.load(ROBOT_FILENAME)
         self.img = pygame.transform.scale(self.img, size)
         self.img = self.img.convert_alpha()
@@ -172,7 +198,7 @@ class Cone:
         self.body = pymunk.Body(self.mass, self.moment)
         self.body.position = pos
         self.shape = pymunk.Circle(self.body, self.radius)
-        # self.shape.friction = 100000
+        self.shape.collision_type = CONE_COLLISION_TYPE
         self.space.add(self.body, self.shape)
 
     def loop(self):
@@ -184,7 +210,7 @@ class Cone:
 
 
 class MobileGoal:
-    def __init__(self, radius, screen, space, pos):
+    def __init__(self, radius, screen, space, pos, mogo_type=RED):
         self.space = space
         self.screen = screen
         self.radius = radius
@@ -194,6 +220,7 @@ class MobileGoal:
         self.body.position = pos
         self.shape = pymunk.Circle(self.body, self.radius)
         self.space.add(self.body, self.shape)
+        self.type = mogo_type if mogo_type == 0 or mogo_type == 1 else 0
 
     def loop(self):
         pass
