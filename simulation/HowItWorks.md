@@ -28,3 +28,5 @@ Claw has 4 states:
     * default size
     * cannot grab cones
     
+y = mx + b
+-1/m

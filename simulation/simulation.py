@@ -96,25 +96,6 @@ class Simulation:
         handler.pre_solve = pre_solve
 
 
-class Field:
-    """
-    Simulation object for the field
-    Includes boundaries
-    """
-
-    def __init__(self, size, screen, space):
-        self.screen = screen
-        self.size = size
-        self.space = space
-        self.vertices = [[0, 0], [0, self.size[0]], size, [self.size[0], 0]]
-        # Other initialization stuff (adding the segments, others)
-        # Note: Segment should be with elasticity zero
-        self.segments = []
-        for num, pt in enumerate(self.vertices):
-            self.segments.append(pymunk.Segment(self.space.static_body, pt, self.vertices[num - 1], 2))
-
-        for seg in self.segments:
-            self.space.add(seg)
 
 
 class Robot:
@@ -132,6 +113,7 @@ class Robot:
         self.body = pymunk.Body(self.mass, self.moment)
         self.body.position = pos
         self.translated_pos = self.body.position
+        self.vertices = [v.rotated(self.shape.body.angle) + self.shape.body.position for v in self.shape.get_vertices()]
         self.shape = pymunk.Poly.create_box(self.body, self.size, 0)  # Last argument is radius
         self.shape.collision_type = ROBOT_COLLISION_TYPE
         self.img = pygame.image.load(ROBOT_FILENAME)
@@ -173,6 +155,7 @@ class Robot:
         self.body.velocity = (math.cos(math.pi/2 - self.body.angle) * SPEED_COEFFICIENT * self.forwards,
                               math.sin(math.pi/2 - self.body.angle) * SPEED_COEFFICIENT * self.forwards)
         self.body.angular_velocity = self.sideways * ANG_VELOCITY_COEFFICIENT
+        self.vertices = [v.rotated(self.shape.body.angle) + self.shape.body.position for v in self.shape.get_vertices()]
 
     def draw(self):
         """
@@ -183,8 +166,8 @@ class Robot:
         rotated_img = pygame.transform.rotate(self.img, angle_degrees)
         # Translates image so image doesn't move position when it rotates (it's a bit shaky though)
         self.translated_pos = self.body.position
-        self.translated_pos[0] -= round(rotated_img.get_width()/2)
-        self.translated_pos[1] -= round(rotated_img.get_height()/2)
+        self.translated_pos[0] -= int(rotated_img.get_width()/2)
+        self.translated_pos[1] -= int(rotated_img.get_height()/2)
         self.screen.blit(rotated_img, self.translated_pos)
 
 
@@ -232,6 +215,27 @@ class MobileGoal:
         # Circle border
         pygame.draw.circle(self.screen, (0, 0, 0), (int(self.body.position[0]), int(self.body.position[1])),
                            int(self.radius), 2)
+
+
+class Field:
+    """
+    Simulation object for the field
+    Includes boundaries
+    """
+
+    def __init__(self, size, screen, space):
+        self.screen = screen
+        self.size = size
+        self.space = space
+        self.vertices = [[0, 0], [0, self.size[0]], size, [self.size[0], 0]]
+        # Other initialization stuff (adding the segments, others)
+        # Note: Segment should be with elasticity zero
+        self.segments = []
+        for num, pt in enumerate(self.vertices):
+            self.segments.append(pymunk.Segment(self.space.static_body, pt, self.vertices[num - 1], 2))
+
+        for seg in self.segments:
+            self.space.add(seg)
 
 
 if __name__ == "__main__":
